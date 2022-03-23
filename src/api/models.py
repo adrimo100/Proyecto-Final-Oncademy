@@ -2,6 +2,12 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
+userSubjects = db.Table("userSubkects",
+db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key = True),
+db.Column("subject_id", db.Integer, db.ForeignKey("subject.id"), primary_key = True)
+)
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(50), unique = False, nullable = False)
@@ -9,8 +15,8 @@ class User(db.Model):
     password = db.Column(db.String(50), unique=False, nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey("role.id"), nullable = False)
     role = db.relationship("Role", backref="user", lazy = True)
+    subjects = db.relationship("Subject", secondary = userSubjects, lazy = "subquery", backref = db.backref("User", lazy = True))
     
-
     def __repr__(self):
         return '<User %r>' % self.full_name
 
@@ -19,8 +25,11 @@ class User(db.Model):
             "id": self.id,
             "email": self.email,
             "role": self.role,
+            "subjects": self.subjects
             # do not serialize the password, its a security breach
         }
+
+
 
 class Role(db.Model):
 
@@ -68,39 +77,10 @@ class Course(db.Model):
         }
 
 
-class Student(db.Model):
-     id = db.Column(db.Integer, primary_key = True)
-     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable = False)
-     user = db.relationship("User", backref = "student", lazy = True)
-     subject_id = db.Column(db.Integer, db.ForeignKey("subject.id"), nullable = False)
-     subject = db.relationship("Subject", backref="student", lazy = True)
-     payment_id = db.Column(db.Integer, db.ForeignKey("payment.id"), nullable = False)
-     payment = db.relationship("Payment", backref = "student", lazy = True)
-
-     def serialize(self):
-         return {
-             "id": self.id,
-             "user": self.user,
-             "subject": self.subject,
-             "payment": self.payment
-         }
-
-
-class Teacher(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable = False)
-    user = db.relationship("User", backref = "teacher", lazy = True)
-    subject_id = db.Column(db.Integer, db.ForeignKey("subject.id"), nullable = False)
-    subject = db.relationship("Subject", backref="teacher", lazy = True)
-
-    def serialize(self):
-         return {
-             "id": self.id,
-             "user": self.user,
-             "subject": self.subject
-         }
-
-
+subjects = db.Table("tags",
+db.Column("payment_id", db.Integer, db.ForeignKey("payment.id"), primary_key = True),
+db.Column("subject_id", db.Integer, db.ForeignKey("subject.id"), primary_key = True)
+)
 
 class Payment(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -108,8 +88,7 @@ class Payment(db.Model):
     quantity = db.Column(db.Float, unique = False, nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable = False)
     user = db.relationship("User", backref = "payment", lazy = True )
-    subject_id = db.Column(db.Integer, db.ForeignKey("subject.id"), nullable = False)
-    subject = db.relationship("Subject", backref = "payment", lazy = True )
+    subjects = db.relationship("Subject", secondary = subjects, lazy = "subquery", backref = db.backref("payments", lazy = True))
 
     def serialize(self):
         return{
@@ -117,5 +96,40 @@ class Payment(db.Model):
             "date": self.date,
             "quantity": self.quantity,
             "user": self.user,
+            "subjects": self.subjects
+        }
+
+
+
+
+"""
+class PaymentDetail(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    payment_id = db.Column(db.Integer, db.ForeignKey("payment.id"), nullable = False)
+    payment = db.relationship("Payment", backref = "paymentDetail", lazy = True)
+    subject_id = db.Column(db.Integer, db.ForeignKey("subject.id"), nullable = False)
+    subject = db.relationship("Subject", backref = "payment", lazy = True )
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "payment": self.payment,
             "subject": self.subject
         }
+"""
+"""
+class ActiveUser(db.Model):
+     id = db.Column(db.Integer, primary_key = True)
+     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable = False)
+     user = db.relationship("User", backref = "activeUser", lazy = True)
+     subject_id = db.Column(db.Integer, db.ForeignKey("subject.id"), nullable = False)
+     subject = db.relationship("Subject", backref="activeUser", lazy = True)
+     
+
+     def serialize(self):
+         return {
+             "id": self.id,
+             "user": self.user,
+             "subject": self.subject
+         }
+"""
