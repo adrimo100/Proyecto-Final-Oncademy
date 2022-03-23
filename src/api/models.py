@@ -19,7 +19,6 @@ class User(db.Model):
             "id": self.id,
             "email": self.email,
             "role": self.role,
-            "subjects": self.subjects
             # do not serialize the password, its a security breach
         }
 
