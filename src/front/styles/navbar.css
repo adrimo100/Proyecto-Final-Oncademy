@@ -1,0 +1,18 @@
+.navbar {
+  height: 100px;
+}
+
+.btn-secondary {
+  background: #8f5f00;
+}
+.btn-secondary:hover {
+  background: #4d3300;
+}
+
+.link-light {
+  text-decoration: none;
+}
+
+.link-light:hover {
+  text-decoration: underline;
+}
