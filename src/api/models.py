@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-userSubjects = db.Table("userSubkects",
+userSubjects = db.Table("userSubjects",
 db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key = True),
 db.Column("subject_id", db.Integer, db.ForeignKey("subject.id"), primary_key = True)
 )
@@ -18,7 +18,7 @@ class User(db.Model):
     subjects = db.relationship("Subject", secondary = userSubjects, lazy = "subquery", backref = db.backref("User", lazy = True))
     
     def __repr__(self):
-        return '<User %r>' % self.full_name
+        return self.full_name
 
     def serialize(self):
         return {
@@ -35,6 +35,9 @@ class Role(db.Model):
 
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(50), unique = True, nullable = False)
+
+    def __repr__(self):
+        return self.name
 
     def serialize(self):
         return {
@@ -53,6 +56,9 @@ class Subject(db.Model):
     course_id = db.Column(db.Integer, db.ForeignKey("course.id"), nullable = True)
     course = db.relationship("Course", backref = "subject", lazy = True)
 
+    def __repr__(self):
+        return self.name
+
 
     def serialize(self):
         return {
@@ -69,6 +75,9 @@ class Subject(db.Model):
 class Course(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(50), unique = False, nullable = False)
+
+    def __repr__(self):
+        return self.name
 
     def serialize(self):
         return {
