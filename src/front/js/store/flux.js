@@ -152,6 +152,13 @@ const getState = ({ getStore, getActions, setStore }) => {
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque laoreet non dui et aliquet. In enim nulla, pharetra tincidunt mauris.",
               image: null,
             },
+            {
+              name: "Historia",
+              course: "4º ESO",
+              cardDescription:
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque laoreet non dui et aliquet. In enim nulla, pharetra tincidunt mauris.",
+              image: null,
+            },
           ],
         },
       ],

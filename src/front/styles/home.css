@@ -65,7 +65,8 @@
 
 @media screen and (max-width: 992px) {
   #first-header {
-    height: 200px;
+    height: 400px;
+    background-repeat: repeat;
   }
 
   #subtitle-text {
