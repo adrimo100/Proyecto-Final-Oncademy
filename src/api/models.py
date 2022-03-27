@@ -17,7 +17,7 @@ class User(db.Model):
     role = db.relationship("Role", backref="user", lazy = True)
     subjects = db.relationship("Subject", secondary = userSubjects, lazy = "subquery", backref = db.backref("User", lazy = True))
     
-    def __repr__(self):
+    def __repr__(self): 
         return self.full_name
 
     def serialize(self):

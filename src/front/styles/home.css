@@ -77,8 +77,41 @@
   }
 }
 
+#no-subject-alert {
+  background-color: rgb(255, 168, 0);
+
+  border-radius: 20px;
+}
+
 .btn {
   border-radius: 20px;
+}
+
+.card {
+  filter: drop-shadow(2px 8px 10px rgba(0, 0, 0, 0.25));
+  border-radius: 20px;
+  height: 450px;
+}
+
+.card-img-top {
+  border-radius: 20px 20px 0px 0px;
+  width: 100%;
+  height: 150px;
+}
+
+.details-box {
+  height: 67%;
+}
+
+.card-text {
+  position: absolute;
+  top: 50%;
+}
+
+.subject-btn {
+  position: absolute;
+  bottom: 5%;
+  left: 25%;
 }
 
 @media screen and (max-width: 767px) {
