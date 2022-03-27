@@ -32,7 +32,7 @@ export const Home = () => {
   };
 
   return (
-    <div className="text-center mt-5">
+    <div className="text-center">
       <div className="container-fluid">
         <div className="row" id="first-header">
           <div className="row" id="first-hearder-filter">
