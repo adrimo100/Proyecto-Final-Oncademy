@@ -43,7 +43,7 @@ export const Home = () => {
                 id="first-hearder-text-background"
               >
                 <div className="text-center">
-                  <div className="text-cente w-100">
+                  <div className="text-center w-100">
                     <h1 className="" id="title-text">
                       ONACADEMY
                     </h1>
@@ -147,6 +147,12 @@ export const Home = () => {
           <div className="col-md-2 d-none d-md-block"></div>
           <div className="col-12 col-md-8 text-center px-0">
             <div className="container-fluid">
+              <div
+                className="row mt-3 mb-5 bg-dark d-flex justify-content-center align-items-center"
+                id="subjects-title-banner"
+              >
+                <h3 className="text-white">NUESTRA OFERTA DE ASIGNATURAS</h3>
+              </div>
               <div className="row" id="subjects-filters">
                 {store.courses.map((course, index) =>
                   displayFilters(course, index)
