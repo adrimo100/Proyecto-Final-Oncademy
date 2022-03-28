@@ -50,6 +50,7 @@ class Subject(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(50), unique = False, nullable = False)
     description = db.Column(db.String(), unique = False, nullable = False)
+    cardDescription = db.Column(db.String(200), unique = False, nullable = False)
     image_url = db.Column(db.String(), unique = False, nullable = False)
     start_date = db.Column(db.DateTime, unique = False, nullable = True)
     end_date = db.Column(db.DateTime, unique = False, nullable = True)
@@ -65,6 +66,7 @@ class Subject(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
+            "cardDescription": self.cardDescription,
             "image_url": self.image_url,
             "start_date": self.start_date,
             "end_date": self.end_date,
