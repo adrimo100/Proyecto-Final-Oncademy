@@ -2,13 +2,12 @@ import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
 import rigoImageUrl from "../../img/rigo-baby.jpg";
 import "../../styles/home.css";
+import { SubjectCard } from "../component/subjectCard";
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
 
-  const [filterSelected, setFilterSelected] = useState(
-    store.courses ? store.courses[0] : ""
-  );
+  const [filterSelected, setFilterSelected] = useState(store.courses ? 0 : "");
 
   const displayFilters = (course, index) => {
     return (
@@ -16,20 +15,24 @@ export const Home = () => {
         <button
           type="button"
           class={`btn ${
-            filterSelected == course ? "btn-dark" : "btn-primary"
+            filterSelected == course.id ? "btn-dark" : "btn-primary"
           } w-75`}
           onClick={(e) => {
-            setFilterSelected(course);
+            setFilterSelected(course.id);
           }}
         >
-          {course}
+          {course.name}
         </button>
       </div>
     );
   };
 
+  const displaySubjects = (subject, index) => {
+    return <SubjectCard key={index} subject={subject}></SubjectCard>;
+  };
+
   return (
-    <div className="text-center mt-5">
+    <div className="text-center">
       <div className="container-fluid">
         <div className="row" id="first-header">
           <div className="row" id="first-hearder-filter">
@@ -40,7 +43,7 @@ export const Home = () => {
                 id="first-hearder-text-background"
               >
                 <div className="text-center">
-                  <div className="text-cente w-100">
+                  <div className="text-center w-100">
                     <h1 className="" id="title-text">
                       ONACADEMY
                     </h1>
@@ -142,11 +145,58 @@ export const Home = () => {
         </div>
         <div className="row my-5" id="subjects-space">
           <div className="col-md-2 d-none d-md-block"></div>
-          <div className="col-12 col-md-8">
-            <div className="row">
-              {store.courses.map((course, index) =>
-                displayFilters(course, index)
-              )}
+          <div className="col-12 col-md-8 text-center px-0">
+            <div className="container-fluid">
+              <div
+                className="row mt-3 mb-5 bg-dark d-flex justify-content-center align-items-center"
+                id="subjects-title-banner"
+              >
+                <h3 className="text-white">NUESTRA OFERTA DE ASIGNATURAS</h3>
+              </div>
+              <div className="row" id="subjects-filters">
+                {store.courses.map((course, index) =>
+                  displayFilters(course, index)
+                )}
+              </div>
+              <div
+                className="row mt-4 d-flex justify-content-center align-items-center"
+                id="subjects-cards"
+              >
+                {store.courses[filterSelected].subjects ? (
+                  store.courses[filterSelected].subjects.map((subject, index) =>
+                    displaySubjects(subject, index)
+                  )
+                ) : (
+                  <div
+                    className="d-flex justify-content-center align-items-center"
+                    id="no-subject-alert"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="30"
+                      height="30"
+                      fill="currentColor"
+                      class="bi bi-exclamation-diamond-fill me-2"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098L9.05.435zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                    </svg>
+                    <h3 className="text-center mx-1 d-flex align-items-center">
+                      NO HAY ASIGNATURAS PARA EL CURSO SELECCIONADO
+                    </h3>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="30"
+                      height="30"
+                      fill="currentColor"
+                      class="bi bi-exclamation-diamond-fill ms-2"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098L9.05.435zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                    </svg>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <div className="col-md-2 d-none d-md-block"></div>
