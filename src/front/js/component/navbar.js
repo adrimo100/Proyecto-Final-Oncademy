@@ -45,7 +45,6 @@ export const Navbar = () => {
               <NavbarItem
                 button
                 to="/signup"
-                onClick={handleLogin}
                 icon={<SignupIcon />}
                 text="Registrarse"
               />
