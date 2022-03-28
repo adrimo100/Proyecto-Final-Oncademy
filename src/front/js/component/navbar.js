@@ -20,7 +20,7 @@ export const Navbar = () => {
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
         <Link to="/" className="text-decoration-none">
-          <span className="navbar-brand mb-0 h1">ONEACADEMY</span>
+          <span className="navbar-brand mb-0 h1">ONACADEMY</span>
         </Link>
 
         <div className="d-flex gap-4 align-items-center">
