@@ -2,6 +2,7 @@ import { Form, Formik, useField } from "formik";
 import React from "react";
 import "../../styles/signup.css";
 import { TextField } from "../component/textFIeld";
+import { signupValidationSchema } from "../validation";
 
 export const Signup = () => (
   <main>
@@ -19,6 +20,7 @@ export const Signup = () => (
         repeatPassword: "",
         invitationCode: "",
       }}
+      validationSchema={signupValidationSchema}
       onSubmit={(values) => console.log(values)}
     >
       <Form className="container py-4">
