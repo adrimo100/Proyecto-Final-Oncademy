@@ -30,8 +30,6 @@ def getSubjectsOfCourse(course_id):
     subjects_obj = Subject.query.filter_by(course_id = course_id).all()
 
     subjects = [subject.serialize() for subject in subjects_obj]
-
-   
     
     return jsonify({
         "name": course.name,
