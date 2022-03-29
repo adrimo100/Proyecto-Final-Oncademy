@@ -16,7 +16,10 @@ export const SubjectCard = (props) => {
           />
           <div className="p-2 details-box text-center">
             <h5 className="card-title mt-3">{props.subject.name}</h5>
-            <p className="card-text">{props.subject.cardDescription}</p>
+            <div className="w-100 text-center">
+              <p className="card-text"></p>
+            </div>
+            {props.subject.cardDescription}
             <a href="#" className="btn btn-primary subject-btn">
               Saber más...
             </a>
