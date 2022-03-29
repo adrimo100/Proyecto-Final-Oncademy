@@ -7,7 +7,7 @@ from api.utils import generate_sitemap, APIException
 
 api = Blueprint('api', __name__)
 
-@api.route("/getCourses", methods = ["GET"])
+@api.route("/Courses", methods = ["GET"])
 def getCourses():
 
     courses_obj = Course.query.all()
@@ -19,6 +19,25 @@ def getCourses():
 
     return jsonify(courses),200
 
+@api.route("/Courses/<int:course_id>", methods = ["GET"])
+def getSubjectsOfCourse(course_id):
+    
+    course = Course.query.filter_by(id = course_id).first()
+    
+    if(not course):
+        return jsonify("No existe el curso"), 404
+    
+    subjects_obj = Subject.query.filter_by(course_id = course_id).all()
+
+    subjects = [subject.serialize() for subject in subjects_obj]
+
+   
+    
+    return jsonify({
+        "name": course.name,
+        "id": course_id,
+        "subjects": subjects
+    }), 200
 
 
 
