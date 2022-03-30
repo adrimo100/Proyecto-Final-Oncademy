@@ -27,6 +27,9 @@ export const Home = () => {
           onClick={(e) => {
             setFilterSelected(course_id);
             actions.getRequestedCourse(course_id);
+            document.querySelector("#subjecst-div").scrollIntoView({
+              behavior: "smooth",
+            });
           }}
         >
           {course.name}
@@ -153,7 +156,7 @@ export const Home = () => {
         </div>
         <div className="row my-5" id="subjects-space">
           <div className="col-md-2 d-none d-md-block"></div>
-          <div className="col-12 col-md-8 text-center px-0">
+          <div className="col-12 col-md-8 text-center px-0" id="subjecst-div">
             <div className="container-fluid">
               <div
                 className="row mt-3 mb-5 bg-dark d-flex justify-content-center align-items-center"
