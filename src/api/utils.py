@@ -1,5 +1,5 @@
 from flask import jsonify, url_for
-from wtforms import Form, BooleanField, StringField, PasswordField, validators
+from wtforms import Form, BooleanField, StringField, PasswordField, validators, ValidationError
 
 class APIException(Exception):
     status_code = 400
@@ -42,12 +42,12 @@ def generate_sitemap(app):
         <ul style="text-align: left;">"""+links_html+"</ul></div>"
 
 class SignupForm(Form):
-    name = StringField('Name', [validators.DataRequired(), validators.Length(min=7, max=70)]),
+    name = StringField('Name', [validators.DataRequired(), validators.Length(min=7, max=70)])
     email = StringField('Email', [validators.DataRequired(), validators.Length(max=255)])
-    password = PasswordField('New Password', [
-        validators.Length(min=8, max=255),
+    password = PasswordField('Password', [
         validators.DataRequired(),
-        validators.EqualTo('repeat_password', message='Passwords must match')
+        validators.Length(min=8, max=255),
+        validators.EqualTo('repeat_password', 'Both passwords must match')
     ])
     repeat_password = PasswordField('Repeat Password')
     invitationCode: StringField('Invitation Code')

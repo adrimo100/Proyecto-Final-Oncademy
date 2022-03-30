@@ -2,8 +2,8 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Course, Subject
-from api.utils import generate_sitemap, APIException
+from api.models import db, User, Course, Subject, Role
+from api.utils import generate_sitemap, APIException, SignupForm
 
 api = Blueprint('api', __name__)
 
@@ -39,33 +39,36 @@ def getSubjectsOfCourse(course_id):
 
 @api.route("/users", methods = ["POST"])
 def create_user():
-    body = request.json
     user_data = {
-        "name": body["name"],
-        "email": body["email"],
-        "password": body["password"],
-        "repeat_password": body["repeatPassword"],
-        "invitation_code": body["invitationCode"]
+        "name": request.json.get("name"),
+        "email": request.json.get("email"),
+        "password": request.json.get("password"),
+        "repeat_password": request.json.get("repeatPassword"),
+        "invitation_code": request.json.get("invitationCode")
     }
 
-    form = SignupForm(user_data)
+    form = SignupForm(data=user_data)
 
     if (form.validate() == False):
-        return jsonify({ "msg": ("Los datos de registro no son válidos. "
-            "Revísalos e intentalo de nuevo") })
+        return jsonify({
+            "validation_errors": form.errors
+        }), 400
 
     user = User.query.filter_by(email=user_data["email"]).first()
     if user != None:
         return jsonify({ "msg": "User already exists" }), 400
 
-    user = User(email=email, password=password)
+    student_role = Role.query.filter_by(name="student").first()
+    if student_role is None:
+        student_role = Role(name="student")
+
+    user = User(full_name=user_data["name"], email=user_data["email"], password=user_data["password"], role=student_role)
+    
     db.session.add(user)
     db.session.commit()
 
-    access_token = create_access_token(identity=user.id)
     return jsonify({
-        "msg": f"Successfully created user with email {user}",
-        "token": access_token
+        "msg": f"Successfully created user: {user}",
     })
 
 
