@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Course, Subject
+from api.models import db, User, Course, Subject, userSubjects
 from api.utils import generate_sitemap, APIException
 
 api = Blueprint('api', __name__)
@@ -48,8 +48,21 @@ def getSubject(subject_id):
 
     return jsonify(subject_obj.serialize()), 200
 
-    
+@api.route("/Subjects/<int:subject_id>/Teachers")
+def getTeachers(subject_id):
 
+    subject_obj = Subject.query.filter_by(id = subject_id).first()
+
+    if(not subject_obj):
+        return jsonify("No existe la asignatura"), 404
+
+    teachers_obj = User.query.filter_by(role_id = 2).filter(User.subjects.any(id = subject_id)).all()
+
+    teachers = [teacher.full_name for teacher in teachers_obj]
+
+    print(teachers)
+
+    return jsonify(teachers), 200
 
 
 
