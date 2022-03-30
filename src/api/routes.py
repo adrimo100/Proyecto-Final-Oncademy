@@ -37,9 +37,36 @@ def getSubjectsOfCourse(course_id):
         "subjects": subjects
     }), 200
 
+@api.route("/users", methods = ["POST"])
+def create_user():
+    body = request.json
+    user_data = {
+        "name": body["name"],
+        "email": body["email"],
+        "password": body["password"],
+        "repeat_password": body["repeatPassword"],
+        "invitation_code": body["invitationCode"]
+    }
 
+    form = SignupForm(user_data)
 
+    if (form.validate() == False):
+        return jsonify({ "msg": ("Los datos de registro no son válidos. "
+            "Revísalos e intentalo de nuevo") })
 
+    user = User.query.filter_by(email=user_data["email"]).first()
+    if user != None:
+        return jsonify({ "msg": "User already exists" }), 400
+
+    user = User(email=email, password=password)
+    db.session.add(user)
+    db.session.commit()
+
+    access_token = create_access_token(identity=user.id)
+    return jsonify({
+        "msg": f"Successfully created user with email {user}",
+        "token": access_token
+    })
 
 
 
