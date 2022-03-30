@@ -38,6 +38,18 @@ def getSubjectsOfCourse(course_id):
     }), 200
 
 
+@api.route("/Subjects/<int:subject_id>")
+def getSubject(subject_id):
+
+    subject_obj = Subject.query.filter_by(id = subject_id).first()
+
+    if(not subject_obj):
+        return jsonify("No existe la asignatura"), 404
+
+    return jsonify(subject_obj.serialize()), 200
+
+    
+
 
 
 

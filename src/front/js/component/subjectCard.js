@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export const SubjectCard = (props) => {
   return (
@@ -19,9 +20,9 @@ export const SubjectCard = (props) => {
 
             <p className="card-text">{props.subject.cardDescription}</p>
 
-            <a href="#" className="btn btn-primary subject-btn">
-              Saber más...
-            </a>
+            <Link to={`/subject/${props.subject.id}`}>
+              <a className="btn btn-primary subject-btn">Saber más...</a>
+            </Link>
           </div>
         </div>
       </div>
