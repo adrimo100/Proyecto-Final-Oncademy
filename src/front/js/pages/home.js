@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
 import { SubjectCard } from "../component/subjectCard";
@@ -6,18 +6,30 @@ import { SubjectCard } from "../component/subjectCard";
 export const Home = () => {
   const { store, actions } = useContext(Context);
 
-  const [filterSelected, setFilterSelected] = useState(store.courses ? 0 : "");
+  const [filterSelected, setFilterSelected] = useState(1);
 
-  const displayFilters = (course, index) => {
+  useEffect(() => {
+    setFilterSelected(store.courses.length > 0 ? store.courses[0].id : 1);
+  }, []);
+
+  useEffect(() => {
+    actions.getRequestedCourse(filterSelected);
+  }, [filterSelected]);
+
+  const displayFilters = (course, course_id) => {
     return (
-      <div className="col-12 col-sm my-2" key={index}>
+      <div className="col-12 col-sm my-2" key={course_id - 1}>
         <button
           type="button"
           className={`btn ${
-            filterSelected == course.id ? "btn-dark" : "btn-primary"
+            filterSelected == course_id ? "btn-dark" : "btn-primary"
           } w-75`}
           onClick={(e) => {
-            setFilterSelected(course.id);
+            setFilterSelected(course_id);
+            actions.getRequestedCourse(course_id);
+            document.querySelector("#subjecst-div").scrollIntoView({
+              behavior: "smooth",
+            });
           }}
         >
           {course.name}
@@ -144,7 +156,7 @@ export const Home = () => {
         </div>
         <div className="row my-5" id="subjects-space">
           <div className="col-md-2 d-none d-md-block"></div>
-          <div className="col-12 col-md-8 text-center px-0">
+          <div className="col-12 col-md-8 text-center px-0" id="subjecst-div">
             <div className="container-fluid">
               <div
                 className="row mt-3 mb-5 bg-dark d-flex justify-content-center align-items-center"
@@ -154,15 +166,15 @@ export const Home = () => {
               </div>
               <div className="row" id="subjects-filters">
                 {store.courses.map((course, index) =>
-                  displayFilters(course, index)
+                  displayFilters(course, course.id)
                 )}
               </div>
               <div
                 className="row mt-4 d-flex justify-content-center align-items-center"
                 id="subjects-cards"
               >
-                {store.courses[filterSelected].subjects ? (
-                  store.courses[filterSelected].subjects.map((subject, index) =>
+                {store.requestedCourse.subjects.length > 0 ? (
+                  store.requestedCourse.subjects.map((subject, index) =>
                     displaySubjects(subject, index)
                   )
                 ) : (

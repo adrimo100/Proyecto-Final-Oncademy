@@ -89,6 +89,10 @@
   border-radius: 20px;
 }
 
+.card-text {
+  width: 93%;
+}
+
 .btn {
   border-radius: 20px;
 }
