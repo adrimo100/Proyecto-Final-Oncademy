@@ -3,6 +3,8 @@ const getState = ({ getStore, getActions, setStore }) => {
     store: {
       courses: [],
       requestedCourse: { name: null, id: 0, subjects: [] },
+      user: null,
+      token: null,
     },
     actions: {
       // Use getActions to call a function within a fuction
@@ -33,15 +35,27 @@ const getState = ({ getStore, getActions, setStore }) => {
 
       addUser: async (user) => {
         try {
-          const res = await fetch(process.env.BACKEND_URL + "/api/token", {
+          const res = await fetch(process.env.BACKEND_URL + "/api/users", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(user),
           });
+          const body = await res.json();
+
+          if (res.ok) {
+            const { user, token } = body;
+            setStore({ user: { ...user, token }, token });
+          }
+
+          // Return the payload so the form can set errors
+          return body;
         } catch (error) {
           console.error(error);
+          return {
+            error: "No se ha podido completar el registro, prueba de nuevo.",
+          };
         }
       },
     },
