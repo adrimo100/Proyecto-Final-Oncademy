@@ -4,6 +4,8 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Course, Subject, Role
 from api.utils import generate_sitemap, APIException, SignupForm
+from flask_jwt_extended import create_access_token
+
 
 api = Blueprint('api', __name__)
 
@@ -51,12 +53,12 @@ def create_user():
 
     if (form.validate() == False):
         return jsonify({
-            "validation_errors": form.errors
+            "validationErrors": form.errors
         }), 400
 
     user = User.query.filter_by(email=user_data["email"]).first()
     if user != None:
-        return jsonify({ "msg": "User already exists" }), 400
+        return jsonify({ "error": "El usuario ya existe." }), 400
 
     student_role = Role.query.filter_by(name="student").first()
     if student_role is None:
@@ -67,8 +69,11 @@ def create_user():
     db.session.add(user)
     db.session.commit()
 
+    access_token = create_access_token(identity=user.id)
+
     return jsonify({
-        "msg": f"Successfully created user: {user}",
+        "user": user.serialize(),
+        "token": access_token
     })
 
 
