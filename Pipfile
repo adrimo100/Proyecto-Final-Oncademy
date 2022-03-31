@@ -17,7 +17,8 @@ flask-cors = "*"
 gunicorn = "*"
 cloudinary = "*"
 flask-admin = "*"
-wtforms = "*"
+wtforms = {extras = ["email"], version = "*"}
+flask-jwt-extended = "*"
 
 [requires]
 python_version = "3.8"

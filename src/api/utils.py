@@ -41,13 +41,16 @@ def generate_sitemap(app):
         <p>Remember to specify a real endpoint path like: </p>
         <ul style="text-align: left;">"""+links_html+"</ul></div>"
 
+required_validator = validators.DataRequired('Campo obligatorio.')
+min_max_error = 'Debe tener entre %(min)d y %(max)d caracteres.'
 class SignupForm(Form):
-    name = StringField('Name', [validators.DataRequired(), validators.Length(min=7, max=70)])
-    email = StringField('Email', [validators.DataRequired(), validators.Length(max=255)])
+    name = StringField('Name', [required_validator, validators.Length(min=7, max=70, message=min_max_error)])
+    email = StringField('Email', [required_validator, validators.Email('La dirección de correo electrónico no es válida'), validators.Length(max=255, message='Debe tener menos de %(max)d catacteres.')])
     password = PasswordField('Password', [
-        validators.DataRequired(),
-        validators.Length(min=8, max=255),
-        validators.EqualTo('repeat_password', 'Both passwords must match')
+        required_validator,
+        validators.Length(min=8, max=255, message=min_max_error),
     ])
-    repeat_password = PasswordField('Repeat Password')
+    repeat_password = PasswordField('Repeat Password', [
+        validators.EqualTo('password', 'Las contraseñas deben coincidir.')
+    ])
     invitationCode: StringField('Invitation Code')
