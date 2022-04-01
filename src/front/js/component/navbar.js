@@ -1,20 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { NavbarItem } from "./navbarItem";
 import "../../styles/navbar.css";
+import { Context } from "../store/appContext";
 
 export const Navbar = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  function handleLogin(event) {
-    event.preventDefault();
-    setLoggedIn(true);
-  }
-
-  function handleLogout(event) {
-    event.preventDefault();
-    setLoggedIn(false);
-  }
+  const {
+    store: { user },
+    actions,
+  } = useContext(Context);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -24,7 +18,7 @@ export const Navbar = () => {
         </Link>
 
         <div className="d-flex gap-4 align-items-center">
-          {loggedIn ? (
+          {user ? (
             <>
               <NavbarItem
                 button
@@ -37,7 +31,7 @@ export const Navbar = () => {
               <NavbarItem
                 icon={<LogoutIcon />}
                 text="Cerrar sesión"
-                onClick={handleLogout}
+                onClick={actions.logout}
               />
             </>
           ) : (
