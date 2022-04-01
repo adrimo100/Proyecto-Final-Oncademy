@@ -43,12 +43,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
           const body = await res.json();
 
-          if (res.ok) {
-            const { user, token } = body;
-
-            localStorage.setItem("token", token);
-            setStore({ user });
-          }
+          if (res.ok) return getActions().setAuthenticatedUser(body);
 
           // Return the payload so the form can set errors
           return body;
@@ -60,9 +55,38 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
 
+      login: async ({ email, password }) => {
+        try {
+          const res = await fetch(process.env.BACKEND_URL + "/api/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ email, password }),
+          });
+          const body = await res.json();
+
+          if (res.ok) return getActions().setAuthenticatedUser(body);
+
+          // Return the payload so the form can set errors
+          return body;
+        } catch (error) {
+          console.error(error);
+          return {
+            error: "No se ha podido iniciar sesión. Prueba de nuevo.",
+          };
+        }
+      },
+
       logout: () => {
         localStorage.removeItem("token");
         setStore({ user: null });
+      },
+
+      setAuthenticatedUser: ({ user, token }) => {
+        localStorage.setItem("token", token);
+        setStore({ user });
       },
     },
   };
