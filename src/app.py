@@ -11,6 +11,7 @@ from api.utils import APIException, generate_sitemap
 from api.models import db, User, Role
 from api.routes import api
 from api.admin import setup_admin
+import datetime
 
 ENV = os.getenv("FLASK_ENV")
 static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
@@ -44,6 +45,7 @@ if teacher_role is None:
 
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = os.getenv("FLASK_APP_KEY")
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(days=1)
 jwt = JWTManager(app)
 
 @jwt.user_lookup_loader
