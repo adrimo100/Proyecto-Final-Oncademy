@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Course, Subject, Role
 from api.utils import generate_sitemap, APIException, SignupForm
 from flask_jwt_extended import create_access_token
-
+from werkzeug.security import generate_password_hash
 
 api = Blueprint('api', __name__)
 
@@ -60,11 +60,12 @@ def create_user():
     if user != None:
         return jsonify({ "error": "El usuario ya existe." }), 400
 
-    student_role = Role.query.filter_by(name="student").first()
+    student_role = Role.query.filter_by(name="Estudiante").first()
     if student_role is None:
-        student_role = Role(name="student")
+        student_role = Role(name="Estudiante")
 
-    user = User(full_name=form.data["full_name"], email=form.data["email"], password=form.data["password"], role=student_role)
+    hashed_pwd = generate_password_hash(form.data["password"])
+    user = User(full_name=form.data["full_name"], email=form.data["email"], password=hashed_pwd, role=student_role)
     
     db.session.add(user)
     db.session.commit()
