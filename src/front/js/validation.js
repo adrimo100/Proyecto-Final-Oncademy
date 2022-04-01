@@ -38,3 +38,8 @@ export const signupValidationSchema = yup.object({
   repeatPassword,
   invitationCode,
 });
+
+export const loginValidationSchema = yup.object({
+  email,
+  password: yup.string().required(requiredErrorText),
+});

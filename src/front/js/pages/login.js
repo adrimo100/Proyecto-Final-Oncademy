@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import "../../styles/signup.css";
 import { TextField } from "../component/textFIeld";
 import { Context } from "../store/appContext";
+import { loginValidationSchema } from "../validation";
 
 export const Login = () => {
   const { store, actions } = useContext(Context);
@@ -30,6 +31,7 @@ export const Login = () => {
           email: "",
           password: "",
         }}
+        validationSchema={loginValidationSchema}
         onSubmit={hanldeSubmit}
       >
         <Form className="container py-4">
