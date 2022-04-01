@@ -4,7 +4,6 @@ const getState = ({ getStore, getActions, setStore }) => {
       courses: [],
       requestedCourse: { name: null, id: 0, subjects: [] },
       user: null,
-      token: null,
     },
     actions: {
       // Use getActions to call a function within a fuction
@@ -46,7 +45,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 
           if (res.ok) {
             const { user, token } = body;
-            setStore({ user: { ...user, token }, token });
+
+            localStorage.setItem("token", token);
+            setStore({ user });
           }
 
           // Return the payload so the form can set errors
