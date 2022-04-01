@@ -11,7 +11,6 @@ from api.utils import APIException, generate_sitemap
 from api.models import db, User
 from api.routes import api
 from api.admin import setup_admin
-#from models import Person
 
 ENV = os.getenv("FLASK_ENV")
 static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
@@ -37,7 +36,6 @@ jwt = JWTManager(app)
 def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
     return User.query.get(identity)
-
 
 # Allow CORS requests to this API
 CORS(app)
