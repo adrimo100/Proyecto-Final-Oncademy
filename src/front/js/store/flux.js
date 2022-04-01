@@ -3,7 +3,7 @@ const getState = ({ getStore, getActions, setStore }) => {
     store: {
       courses: [],
       requestedCourse: { name: null, id: 0, subjects: [] },
-      user: null,
+      user: { role: "Student" },
     },
     actions: {
       // Use getActions to call a function within a fuction

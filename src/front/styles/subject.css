@@ -13,3 +13,9 @@
   color: white;
   opacity: 60%;
 }
+
+#subject-alert {
+  background-color: #303030;
+
+  border-radius: 20px;
+}
