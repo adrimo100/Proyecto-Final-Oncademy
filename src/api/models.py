@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 import random
+from werkzeug.security import check_password_hash
 
 db = SQLAlchemy()
 
@@ -31,6 +32,8 @@ class User(db.Model):
             # do not serialize the password, its a security breach
         }
 
+    def password_is_valid(self, pwd_candidate):
+        return check_password_hash(self.password, pwd_candidate)
 
 
 class Role(db.Model):

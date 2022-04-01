@@ -95,3 +95,17 @@ def create_user():
         "user": user.serialize(),
         "token": access_token
     })
+
+@api.route("/login", methods=["POST"])
+def create_token():
+    email = request.json.get("email")
+    password = request.json.get("password")
+
+    user = User.query.filter_by(email=email).first()
+    if user is None or not user.password_is_valid(password):
+        return jsonify({"error": "Correo electrónico o contraseña incorrectos"}), 401
+    
+    # Create jwt
+    access_token = create_access_token(identity=user.id)
+
+    return jsonify({ "token": access_token })

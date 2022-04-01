@@ -27,6 +27,20 @@ else:
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type = True)
 db.init_app(app)
+app.app_context().push()
+
+# ensure student and teacher roles are present
+student_role = Role.query.filter_by(name="Student").first()
+if student_role is None:
+    student_role = Role(name="Student")
+    db.session.add(student_role)
+    db.session.commit()
+
+teacher_role = Role.query.filter_by(name="Teacher").first()
+if teacher_role is None:
+    teacher_role = Role(name="Teacher")
+    db.session.add(teacher_role)
+    db.session.commit()
 
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = os.getenv("FLASK_APP_KEY")
@@ -67,19 +81,6 @@ def serve_any_other_file(path):
     response = send_from_directory(static_file_dir, path)
     response.cache_control.max_age = 0 # avoid cache memory
     return response
-
-# ensure student and teacher roles are present
-student_role = Role.query.filter_by(name="Student").first()
-if student_role is None:
-    student_role = Role(name="Student")
-    db.session.add(student_role)
-    db.session.commit()
-
-teacher_role = Role.query.filter_by(name="Teacher").first()
-if teacher_role is None:
-    teacher_role = Role(name="Teacher")
-    db.session.add(teacher_role)
-    db.session.commit()
 
 
 # this only runs if `$ python src/main.py` is executed
