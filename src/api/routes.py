@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Course, Subject, Role, InvitationCode
+from api.models import db, User, Course, Subject, Role, InvitationCode, userSubjects
 from api.utils import generate_sitemap, APIException, SignupForm
 from flask_jwt_extended import create_access_token, current_user
 from werkzeug.security import generate_password_hash
@@ -38,6 +38,32 @@ def getSubjectsOfCourse(course_id):
         "id": course_id,
         "subjects": subjects
     }), 200
+
+@api.route("/Subjects/<int:subject_id>")
+def getSubject(subject_id):
+
+    subject_obj = Subject.query.filter_by(id = subject_id).first()
+
+    if(not subject_obj):
+        return jsonify("No existe la asignatura"), 404
+
+    return jsonify(subject_obj.serialize()), 200
+
+@api.route("/Subjects/<int:subject_id>/Teachers")
+def getTeachers(subject_id):
+
+    subject_obj = Subject.query.filter_by(id = subject_id).first()
+
+    if(not subject_obj):
+        return jsonify("No existe la asignatura"), 404
+
+    teacher_rol = Role.query.filter_by(name = "Teacher").first() #get the teacher role object
+
+    teachers_obj = User.query.filter_by(role = teacher_rol).filter(User.subjects.any(id = subject_id)).all()
+
+    teachers = [teacher.full_name for teacher in teachers_obj]
+
+    return jsonify(teachers), 200
 
 @api.route("/users", methods = ["POST"])
 def create_user():

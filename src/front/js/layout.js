@@ -9,6 +9,7 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { Signup } from "./pages/signup";
 import { Login } from "./pages/login";
+import { Subject } from "./pages/subject";
 
 //create your first component
 const Layout = () => {
@@ -31,6 +32,9 @@ const Layout = () => {
               </Route>
               <Route exact path="/login">
                 <Login />
+              </Route>
+              <Route exact path="/subject/:subject_id">
+                <Subject />
               </Route>
               <Route>
                 <h1>Not found!</h1>
