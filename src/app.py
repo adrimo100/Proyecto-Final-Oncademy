@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from api.utils import APIException, generate_sitemap
-from api.models import db, User
+from api.models import db, User, Role
 from api.routes import api
 from api.admin import setup_admin
 
@@ -67,6 +67,20 @@ def serve_any_other_file(path):
     response = send_from_directory(static_file_dir, path)
     response.cache_control.max_age = 0 # avoid cache memory
     return response
+
+# ensure student and teacher roles are present
+student_role = Role.query.filter_by(name="Student").first()
+if student_role is None:
+    student_role = Role(name="Student")
+    db.session.add(student_role)
+    db.session.commit()
+
+teacher_role = Role.query.filter_by(name="Teacher").first()
+if teacher_role is None:
+    teacher_role = Role(name="Teacher")
+    db.session.add(teacher_role)
+    db.session.commit()
+
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

@@ -57,7 +57,6 @@ def create_user():
             "validationErrors": form.errors
         }), 400
 
-    print(request.json, user_data, form.data)
     # Check if user exists
     user = User.query.filter_by(email=form.data["email"]).first()
     if user != None:
@@ -67,10 +66,8 @@ def create_user():
     role = None
     invitation_code = form.data.get("invitation_code")
     if invitation_code is None or len(invitation_code) < 1:
-        # Assign student role. Create it if it does not exist.
-        role = Role.query.filter_by(name="Estudiante").first()
-        if role is None:
-            role = Role(name="Estudiante")
+        # Assign student role
+        role = Role.query.filter_by(name="Student").first()
     else:
         # Validate invitation code
         invitation_code = InvitationCode.query.filter_by(code=invitation_code).first()
@@ -79,10 +76,8 @@ def create_user():
             
         # Remove invitation code and assign teacher role
         db.session.delete(invitation_code)
-        role = Role.query.filter_by(name="Profesor").first()
-        if role is None:
-            role = Role(name="Profesor")        
-
+        role = Role.query.filter_by(name="Teacher").first()
+        
     # Hash password
     hashed_pwd = generate_password_hash(form.data["password"])
 
@@ -100,6 +95,3 @@ def create_user():
         "user": user.serialize(),
         "token": access_token
     })
-
-
-
