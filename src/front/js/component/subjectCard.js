@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export const SubjectCard = (props) => {
   return (
@@ -7,8 +8,8 @@ export const SubjectCard = (props) => {
         <div className="card-body p-0">
           <img
             src={
-              props.subject.image
-                ? props.subject.image
+              props.subject.image_url != "null"
+                ? props.subject.image_url
                 : "https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80"
             }
             className="card-img-top"
@@ -19,9 +20,12 @@ export const SubjectCard = (props) => {
 
             <p className="card-text">{props.subject.cardDescription}</p>
 
-            <a href="#" className="btn btn-primary subject-btn">
+            <Link
+              className="btn btn-primary subject-btn"
+              to={`/subject/${props.subject.id}`}
+            >
               Saber más...
-            </a>
+            </Link>
           </div>
         </div>
       </div>

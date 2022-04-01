@@ -1,0 +1,21 @@
+#subject-first-header {
+  height: 200px;
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+#subject-title-back {
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+}
+
+.title-course {
+  color: white;
+  opacity: 60%;
+}
+
+#subject-alert {
+  background-color: #303030;
+
+  border-radius: 20px;
+}

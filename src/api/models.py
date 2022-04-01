@@ -21,11 +21,15 @@ class User(db.Model):
         return self.full_name
 
     def serialize(self):
+
+        subjects_ser = [subject.serialize() for subject in self.subjects]
+
         return {
             "id": self.id,
             "email": self.email,
-            "role": self.role,
-            "subjects": self.subjects
+            "role": self.role.serialize(),
+            "subjects": subjects_ser,
+            "full_name": self.full_name
             # do not serialize the password, its a security breach
         }
 
