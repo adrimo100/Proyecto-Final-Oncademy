@@ -3,9 +3,11 @@ import React, { useContext, useState } from "react";
 import "../../styles/signup.css";
 import { TextField } from "../component/textFIeld";
 import { Context } from "../store/appContext";
+import { useRedirectAuthenticated } from "../utils";
 import { loginValidationSchema } from "../validation";
 
 export const Login = () => {
+  useRedirectAuthenticated();
   const { store, actions } = useContext(Context);
 
   const [formError, setFormError] = useState("");

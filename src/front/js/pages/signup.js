@@ -4,9 +4,10 @@ import "../../styles/signup.css";
 import { TextField } from "../component/textFIeld";
 import { signupValidationSchema } from "../validation";
 import { Context } from "../store/appContext";
-import { toCamelCase } from "../utils";
+import { toCamelCase, useRedirectAuthenticated } from "../utils";
 
 export const Signup = () => {
+  useRedirectAuthenticated()
   const { store, actions } = useContext(Context);
 
   const [formError, setFormError] = useState("");
