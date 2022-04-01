@@ -4,7 +4,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Course, Subject, Role, InvitationCode, userSubjects
 from api.utils import generate_sitemap, APIException, SignupForm
-from flask_jwt_extended import create_access_token, current_user
+from flask_jwt_extended import create_access_token, current_user, jwt_required
 from werkzeug.security import generate_password_hash
 
 api = Blueprint('api', __name__)
@@ -136,5 +136,16 @@ def create_token():
 
     return jsonify({ 
         "user": user.serialize(),
+        "token": access_token
+    })
+
+@api.route("/authenticated")
+@jwt_required()
+def get_authenticated_user():
+    # We re-generate a token with a new expiration date
+    access_token = create_access_token(identity=current_user.id)
+
+    return jsonify({
+        "user": current_user.serialize(),
         "token": access_token
     })
