@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+import random
 
 db = SQLAlchemy()
 
@@ -111,6 +112,15 @@ class Payment(db.Model):
             "subjects": self.subjects
         }
 
+class InvitationCode(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    code = db.Column(db.String(155), unique = True, nullable = False)
+
+    def __init__(self):
+        self.code = random.getrandbits(155)
+
+    def __repr__(self):
+        return self.code
 
 
 
