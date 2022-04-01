@@ -51,7 +51,6 @@ export const Navbar = () => {
 
               <NavbarItem
                 to="/login"
-                onClick={handleLogin}
                 icon={<LoginIcon />}
                 text="Iniciar sesión"
               />
