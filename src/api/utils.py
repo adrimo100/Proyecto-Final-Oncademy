@@ -53,4 +53,4 @@ class SignupForm(Form):
     repeat_password = PasswordField('Repeat Password', [
         validators.EqualTo('password', 'Las contraseñas deben coincidir.')
     ])
-    invitationCode: StringField('Invitation Code')
+    invitation_code = StringField('Invitation Code')

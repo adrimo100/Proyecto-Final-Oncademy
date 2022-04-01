@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Course, Subject, Role
+from api.models import db, User, Course, Subject, Role, InvitationCode
 from api.utils import generate_sitemap, APIException, SignupForm
 from flask_jwt_extended import create_access_token
 from werkzeug.security import generate_password_hash
@@ -57,22 +57,40 @@ def create_user():
             "validationErrors": form.errors
         }), 400
 
+    print(request.json, user_data, form.data)
     # Check if user exists
-    user = User.query.filter_by(email).first()
+    user = User.query.filter_by(email=form.data["email"]).first()
     if user != None:
         return jsonify({ "error": "El usuario ya existe." }), 400
 
-    # Assign student role. Create it if it does not exist. TODO: check for invitation codes
-    student_role = Role.query.filter_by(name="Estudiante").first()
-    if student_role is None:
-        student_role = Role(name="Estudiante")
+    # Assign role depending on invitation code
+    role = None
+    invitation_code = form.data.get("invitation_code")
+    if invitation_code is None or len(invitation_code) < 1:
+        # Assign student role. Create it if it does not exist.
+        role = Role.query.filter_by(name="Estudiante").first()
+        if role is None:
+            role = Role(name="Estudiante")
+    else:
+        # Validate invitation code
+        invitation_code = InvitationCode.query.filter_by(code=invitation_code).first()
+        if (invitation_code is None):
+            return jsonify({ "error": "El código de invitación no es válido."}), 400
+            
+        # Remove invitation code and assign teacher role
+        db.session.delete(invitation_code)
+        role = Role.query.filter_by(name="Profesor").first()
+        if role is None:
+            role = Role(name="Profesor")        
 
     # Hash password
     hashed_pwd = generate_password_hash(form.data["password"])
 
-    # Create user and add to the db.
-    user = User(full_name=form.data["full_name"], email=form.data["email"], password=hashed_pwd, role=student_role)
+    # Create user
+    user = User(full_name=form.data["full_name"], email=form.data["email"], password=hashed_pwd, role=role)
     db.session.add(user)
+
+    # Save all changes in db
     db.session.commit()
 
     # Create jwt
