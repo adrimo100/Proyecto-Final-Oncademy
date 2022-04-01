@@ -44,7 +44,7 @@ def generate_sitemap(app):
 required_validator = validators.DataRequired('Campo obligatorio.')
 min_max_error = 'Debe tener entre %(min)d y %(max)d caracteres.'
 class SignupForm(Form):
-    name = StringField('Name', [required_validator, validators.Length(min=7, max=70, message=min_max_error)])
+    full_name = StringField('Name', [required_validator, validators.Length(min=7, max=70, message=min_max_error)])
     email = StringField('Email', [required_validator, validators.Email('La dirección de correo electrónico no es válida'), validators.Length(max=255, message='Debe tener menos de %(max)d catacteres.')])
     password = PasswordField('Password', [
         required_validator,

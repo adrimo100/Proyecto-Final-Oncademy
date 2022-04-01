@@ -42,7 +42,7 @@ def getSubjectsOfCourse(course_id):
 @api.route("/users", methods = ["POST"])
 def create_user():
     user_data = {
-        "name": request.json.get("name"),
+        "full_name": request.json.get("fullName"),
         "email": request.json.get("email"),
         "password": request.json.get("password"),
         "repeat_password": request.json.get("repeatPassword"),
@@ -56,7 +56,7 @@ def create_user():
             "validationErrors": form.errors
         }), 400
 
-    user = User.query.filter_by(email=user_data["email"]).first()
+    user = User.query.filter_by(email=form.data["email"]).first()
     if user != None:
         return jsonify({ "error": "El usuario ya existe." }), 400
 
@@ -64,7 +64,7 @@ def create_user():
     if student_role is None:
         student_role = Role(name="student")
 
-    user = User(full_name=user_data["name"], email=user_data["email"], password=user_data["password"], role=student_role)
+    user = User(full_name=form.data["full_name"], email=form.data["email"], password=form.data["password"], role=student_role)
     
     db.session.add(user)
     db.session.commit()

@@ -35,7 +35,7 @@ export const Signup = () => {
 
       <Formik
         initialValues={{
-          name: "",
+          fullName: "",
           email: "",
           password: "",
           repeatPassword: "",
@@ -45,7 +45,7 @@ export const Signup = () => {
         onSubmit={hanldeSubmit}
       >
         <Form className="container py-4">
-          <TextField label="Nombre" name="name" />
+          <TextField label="Nombre" name="fullName" />
           <TextField label="Correo electrónico" name="email" type="email" />
           <TextField label="Contraseña" name="password" type="password" />
           <TextField

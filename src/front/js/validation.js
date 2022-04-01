@@ -4,7 +4,7 @@ const requiredErrorText = "Campo obligatorio";
 const minErrorGenerator = ({ min }) => `Debe tener ${min} o más caracteres`;
 const maxErrorGenerator = ({ max }) => `Debe tener ${max} o menos caracteres`;
 
-const name = yup
+const fullName = yup
   .string()
   .required(requiredErrorText)
   .min(5, minErrorGenerator)
@@ -32,7 +32,7 @@ const repeatPassword = yup
 const invitationCode = yup.string().max(300, maxErrorGenerator);
 
 export const signupValidationSchema = yup.object({
-  name,
+  fullName,
   email,
   password,
   repeatPassword,
