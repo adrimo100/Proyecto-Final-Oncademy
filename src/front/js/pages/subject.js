@@ -10,6 +10,7 @@ export const Subject = () => {
   const { store, actions } = useContext(Context);
 
   const [subject, setSubject] = useState(null);
+  const [teachers, setTeachers] = useState([]);
 
   useEffect(() => {
     fetch(process.env.BACKEND_URL + `/api/Subjects/${params.subject_id}`)
@@ -20,7 +21,23 @@ export const Subject = () => {
       })
       .then((data) => setSubject(data))
       .catch((error) => console.log(error));
+
+    //get teachers of Subject
+    fetch(
+      process.env.BACKEND_URL + `/api/Subjects/${params.subject_id}/Teachers`
+    )
+      .then((response) => {
+        if (!response.ok) throw new Error("La asignatura no existe");
+
+        return response.json();
+      })
+      .then((data) => setTeachers(data))
+      .catch((error) => console.log(error));
   }, []);
+
+  const displayTeachers = (teacher, index) => {
+    return <li key={index}>{teacher}</li>;
+  };
 
   return (
     <div className="container-fluid">
@@ -90,13 +107,16 @@ export const Subject = () => {
           <div className="mt-4">
             <strong>PROFESORES</strong>
             <div className="ps-2">
-              <li>MARCOS</li>
-              <li>JAVI</li>
+              {teachers.map((teacher, index) =>
+                displayTeachers(teacher, index)
+              )}
             </div>
+            <hr></hr>
           </div>
         </div>
         <div className="col-2 d-none d-md-block"></div>
       </div>
+      <div className="row" id="payment-section"></div>
     </div>
   );
 };
