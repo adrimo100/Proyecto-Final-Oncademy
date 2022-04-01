@@ -41,6 +41,7 @@ def getSubjectsOfCourse(course_id):
 
 @api.route("/users", methods = ["POST"])
 def create_user():
+    # Get user info and convert keys to snake_case
     user_data = {
         "full_name": request.json.get("fullName"),
         "email": request.json.get("email"),
@@ -49,27 +50,32 @@ def create_user():
         "invitation_code": request.json.get("invitationCode")
     }
 
+    # Validate data
     form = SignupForm(data=user_data)
-
     if (form.validate() == False):
         return jsonify({
             "validationErrors": form.errors
         }), 400
 
-    user = User.query.filter_by(email=form.data["email"]).first()
+    # Check if user exists
+    user = User.query.filter_by(email).first()
     if user != None:
         return jsonify({ "error": "El usuario ya existe." }), 400
 
+    # Assign student role. Create it if it does not exist. TODO: check for invitation codes
     student_role = Role.query.filter_by(name="Estudiante").first()
     if student_role is None:
         student_role = Role(name="Estudiante")
 
+    # Hash password
     hashed_pwd = generate_password_hash(form.data["password"])
+
+    # Create user and add to the db.
     user = User(full_name=form.data["full_name"], email=form.data["email"], password=hashed_pwd, role=student_role)
-    
     db.session.add(user)
     db.session.commit()
 
+    # Create jwt
     access_token = create_access_token(identity=user.id)
 
     return jsonify({
