@@ -61,7 +61,6 @@ const getState = ({ getStore, getActions, setStore }) => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
             body: JSON.stringify({ email, password }),
           });
@@ -87,6 +86,31 @@ const getState = ({ getStore, getActions, setStore }) => {
       setAuthenticatedUser: ({ user, token }) => {
         localStorage.setItem("token", token);
         setStore({ user });
+      },
+
+      getAuthenticatedUser: async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        try {
+          const res = await fetch(
+            process.env.BACKEND_URL + "/api/authenticated",
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+
+          if (!res.ok) return localStorage.removeItem("token");
+
+          const { user, token } = await res.json();
+
+          getActions().setAuthenticatedUser({ user, token });
+        } catch (error) {
+          console.error(error);
+        }
       },
     },
   };
