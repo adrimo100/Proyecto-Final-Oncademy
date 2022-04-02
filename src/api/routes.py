@@ -5,7 +5,14 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Course, Subject, userSubjects, Role
 from api.utils import generate_sitemap, APIException
 
+import stripe
+
 api = Blueprint('api', __name__)
+
+# Set your secret key. Remember to switch to your live secret key in production.
+# See your keys here: https://dashboard.stripe.com/apikeys
+# Clave secreta de Stripe que identifica la tienda
+stripe.api_key = "sk_test_51KjoxdLkR53a2kgbefxpdGdJYstVbITvMuqpqQfNEm7tCISSXC4j4ijVr6N82fUqsmQO48kn4ewEYvZ8V5kh51d900HguP49KH" 
 
 @api.route("/Courses", methods = ["GET"])
 def getCourses():
@@ -38,7 +45,7 @@ def getSubjectsOfCourse(course_id):
     }), 200
 
 
-@api.route("/Subjects/<int:subject_id>")
+@api.route("/Subjects/<int:subject_id>", methods =["GET"])
 def getSubject(subject_id):
 
     subject_obj = Subject.query.filter_by(id = subject_id).first()
@@ -48,7 +55,7 @@ def getSubject(subject_id):
 
     return jsonify(subject_obj.serialize()), 200
 
-@api.route("/Subjects/<int:subject_id>/Teachers")
+@api.route("/Subjects/<int:subject_id>/Teachers", methods =["GET"])
 def getTeachers(subject_id):
 
     subject_obj = Subject.query.filter_by(id = subject_id).first()
@@ -65,6 +72,23 @@ def getTeachers(subject_id):
     return jsonify(teachers), 200
 
 
+@api.route("/Checkout/<int:subject_id>", methods =["POST"])
+def createCheckoutSession(subject_id):
+    
+    price_id = Subject.query.filter_by(id = subject_id).first().stripe_id #identificador del producto en stripe
 
+    if(not price_id):
+        return jsonify("No existe la asignatura"), 404
 
-
+    # Creamos la sesión de pago, es decir, configuramos la página del checkout
+    session = stripe.checkout.Session.create(
+  success_url= request.json.get("success_url"),
+  cancel_url= request.json.get("cancel_url"),
+  mode='subscription',
+  line_items=[{
+    'price': price_id,
+    # For metered billing, do not pass quantity
+    'quantity': 1
+  }],
+)
+    return redirect(session.url, code=303) #Redirige a la URL de la session, es decir, a la página del checkout

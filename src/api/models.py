@@ -60,6 +60,7 @@ class Subject(db.Model):
     end_date = db.Column(db.DateTime, unique = False, nullable = True)
     course_id = db.Column(db.Integer, db.ForeignKey("course.id"), nullable = True)
     course = db.relationship("Course", backref = "subject", lazy = True)
+    stripe_id = db.Column(db.String(), unique = False, nullable = False)
 
     def __repr__(self):
         return self.name

@@ -4,7 +4,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       courses: [],
       requestedCourse: { name: null, id: 0, subjects: [] },
       user: {
-        role: "Student",
+        role: "Student", //!!!BORRAR ANTES DE SUBIR A GITHUB!!!!
         subjects: [],
       },
     },

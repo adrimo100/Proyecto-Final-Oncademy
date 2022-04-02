@@ -78,13 +78,64 @@ export const Subject = () => {
           );
         else
           return (
-            <div className="my-4 d-flex justify-content-center align-items-center">
-              <hr></hr>
-              <div>BOTONES DE PAGO</div>
+            <div className="my-4 text-center">
+              <div
+                className="my-4 d-flex justify-content-center align-items-center d-block"
+                id="subject-alert"
+              >
+                <h4 className="text-white m-0 py-1 text-center">
+                  ¡¡¡APUNTATE YA!!!
+                </h4>
+              </div>
+              <div>
+                <button
+                  type="button"
+                  className="btn btn-primary text-center"
+                  onClick={checkout}
+                >
+                  INSCRIBIRSE{" "}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    className="bi bi-credit-card ms-1"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z" />
+                    <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z" />
+                  </svg>
+                </button>
+              </div>
             </div>
           );
       } else return <div></div>;
     }
+  };
+
+  const checkout = async () => {
+    const body = {
+      cancel_url: window.location.href,
+      success_url: `${window.location.href}/payment-success`,
+    };
+
+    await fetch(
+      process.env.BACKEND_URL + `/api/Checkout/${params.subject_id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    )
+      .then((respond) => {
+        if (!respond.ok) throw new Error("Error en el pago");
+
+        return respond.json();
+      })
+      .then((checkout_url) => history.push(checkout_url))
+      .catch((error) => alert(error));
   };
 
   return (
