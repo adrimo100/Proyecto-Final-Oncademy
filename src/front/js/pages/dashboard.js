@@ -9,7 +9,7 @@ import { LoadingAlert } from "../component/loadingAlert";
 import { useRedirectGuest } from "../utils";
 
 export const Dashboard = () => {
-  const user = useContext(Context).store.user;
+  const { user } = useContext(Context).store;
   const { loading } = useRedirectGuest();
 
   return (
