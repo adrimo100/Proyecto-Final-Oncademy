@@ -5,7 +5,7 @@ import { TextField } from "../component/textFIeld";
 import { signupValidationSchema } from "../validation";
 import { Context } from "../store/appContext";
 import { toCamelCase, useRedirectAuthenticated } from "../utils";
-import { AuthHeader } from "../component/authHeader";
+import { AppHeader } from "../component/appHeader";
 
 export const Signup = () => {
   useRedirectAuthenticated();
@@ -29,7 +29,7 @@ export const Signup = () => {
 
   return (
     <main>
-      <AuthHeader>NUEVO USUARIO</AuthHeader>
+      <AppHeader className="auth-header">NUEVO USUARIO</AppHeader>
 
       <Formik
         initialValues={{

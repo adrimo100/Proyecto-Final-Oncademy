@@ -1,7 +1,7 @@
 import { Form, Formik } from "formik";
 import React, { useContext, useState } from "react";
 import "../../styles/auth.css";
-import { AuthHeader } from "../component/authHeader";
+import { AppHeader } from "../component/appHeader";
 import { TextField } from "../component/textFIeld";
 import { Context } from "../store/appContext";
 import { useRedirectAuthenticated } from "../utils";
@@ -23,7 +23,7 @@ export const Login = () => {
 
   return (
     <main>
-      <AuthHeader>LOGIN</AuthHeader>
+      <AppHeader className="auth-header">LOGIN</AppHeader>
 
       <Formik
         initialValues={{
