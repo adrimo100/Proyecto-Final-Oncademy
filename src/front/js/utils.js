@@ -10,7 +10,7 @@ export const toCamelCase = (string) =>
     )
     .join("");
 
-export const useRedirectAuthenticated = (path = "/") => {
+export const useRedirectAuthenticated = (path = "/dashboard") => {
   const {
     store: { user },
   } = useContext(Context);
@@ -21,18 +21,22 @@ export const useRedirectAuthenticated = (path = "/") => {
   }
 };
 
-// Returns the authentication token and listen for changes in it.
+/** Returns the authentication token and listen for changes in it. */
 export const useAuthenticationToken = () => {
   const [token, setHookToken] = useState(getToken());
 
-  // Subscribe for document changes to token
-  window.addEventListener("updatedToken", () => {
+  function handleUpdatedToken() {
     setHookToken(getToken());
-  });
-  // Subscribe for browser changes to token. IE: other tabs.
-  window.addEventListener("storage", () => {
-    setHookToken(getToken);
-  });
+  }
+
+  useEffect(() => {
+    // Subscribe for document changes to token
+    window.addEventListener("updatedToken", handleUpdatedToken);
+
+    return () => {
+      window.removeEventListener("updatedToken", handleUpdatedToken);
+    };
+  }, []);
 
   return token;
 };
