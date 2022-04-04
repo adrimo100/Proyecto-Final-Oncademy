@@ -9,9 +9,7 @@ import { LoadingAlert } from "../component/loadingAlert";
 import { useRedirectGuest } from "../utils";
 
 export const Dashboard = () => {
-  const { store } = useContext(Context);
-
-  const role = store.user && store.user.role;
+  const user = useContext(Context).store.user;
   const { loading } = useRedirectGuest();
 
   return (
@@ -20,9 +18,9 @@ export const Dashboard = () => {
 
       {loading && <LoadingAlert text="Espera, estamos cargando tus datos..." />}
 
-      {role == "Admin" && <AdminDashboard />}
-      {role == "Student" && <StudentDashboard />}
-      {role == "Teacher" && <TeacherDashboard />}
+      {user.role == "Admin" && <AdminDashboard />}
+      {user.role == "Student" && <StudentDashboard />}
+      {user.role == "Teacher" && <TeacherDashboard />}
     </>
   );
 };
