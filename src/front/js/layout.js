@@ -10,6 +10,7 @@ import { Footer } from "./component/footer";
 import { Signup } from "./pages/signup";
 import { Login } from "./pages/login";
 import { Subject } from "./pages/subject";
+import { Dashboard } from "./pages/dashboard";
 
 //create your first component
 const Layout = () => {
@@ -32,6 +33,9 @@ const Layout = () => {
               </Route>
               <Route exact path="/login">
                 <Login />
+              </Route>
+              <Route exact path="/dashboard">
+                <Dashboard />
               </Route>
               <Route exact path="/subject/:subject_id">
                 <Subject />
