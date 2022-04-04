@@ -1,6 +1,7 @@
 import { Form, Formik } from "formik";
 import React, { useContext, useState } from "react";
-import "../../styles/signup.css";
+import "../../styles/auth.css";
+import { AuthHeader } from "../component/authHeader";
 import { TextField } from "../component/textFIeld";
 import { Context } from "../store/appContext";
 import { useRedirectAuthenticated } from "../utils";
@@ -22,11 +23,7 @@ export const Login = () => {
 
   return (
     <main>
-      <header className="signup-header">
-        <div className="app-container text-white h-100 d-flex align-items-center">
-          <h1>LOGIN</h1>
-        </div>
-      </header>
+      <AuthHeader>LOGIN</AuthHeader>
 
       <Formik
         initialValues={{
