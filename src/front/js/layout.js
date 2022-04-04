@@ -8,6 +8,7 @@ import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { Subject } from "./pages/subject";
+import { PaymentSuccess } from "./pages/paymentSuccess";
 
 //create your first component
 const Layout = () => {
@@ -27,6 +28,9 @@ const Layout = () => {
               </Route>
               <Route exact path="/subject/:subject_id">
                 <Subject />
+              </Route>
+              <Route exact path="/subject/:subject_id/Success">
+                <PaymentSuccess />
               </Route>
               <Route>
                 <h1>Not found!</h1>
