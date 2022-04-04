@@ -23,7 +23,7 @@ export const Login = () => {
 
   return (
     <main>
-      <AppHeader className="auth-header">LOGIN</AppHeader>
+      <AppHeader className="auth-header">INICIAR SESIÓN</AppHeader>
 
       <Formik
         initialValues={{
