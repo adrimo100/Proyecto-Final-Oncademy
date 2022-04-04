@@ -23,7 +23,7 @@ export const Login = () => {
   return (
     <main>
       <header className="signup-header">
-        <div className="container text-white h-100 d-flex align-items-center">
+        <div className="app-container text-white h-100 d-flex align-items-center">
           <h1>LOGIN</h1>
         </div>
       </header>
@@ -36,7 +36,7 @@ export const Login = () => {
         validationSchema={loginValidationSchema}
         onSubmit={hanldeSubmit}
       >
-        <Form className="container py-4">
+        <Form className="app-container py-4">
           <TextField label="Correo electrónico" name="email" type="email" />
           <TextField label="Contraseña" name="password" type="password" />
 

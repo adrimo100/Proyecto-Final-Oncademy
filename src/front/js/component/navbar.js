@@ -12,7 +12,7 @@ export const Navbar = () => {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div className="container">
+      <div className="app-container d-flex align-items-center justify-content-between">
         <Link to="/" className="text-decoration-none">
           <span className="navbar-brand mb-0 h1">ONACADEMY</span>
         </Link>

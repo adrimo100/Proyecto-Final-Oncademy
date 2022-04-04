@@ -103,13 +103,17 @@ const getState = ({ getStore, getActions, setStore }) => {
             }
           );
 
-          if (!res.ok) return localStorage.removeItem("token");
+          if (!res.ok)
+            throw new Error(
+              `Impossible to return an user for the session JWT.`
+            );
 
           const { user, token } = await res.json();
 
           getActions().setAuthenticatedUser({ user, token });
         } catch (error) {
           console.error(error);
+          localStorage.removeItem("token");
         }
       },
     },
