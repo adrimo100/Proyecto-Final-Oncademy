@@ -4,6 +4,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Course, Subject, userSubjects, Role
 from api.utils import generate_sitemap, APIException
+from flask_cors import CORS
 
 import stripe
 
@@ -71,24 +72,3 @@ def getTeachers(subject_id):
 
     return jsonify(teachers), 200
 
-
-@api.route("/Checkout/<int:subject_id>", methods =["POST"])
-def createCheckoutSession(subject_id):
-    
-    price_id = Subject.query.filter_by(id = subject_id).first().stripe_id #identificador del producto en stripe
-
-    if(not price_id):
-        return jsonify("No existe la asignatura"), 404
-
-    # Creamos la sesión de pago, es decir, configuramos la página del checkout
-    session = stripe.checkout.Session.create(
-  success_url= request.json.get("success_url"),
-  cancel_url= request.json.get("cancel_url"),
-  mode='subscription',
-  line_items=[{
-    'price': price_id,
-    # For metered billing, do not pass quantity
-    'quantity': 1
-  }],
-)
-    return redirect(session.url, code=303) #Redirige a la URL de la session, es decir, a la página del checkout

@@ -76,6 +76,7 @@ class Subject(db.Model):
             "start_date": self.start_date,
             "end_date": self.end_date,
             "course_name": self.course.name,
+            "stripe_id": self.stripe_id
         }
 
 
