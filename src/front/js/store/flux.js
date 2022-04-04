@@ -31,6 +31,91 @@ const getState = ({ getStore, getActions, setStore }) => {
           })
           .catch((error) => console.log(error));
       },
+
+      addUser: async (user) => {
+        try {
+          const res = await fetch(process.env.BACKEND_URL + "/api/users", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+          });
+          const body = await res.json();
+
+          if (res.ok) return getActions().setAuthenticatedUser(body);
+
+          // Return the payload so the form can set errors
+          return body;
+        } catch (error) {
+          console.error(error);
+          return {
+            error: "No se ha podido completar el registro, prueba de nuevo.",
+          };
+        }
+      },
+
+      login: async ({ email, password }) => {
+        try {
+          const res = await fetch(process.env.BACKEND_URL + "/api/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          });
+          const body = await res.json();
+
+          if (res.ok) return getActions().setAuthenticatedUser(body);
+
+          // Return the payload so the form can set errors
+          return body;
+        } catch (error) {
+          console.error(error);
+          return {
+            error: "No se ha podido iniciar sesión. Prueba de nuevo.",
+          };
+        }
+      },
+
+      logout: () => {
+        localStorage.removeItem("token");
+        setStore({ user: null });
+      },
+
+      setAuthenticatedUser: ({ user, token }) => {
+        localStorage.setItem("token", token);
+        setStore({ user });
+      },
+
+      getAuthenticatedUser: async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        try {
+          const res = await fetch(
+            process.env.BACKEND_URL + "/api/authenticated",
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+
+          if (!res.ok)
+            throw new Error(
+              `Impossible to return an user for the session JWT.`
+            );
+
+          const { user, token } = await res.json();
+
+          getActions().setAuthenticatedUser({ user, token });
+        } catch (error) {
+          console.error(error);
+          localStorage.removeItem("token");
+        }
+      },
     },
   };
 };

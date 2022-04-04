@@ -1,0 +1,8 @@
+.auth-header {
+  background: url(https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80),
+    linear-gradient(black, black);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position-x: 20vw, 0;
+  background-position-y: center;
+}

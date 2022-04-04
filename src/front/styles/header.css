@@ -1,0 +1,7 @@
+.app-header {
+  height: 200px;
+}
+
+.app-header h1 {
+  text-shadow: 0 0 2px black;
+}
