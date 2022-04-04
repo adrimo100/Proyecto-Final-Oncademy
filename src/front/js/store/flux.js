@@ -1,3 +1,5 @@
+import { getToken, removeToken, setToken } from "../utils";
+
 const getState = ({ getStore, getActions, setStore }) => {
   return {
     store: {
@@ -79,17 +81,17 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       logout: () => {
-        localStorage.removeItem("token");
+        removeToken();
         setStore({ user: null });
       },
 
       setAuthenticatedUser: ({ user, token }) => {
-        localStorage.setItem("token", token);
+        setToken(token);
         setStore({ user });
       },
 
       getAuthenticatedUser: async () => {
-        const token = localStorage.getItem("token");
+        const token = getToken();
 
         if (!token) return;
 
@@ -98,7 +100,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             process.env.BACKEND_URL + "/api/authenticated",
             {
               headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                Authorization: `Bearer ${getToken()}`,
               },
             }
           );
@@ -112,8 +114,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
           getActions().setAuthenticatedUser({ user, token });
         } catch (error) {
-          console.error(error);
-          localStorage.removeItem("token");
+          console.warn(error);
+          removeToken();
         }
       },
     },

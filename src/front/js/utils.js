@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "./store/appContext";
 import { useHistory } from "react-router-dom";
 
@@ -20,3 +20,18 @@ export const useRedirectAuthenticated = (path = "/") => {
     history.push(path);
   }
 };
+
+// Token-related logic. We use an event to track changes to the token
+const updatedTokenEvent = new Event("updatedToken");
+
+export const removeToken = () => {
+  localStorage.removeItem("token");
+  window.dispatchEvent(updatedTokenEvent);
+};
+
+export const setToken = (token) => {
+  localStorage.setItem("token", token);
+  window.dispatchEvent(updatedTokenEvent);
+};
+
+export const getToken = () => localStorage.getItem("token");
