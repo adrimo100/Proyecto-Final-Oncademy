@@ -7,7 +7,7 @@ import { Context } from "../store/appContext";
 import { toCamelCase, useRedirectAuthenticated } from "../utils";
 
 export const Signup = () => {
-  useRedirectAuthenticated()
+  useRedirectAuthenticated();
   const { store, actions } = useContext(Context);
 
   const [formError, setFormError] = useState("");
@@ -29,7 +29,7 @@ export const Signup = () => {
   return (
     <main>
       <header className="signup-header">
-        <div className="container text-white h-100 d-flex align-items-center">
+        <div className="app-container text-white h-100 d-flex align-items-center">
           <h1>NUEVO USUARIO</h1>
         </div>
       </header>
@@ -45,7 +45,7 @@ export const Signup = () => {
         validationSchema={signupValidationSchema}
         onSubmit={hanldeSubmit}
       >
-        <Form className="container py-4">
+        <Form className="app-container py-4">
           <TextField label="Nombre" name="fullName" />
           <TextField label="Correo electrónico" name="email" type="email" />
           <TextField label="Contraseña" name="password" type="password" />
