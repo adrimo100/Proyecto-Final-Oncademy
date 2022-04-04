@@ -52,7 +52,7 @@ const getState = ({ getStore, getActions, setStore }) => {
              * https://stripe.com/docs/payments/checkout/fulfill-orders
              */
             successUrl: window.location.href + `/Success`,
-            cancelUrl: window.location.href + `/Cancel`,
+            cancelUrl: window.location.href,
           })
           .then(function (result) {
             if (result.error) {
