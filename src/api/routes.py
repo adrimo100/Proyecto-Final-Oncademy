@@ -149,3 +149,15 @@ def get_authenticated_user():
         "user": current_user.serialize(),
         "token": access_token
     })
+
+@api.route("/invitation-codes", methods=["POST"])
+@jwt_required()
+def create_invitation_code():
+    if current_user.role.name != "Admin":
+        return jsonify({"error": "Acción restringida a administradores."}), 403
+
+    invitation_code = InvitationCode()
+    db.session.add(invitation_code)
+    db.session.commit()
+
+    return jsonify({ "invitationCode": invitation_code.code }), 200
