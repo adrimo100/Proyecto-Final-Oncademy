@@ -10,10 +10,14 @@ import stripe
 
 api = Blueprint('api', __name__)
 
+
 # Set your secret key. Remember to switch to your live secret key in production.
 # See your keys here: https://dashboard.stripe.com/apikeys
 # Clave secreta de Stripe que identifica la tienda
-stripe.api_key = "sk_test_51KjoxdLkR53a2kgbefxpdGdJYstVbITvMuqpqQfNEm7tCISSXC4j4ijVr6N82fUqsmQO48kn4ewEYvZ8V5kh51d900HguP49KH" 
+stripe.api_key = "sk_test_51KjoxdLkR53a2kgbefxpdGdJYstVbITvMuqpqQfNEm7tCISSXC4j4ijVr6N82fUqsmQO48kn4ewEYvZ8V5kh51d900HguP49KH"
+
+endpoint_secret = 'whsec_6e459dd8d2484bc834066a3f7900b8bfefcc570707001c4e626034a0d3e25bbf'
+
 
 @api.route("/Courses", methods = ["GET"])
 def getCourses():
@@ -72,3 +76,27 @@ def getTeachers(subject_id):
 
     return jsonify(teachers), 200
 
+@api.route("/webhook", methods = ["POST"])
+def weebhook():
+    
+    try:
+        payload = request.data
+
+        sig_header = request.headers.get("stripe-signature") #Firma para verificar que la solicitud es de stripe
+    
+        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret) #Crea el webhook y almacena los eventos en event
+
+        print(event)
+    except ValueError:
+        return "Bad payload"
+    except stripe.error.SignatureVerificationError:
+        return "Bad signature"
+
+    if event['type'] == 'checkout.session.completed':
+      session = event['data']['object']
+    # ... handle other event types
+   
+
+    return jsonify(success=True)
+
+   
