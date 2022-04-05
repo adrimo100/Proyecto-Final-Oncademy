@@ -29,7 +29,7 @@ const Layout = () => {
               <Route exact path="/subject/:subject_id">
                 <Subject />
               </Route>
-              <Route exact path="/subject/:subject_id/Success">
+              <Route exact path="/subject/:subject_id/success">
                 <PaymentSuccess />
               </Route>
               <Route>

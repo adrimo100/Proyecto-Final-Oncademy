@@ -51,7 +51,7 @@ const getState = ({ getStore, getActions, setStore }) => {
              * Instead use one of the strategies described in
              * https://stripe.com/docs/payments/checkout/fulfill-orders
              */
-            successUrl: window.location.href + `/Success`,
+            successUrl: window.location.href + `/success`,
             cancelUrl: window.location.href,
           })
           .then(function (result) {
@@ -66,6 +66,8 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
       },
     },
+
+    checkSubscription: () => {},
   };
 };
 
