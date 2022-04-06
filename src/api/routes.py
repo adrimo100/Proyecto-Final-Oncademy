@@ -162,8 +162,7 @@ def create_invitation_code():
 
     return jsonify({ "invitationCode": invitation_code.code }), 200
 
-# Gets payments and filter by user name if provided.
-# Uses cursor based pagination.
+# Gets payments and filter by user name if provided. Returns payments in pages
 @api.route("/payments", methods=["GET"])
 @jwt_required()
 def get_payments():
@@ -171,8 +170,8 @@ def get_payments():
         return jsonify({"error": "Acción restringida a administradores."}), 403
     
     user_name = request.args.get("userName")
-    page = request.args.get("page")
-    per_page = request.args.get("perPage")
+    page = request.args.get("page") or 1
+    per_page = request.args.get("perPage") or 10
 
     if user_name is None:
         payments = Payment.query.order_by(Payment.date.desc()).paginate(page=page, per_page=per_page)
@@ -181,7 +180,7 @@ def get_payments():
 
     return jsonify({
         "payments": [payment.serialize() for payment in payments.items],
-        "totalResults": payments.total,
+        "total": payments.total,
         "pages": payments.pages,
         "page": payments.page,
         "perPage": payments.per_page
