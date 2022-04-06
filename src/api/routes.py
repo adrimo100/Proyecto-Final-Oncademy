@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Course, Subject, Role, InvitationCode, userSubjects
+from api.models import db, User, Course, Subject, Role, InvitationCode, Payment
 from api.utils import generate_sitemap, APIException, SignupForm
 from flask_jwt_extended import create_access_token, current_user, jwt_required
 from werkzeug.security import generate_password_hash
@@ -161,3 +161,28 @@ def create_invitation_code():
     db.session.commit()
 
     return jsonify({ "invitationCode": invitation_code.code }), 200
+
+# Gets payments and filter by user name if provided.
+# Uses cursor based pagination.
+@api.route("/payments", methods=["GET"])
+@jwt_required()
+def get_payments():
+    if current_user.role.name != "Admin":
+        return jsonify({"error": "Acción restringida a administradores."}), 403
+    
+    user_name = request.args.get("userName")
+    page = request.args.get("page")
+    per_page = request.args.get("perPage")
+
+    if user_name is None:
+        payments = Payment.query.order_by(Payment.date.desc()).paginate(page=page, per_page=per_page)
+    else:
+        payments = Payment.query.filter_by(user_name=user_name).order_by(Payment.date.desc()).paginate(page=page, per_page=per_page)
+
+    return jsonify({
+        "payments": [payment.serialize() for payment in payments.items],
+        "totalResults": payments.total,
+        "pages": payments.pages,
+        "page": payments.page,
+        "perPage": payments.per_page
+    })
