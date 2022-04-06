@@ -79,23 +79,27 @@ def getTeachers(subject_id):
 @api.route("/webhook", methods = ["POST"])
 def weebhook():
     
+    event = None
+    payload = request.data
+    sig_header = request.headers['STRIPE_SIGNATURE']
+
     try:
-        payload = request.data
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        # Invalid payload
+        raise e
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        raise e
 
-        sig_header = request.headers.get("stripe-signature") #Firma para verificar que la solicitud es de stripe
-    
-        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret) #Crea el webhook y almacena los eventos en event
-
-        print(event)
-    except ValueError:
-        return "Bad payload"
-    except stripe.error.SignatureVerificationError:
-        return "Bad signature"
-
+    # Handle the event
     if event['type'] == 'checkout.session.completed':
       session = event['data']['object']
     # ... handle other event types
-   
+    else:
+      print('Unhandled event type {}'.format(event['type']))
 
     return jsonify(success=True)
 

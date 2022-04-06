@@ -29,8 +29,8 @@ export const PaymentSuccess = () => {
     switch (paymentDone) {
       case "Loading":
         return (
-          <div class="spinner-border text-white" role="status">
-            <span class="visually-hidden">Loading...</span>
+          <div className="spinner-border text-white" role="status">
+            <span className="visually-hidden">Loading...</span>
           </div>
         );
 
