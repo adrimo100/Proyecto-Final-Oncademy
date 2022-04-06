@@ -110,12 +110,12 @@ class Payment(db.Model):
     subjects = db.relationship("Subject", secondary = subjects, lazy = "subquery", backref = db.backref("payments", lazy = True))
 
     def serialize(self):
-        return{
+        return {
             "id": self.id,
             "date": self.date,
             "quantity": self.quantity,
-            "user": self.user,
-            "subjects": self.subjects
+            "user": self.user.full_name,
+            "subjects": [ f"{subject.name} {subject.course.name}" for subject in self.subjects]
         }
 
 class InvitationCode(db.Model):
