@@ -170,8 +170,8 @@ def get_payments():
         return jsonify({"error": "Acción restringida a administradores."}), 403
     
     user_name = request.args.get("userName")
-    page = request.args.get("page") or 1
-    per_page = request.args.get("perPage") or 10
+    page = int(request.args.get("page")) or 1
+    per_page = int(request.args.get("perPage")) or 10
 
     if user_name is None:
         payments = Payment.query.order_by(Payment.date.desc()).paginate(page=page, per_page=per_page)
