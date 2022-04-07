@@ -103,6 +103,7 @@ class Payment(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     date = db.Column(db.DateTime, unique = False, nullable = False)
     quantity = db.Column(db.Float, unique = False, nullable = False)
+    stripe_subscription_id = db.Column(db.String(), unique = True, nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable = False)
     user = db.relationship("User", backref = "payment", lazy = True )
     subjects = db.relationship("Subject", secondary = subjects, lazy = "subquery", backref = db.backref("payments", lazy = True))
@@ -112,6 +113,7 @@ class Payment(db.Model):
             "id": self.id,
             "date": self.date,
             "quantity": self.quantity,
+            "stripe_subscription_id": self.stripe_subscription_id,
             "user": self.user,
             "subjects": self.subjects
         }

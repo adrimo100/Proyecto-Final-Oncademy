@@ -105,7 +105,7 @@ def webhook():
 
         #Añadimos el pago a la Table/Clase "Payments"
 
-        payment = Payment(date = date.now(), quantity = 20, user_id = user.id)
+        payment = Payment(date = date.now(), quantity = 20, user_id = user.id, stripe_subscription_id = event.get("data").get("object").get("subscription"))
 
         payment.subjects.append(subject)
 
