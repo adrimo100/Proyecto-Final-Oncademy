@@ -23,6 +23,11 @@ export const PaymentSuccess = () => {
       })
       .then((data) => setSubject(data))
       .catch((error) => console.log(error));
+
+    if (store.user) {
+      if (actions.checkSubscription(params.subject_id)) setPaymentDone(True);
+      else setPaymentDone(False);
+    }
   }, []);
 
   const displayInfo = () => {

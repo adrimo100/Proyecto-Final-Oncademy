@@ -121,50 +121,25 @@ def webhook():
 
     return jsonify(success=True), 200
 
+@api.route("/check-subscription/<int:subject_id>")
+def checkSubscription(subject_id):
 
-h = {'id': 'evt_1KlbrSLkR53a2kgbIRx5xsMY', 
-'object': 'event', 
-'api_version': '2020-08-27', 
-'created': 1649263058, 
-'data': {'object': {'id': 'cs_test_a1O8hjrWwPNqZi4ovu1kiw4bTLgRfRPgnw1KFCsqE0ZSLlPcfVc1YeTf76', 
-'object': 'checkout.session', 
-'after_expiration': None, 
-'allow_promotion_codes': None, 
-'amount_subtotal': 2000,
-'amount_total': 2000, 
-'automatic_tax': {'enabled': False, 'status': None}, 
-'billing_address_collection': None, 
-'cancel_url': 'https://3000-4geeksacademy-reactflask-ocamqqjm9fb.ws-eu38.gitpod.io/subject/6', 
-'client_reference_id': None, 
-'consent': None, 
-'consent_collection': None, 
-'currency': 'eur', 
-'customer': 'cus_LSWvGYKuDs8uRn', 
-'customer_creation': None, 
-'customer_details': {'address': {'city': None, 'country': 'ES', 'line1': None, 'line2': None, 'postal_code': None, 'state': None}, 
-'email': 'adrimo100@gmail.com', 
-'name': 'Adrián Molina Elvira', 
-'phone': None, 
-'tax_exempt': 'none', 
-'tax_ids': []}, 
-'customer_email': None, 
-'expires_at': 1649349426, 
-'livemode': False, 'locale': None, 
-'metadata': {},
-'mode': 'subscription', 
-'payment_intent': None, 'payment_link': 
-None, 'payment_method_options': None, 
-'payment_method_types': ['card'], 
-'payment_status': 'paid', 
-'phone_number_collection': {'enabled': False}, 
-'recovered_from': None, 
-'setup_intent': None, 'shipping': None, 
-'shipping_address_collection': None, 'shipping_options': [], 
-'shipping_rate': None, 'status': 
-'complete', 'submit_type': None, 
-'subscription': 'sub_1KlbrFLkR53a2kgbJlCbyq7K', 
-'success_url': 'https://3000-4geeksacademy-reactflask-ocamqqjm9fb.ws-eu38.gitpod.io/subject/6/success', 
-'total_details': {'amount_discount': 0, 'amount_shipping': 0, 'amount_tax': 0}, 'url': None}}, 
-'livemode': False, 'pending_webhooks': 1, 
-'request': {'id': 'req_XhSBiUqYhfquMt', 'idempotency_key': '284d3aa1-04a7-479d-afe0-c04c84201c49'}, 
-'type': 'checkout.session.completed'}
+    user_id = request.json.get("id")
+
+    user = User.query.filter_by(id = user_id).first()
+
+    if(not user):
+        return jsonify("No existe el usuario"), 404
+
+    subject = Subject.query.filter_by(id = subject_id).first()
+
+    if(not subject):
+        return jsonify("No existe la asignatura"), 404
+
+    if(subject in user.subjects):
+        return jsonify(True), 200
+    else:
+        return jsonify(False),200
+
+
+

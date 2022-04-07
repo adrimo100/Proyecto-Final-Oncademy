@@ -65,9 +65,27 @@ const getState = ({ getStore, getActions, setStore }) => {
             }
           });
       },
-    },
 
-    checkSubscription: () => {},
+      checkSubscription: async (subject_id) => {
+        await fetch(
+          process.env.BACKEND_URL + `/api/check-subscription/${subject_id}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(getStore(user)),
+          }
+        )
+          .then((response) => {
+            if (!response.ok) throw new Error("No existe el curso indicado");
+
+            return response.json();
+          })
+          .then((data) => {
+            setStore({ requestedCourse: data });
+          })
+          .catch((error) => console.log(error));
+      },
+    },
   };
 };
 
