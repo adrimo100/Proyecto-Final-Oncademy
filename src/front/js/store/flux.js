@@ -3,10 +3,7 @@ const getState = ({ getStore, getActions, setStore }) => {
     store: {
       courses: [],
       requestedCourse: { name: null, id: 0, subjects: [] },
-      user: {
-        role: "Student", //!!!BORRAR ANTES DE SUBIR A GITHUB!!!!
-        subjects: [],
-      },
+      user: null,
     },
     actions: {
       // Use getActions to call a function within a fuction
