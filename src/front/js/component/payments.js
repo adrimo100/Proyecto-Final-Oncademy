@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { getToken } from "../utils";
 import "../../styles/payments.css";
+import { Pagination } from "./pagination";
 
 export const Payments = () => {
   const [payments, setPayments] = useState([]);
-  const [totalResults, setTotalResults] = useState(0);
-
+  const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [perPage, setPerPage] = useState(10);
+  const [pages, setPages] = useState(0);
 
   async function getPayments(userName) {
     try {
-      const queryParameters = `${
-        userName ? `userName=${userName}` : ""
-      }&page=${page}&perPage=${perPage}`;
+      const queryParameters =
+        "page=" + page + (userName ? `&userName=${userName}` : "");
 
       const res = await fetch(
         process.env.BACKEND_URL + `/api/payments?${queryParameters.toString()}`,
@@ -29,10 +27,9 @@ export const Payments = () => {
       if (!res.ok) {
         throw new Error(body.error);
       }
-      const { payments, totalResults, totalPages } = body;
-      setPayments(payments);
-      setTotalResults(totalResults);
-      setTotalPages(totalPages);
+      setPayments(body.payments);
+      setTotal(body.total);
+      setPages(body.pages);
     } catch (error) {
       console.error(error);
     }
@@ -40,14 +37,14 @@ export const Payments = () => {
 
   useEffect(() => {
     getPayments();
-  }, []);
+  }, [page]);
 
   return (
     <article>
       <h2>Pagos</h2>
 
       <div className="table-responsive-sm">
-        <table class="table table-hover">
+        <table className="table table-hover">
           <thead>
             <tr>
               <th scope="col">Estudiante</th>
@@ -56,13 +53,16 @@ export const Payments = () => {
               <th scope="col">Cantidad (€)</th>
             </tr>
           </thead>
+
           <tbody>
             {payments.map((payment) => (
               <tr key={payment.id}>
                 <td>{payment.user}</td>
                 <td>
                   {payment.subjects.map((subject) => (
-                    <span className="payment-subject">{subject}</span>
+                    <span className="payment-subject" key={subject}>
+                      {subject}
+                    </span>
                   ))}
                 </td>
                 <td>{payment.date}</td>
@@ -70,6 +70,14 @@ export const Payments = () => {
               </tr>
             ))}
           </tbody>
+
+          <tfoot>
+            <tr>
+              <td colSpan={4}>
+                <Pagination {...{ page, pages, setPage }} />
+              </td>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </article>

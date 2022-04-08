@@ -171,7 +171,7 @@ def get_payments():
     
     user_name = request.args.get("userName")
     page = int(request.args.get("page")) or 1
-    per_page = int(request.args.get("perPage")) or 10
+    per_page = 10
 
     if user_name is None:
         payments = Payment.query.order_by(Payment.date.desc()).paginate(page=page, per_page=per_page)
@@ -181,7 +181,5 @@ def get_payments():
     return jsonify({
         "payments": [payment.serialize() for payment in payments.items],
         "total": payments.total,
-        "pages": payments.pages,
-        "page": payments.page,
-        "perPage": payments.per_page
+        "pages": payments.pages
     })
