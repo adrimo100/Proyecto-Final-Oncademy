@@ -120,7 +120,7 @@ class Payment(db.Model):
             "date": self.date.strftime("%d-%m-%Y - %H:%M:%S"),
             "quantity": self.quantity,
             "user": self.user.full_name,
-            "subjects": [ f"{subject.name} ({subject.course.name})" for subject in self.subjects]
+            "subjects": [ f"{subject.name} ({subject.course.name})" for subject in self.subjects],
             "stripe_subscription_id": self.stripe_subscription_id,
         }
 
