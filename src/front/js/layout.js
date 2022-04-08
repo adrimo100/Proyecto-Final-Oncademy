@@ -10,6 +10,7 @@ import { Footer } from "./component/footer";
 import { Signup } from "./pages/signup";
 import { Login } from "./pages/login";
 import { Subject } from "./pages/subject";
+import { PaymentSuccess } from "./pages/paymentSuccess";
 import { Dashboard } from "./pages/dashboard";
 
 //create your first component
@@ -39,6 +40,9 @@ const Layout = () => {
               </Route>
               <Route exact path="/subject/:subject_id">
                 <Subject />
+              </Route>
+              <Route exact path="/subject/:subject_id/success">
+                <PaymentSuccess />
               </Route>
               <Route>
                 <h1>Not found!</h1>

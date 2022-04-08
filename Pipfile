@@ -17,6 +17,7 @@ flask-cors = "*"
 gunicorn = "*"
 cloudinary = "*"
 flask-admin = "*"
+stripe = "*"
 wtforms = {extras = ["email"], version = "*"}
 flask-jwt-extended = "*"
 
