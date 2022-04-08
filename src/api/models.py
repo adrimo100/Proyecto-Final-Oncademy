@@ -11,13 +11,14 @@ db.Column("subject_id", db.Integer, db.ForeignKey("subject.id"), primary_key = T
 )
 
 class User(db.Model):
+
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(70), unique = False, nullable = False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), unique=False, nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey("role.id"), nullable = False)
     role = db.relationship("Role", backref="user", lazy = True)
-    subjects = db.relationship("Subject", secondary = userSubjects, lazy = "subquery", backref = db.backref("User", lazy = True))
+    subjects = db.relationship("Subject", secondary = userSubjects, lazy = "subquery", backref = db.backref("users", lazy = True))
     
     def __repr__(self): 
         return self.full_name
@@ -64,6 +65,7 @@ class Subject(db.Model):
     end_date = db.Column(db.DateTime, unique = False, nullable = True)
     course_id = db.Column(db.Integer, db.ForeignKey("course.id"), nullable = True)
     course = db.relationship("Course", backref = "subject", lazy = True)
+    stripe_id = db.Column(db.String(), unique = False, nullable = False)
 
     def __repr__(self):
         return self.name
@@ -79,6 +81,7 @@ class Subject(db.Model):
             "start_date": self.start_date,
             "end_date": self.end_date,
             "course_name": self.course.name,
+            "stripe_id": self.stripe_id
         }
 
 
@@ -105,6 +108,7 @@ class Payment(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     date = db.Column(db.DateTime, unique = False, nullable = False)
     quantity = db.Column(db.Float, unique = False, nullable = False)
+    stripe_subscription_id = db.Column(db.String(), unique = True, nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable = False)
     user = db.relationship("User", backref = "payment", lazy = True )
     subjects = db.relationship("Subject", secondary = subjects, lazy = "subquery", backref = db.backref("payments", lazy = True))
@@ -114,6 +118,7 @@ class Payment(db.Model):
             "id": self.id,
             "date": self.date,
             "quantity": self.quantity,
+            "stripe_subscription_id": self.stripe_subscription_id,
             "user": self.user,
             "subjects": self.subjects
         }

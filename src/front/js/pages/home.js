@@ -9,7 +9,11 @@ export const Home = () => {
   const [filterSelected, setFilterSelected] = useState(1);
 
   useEffect(() => {
-    setFilterSelected(store.courses.length > 0 ? store.courses[0].id : 1);
+    const getCourses = async () => {
+      await actions.getCourses();
+      setFilterSelected(store.courses.length > 0 ? store.courses[0].id : 1);
+    };
+    getCourses();
   }, []);
 
   useEffect(() => {

@@ -4,6 +4,7 @@ import { Context } from "../store/appContext";
 import { useHistory } from "react-router-dom";
 
 import "../../styles/subject.css";
+import { PaymentSection } from "../component/paymentSection";
 
 export const Subject = () => {
   const params = useParams();
@@ -40,51 +41,6 @@ export const Subject = () => {
 
   const displayTeachers = (teacher, index) => {
     return <li key={index}>{teacher}</li>;
-  };
-
-  const displayPaySection = () => {
-    if (!store.user)
-      return (
-        <div
-          className="my-4 d-flex justify-content-center align-items-center"
-          id="subject-alert"
-        >
-          <h5 className="text-white m-0 py-1 text-center">
-            ¡¡¡INICIA SESIÓN PARA PODER INSCRIBIRTE EN LA ASIGNATURA!!!
-          </h5>
-        </div>
-      );
-    else {
-      if (store.user.role == "Student") {
-        let singned_up = false;
-
-        for (let subject_obj of store.user.subjects)
-          if (subject_obj.id == params.subject_id) {
-            singned_up = true;
-            break;
-          }
-
-        if (singned_up)
-          return (
-            <div
-              className="my-4 d-flex justify-content-center align-items-center"
-              id="subject-alert"
-            >
-              <h6 className="text-white m-0 py-1 text-center">
-                ¡¡¡YA ESTAS INSCRITO EN ESTA ASIGNATURA, GESTIONALA DESDE EL
-                PANEL DE CONTROL!!!
-              </h6>
-            </div>
-          );
-        else
-          return (
-            <div className="my-4 d-flex justify-content-center align-items-center">
-              <hr></hr>
-              <div>BOTONES DE PAGO</div>
-            </div>
-          );
-      } else return <div></div>;
-    }
   };
 
   return (
@@ -167,7 +123,13 @@ export const Subject = () => {
         <div className="col-2 d-none d-md-block"></div>
         <div className="col-12 col-md-8">
           {store.user ? store.user.role == "Teacher" ? "" : <hr /> : <hr />}
-          {displayPaySection()}
+          {subject ? (
+            <PaymentSection
+              subject_obj={subject ? subject : ""}
+            ></PaymentSection>
+          ) : (
+            ""
+          )}
         </div>
         <div className="col-2 d-none d-md-block"></div>
       </div>
