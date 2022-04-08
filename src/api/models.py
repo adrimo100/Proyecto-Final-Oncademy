@@ -1,4 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
+import random
+from werkzeug.security import check_password_hash
 
 db = SQLAlchemy()
 
@@ -10,9 +12,9 @@ db.Column("subject_id", db.Integer, db.ForeignKey("subject.id"), primary_key = T
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    full_name = db.Column(db.String(50), unique = False, nullable = False)
-    email = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(50), unique=False, nullable=False)
+    full_name = db.Column(db.String(70), unique = False, nullable = False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    password = db.Column(db.String(255), unique=False, nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey("role.id"), nullable = False)
     role = db.relationship("Role", backref="user", lazy = True)
     subjects = db.relationship("Subject", secondary = userSubjects, lazy = "subquery", backref = db.backref("User", lazy = True))
@@ -26,13 +28,15 @@ class User(db.Model):
 
         return {
             "id": self.id,
+            "full_name": self.full_name,
             "email": self.email,
-            "role": self.role.serialize(),
-            "subjects": subjects_ser,
-            "full_name": self.full_name
+            "role": self.role.name,
+            "subjects": subjects_ser
             # do not serialize the password, its a security breach
         }
 
+    def password_is_valid(self, pwd_candidate):
+        return check_password_hash(self.password, pwd_candidate)
 
 
 class Role(db.Model):
@@ -118,6 +122,15 @@ class Payment(db.Model):
             "subjects": self.subjects
         }
 
+class InvitationCode(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    code = db.Column(db.String(155), unique = True, nullable = False)
+
+    def __init__(self):
+        self.code = random.getrandbits(155)
+
+    def __repr__(self):
+        return self.code
 
 
 

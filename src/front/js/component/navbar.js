@@ -1,30 +1,24 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { NavbarItem } from "./navbarItem";
 import "../../styles/navbar.css";
+import { Context } from "../store/appContext";
 
 export const Navbar = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  function handleLogin(event) {
-    event.preventDefault();
-    setLoggedIn(true);
-  }
-
-  function handleLogout(event) {
-    event.preventDefault();
-    setLoggedIn(false);
-  }
+  const {
+    store: { user },
+    actions,
+  } = useContext(Context);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div className="container">
+      <div className="app-container d-flex align-items-center justify-content-between">
         <Link to="/" className="text-decoration-none">
           <span className="navbar-brand mb-0 h1">ONACADEMY</span>
         </Link>
 
         <div className="d-flex gap-4 align-items-center">
-          {loggedIn ? (
+          {user ? (
             <>
               <NavbarItem
                 button
@@ -37,7 +31,7 @@ export const Navbar = () => {
               <NavbarItem
                 icon={<LogoutIcon />}
                 text="Cerrar sesión"
-                onClick={handleLogout}
+                onClick={actions.logout}
               />
             </>
           ) : (
@@ -45,14 +39,12 @@ export const Navbar = () => {
               <NavbarItem
                 button
                 to="/signup"
-                onClick={handleLogin}
                 icon={<SignupIcon />}
                 text="Registrarse"
               />
 
               <NavbarItem
                 to="/login"
-                onClick={handleLogin}
                 icon={<LoginIcon />}
                 text="Iniciar sesión"
               />

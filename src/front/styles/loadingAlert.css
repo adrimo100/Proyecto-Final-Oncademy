@@ -1,0 +1,6 @@
+.loading-alert {
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
