@@ -10,11 +10,8 @@ import { Footer } from "./component/footer";
 import { Signup } from "./pages/signup";
 import { Login } from "./pages/login";
 import { Subject } from "./pages/subject";
-<<<<<<< HEAD
 import { PaymentSuccess } from "./pages/paymentSuccess";
-=======
 import { Dashboard } from "./pages/dashboard";
->>>>>>> main
 
 //create your first component
 const Layout = () => {
