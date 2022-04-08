@@ -4,14 +4,16 @@ import { Context } from "../store/appContext";
 export const PaymentSection = (props) => {
   const { store, actions } = useContext(Context);
 
-  const [mode, setMode] = useState(null);
+  const [mode, setMode] = useState(false);
 
   useEffect(() => {
     if (!store.user) setMode(null);
     else if (store.user.role == "Student") {
       for (let subject of store.user.subjects) {
+        console.log(
+          `subject.id = ${subject.id}, props.subject.id = ${props.subject_obj.id}`
+        );
         if (subject.id == props.subject_obj.id) {
-          console.log("hola");
           setMode(true);
           break;
         }
