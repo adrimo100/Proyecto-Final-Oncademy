@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getToken } from "../utils";
+import "../../styles/payments.css";
 
 export const Payments = () => {
   const [payments, setPayments] = useState([]);
@@ -46,20 +47,24 @@ export const Payments = () => {
       <h2>Pagos</h2>
 
       <div className="table-responsive-sm">
-        <table class="table">
+        <table class="table table-hover">
           <thead>
             <tr>
               <th scope="col">Estudiante</th>
               <th scope="col">Asignaturas</th>
               <th scope="col">Fecha</th>
-              <th scope="col">Cantidad</th>
+              <th scope="col">Cantidad (€)</th>
             </tr>
           </thead>
           <tbody>
             {payments.map((payment) => (
               <tr key={payment.id}>
                 <td>{payment.user}</td>
-                <td>{payment.subjects.map((subject) => subject).join(", ")}</td>
+                <td>
+                  {payment.subjects.map((subject) => (
+                    <span className="payment-subject">{subject}</span>
+                  ))}
+                </td>
                 <td>{payment.date}</td>
                 <td>{payment.quantity}</td>
               </tr>

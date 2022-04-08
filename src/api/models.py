@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 import random
 from werkzeug.security import check_password_hash
 
+
 db = SQLAlchemy()
 
 
@@ -112,10 +113,10 @@ class Payment(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "date": self.date,
+            "date": self.date.strftime("%d-%m-%Y - %H:%M:%S"),
             "quantity": self.quantity,
             "user": self.user.full_name,
-            "subjects": [ f"{subject.name} {subject.course.name}" for subject in self.subjects]
+            "subjects": [ f"{subject.name} ({subject.course.name})" for subject in self.subjects]
         }
 
 class InvitationCode(db.Model):
