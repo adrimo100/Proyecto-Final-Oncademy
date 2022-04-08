@@ -43,43 +43,47 @@ export const Payments = () => {
     <article>
       <h2>Pagos</h2>
 
-      <div className="table-responsive-sm">
-        <table className="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Estudiante</th>
-              <th scope="col">Asignaturas</th>
-              <th scope="col">Fecha</th>
-              <th scope="col">Cantidad (€)</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {payments.map((payment) => (
-              <tr key={payment.id}>
-                <td>{payment.user}</td>
-                <td>
-                  {payment.subjects.map((subject) => (
-                    <span className="payment-subject" key={subject}>
-                      {subject}
-                    </span>
-                  ))}
-                </td>
-                <td>{payment.date}</td>
-                <td>{payment.quantity}</td>
+      {!payments.length && <p>No se han encontrado pagos.</p>}
+      {payments.length && (
+        <div className="table-responsive-sm">
+          <table className="table table-hover caption-top">
+            <caption>Mostrando 10 de {total} pagos.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Estudiante</th>
+                <th scope="col">Asignaturas</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Cantidad</th>
               </tr>
-            ))}
-          </tbody>
+            </thead>
 
-          <tfoot>
-            <tr>
-              <td colSpan={4}>
-                <Pagination {...{ page, pages, setPage }} />
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+            <tbody>
+              {payments.map((payment) => (
+                <tr key={payment.id}>
+                  <td>{payment.user}</td>
+                  <td>
+                    {payment.subjects.map((subject) => (
+                      <span className="payment-subject" key={subject}>
+                        {subject}
+                      </span>
+                    ))}
+                  </td>
+                  <td>{payment.date}</td>
+                  <td>{payment.quantity}</td>
+                </tr>
+              ))}
+            </tbody>
+
+            <tfoot>
+              <tr>
+                <td colSpan={4}>
+                  <Pagination {...{ page, pages, setPage }} />
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      )}
     </article>
   );
 };
