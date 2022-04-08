@@ -69,7 +69,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         await fetch(
           process.env.BACKEND_URL + `/api/check-subscription/${subject_id}`,
           {
-            method: "POST",
+            method: "GET",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(getStore(user)),
           }
@@ -80,7 +80,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             return response.json();
           })
           .then((data) => {
-            setStore({ requestedCourse: data });
+            console.log(data);
           })
           .catch((error) => console.log(error));
       },

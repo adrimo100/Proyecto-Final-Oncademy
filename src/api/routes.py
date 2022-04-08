@@ -8,7 +8,7 @@ from flask_jwt_extended import create_access_token, current_user, jwt_required
 from werkzeug.security import generate_password_hash
 import json
 import os
-from datetime import date
+import datetime
 
 import stripe
 
@@ -107,7 +107,7 @@ def webhook():
 
         #Añadimos el pago a la Table/Clase "Payments"
 
-        payment = Payment(date = date.now(), quantity = 20, user_id = user.id, stripe_subscription_id = event.get("data").get("object").get("subscription"))
+        payment = Payment(date = datetime.datetime.now(), quantity = 20, user_id = user.id, stripe_subscription_id = event.get("data").get("object").get("subscription"))
 
         payment.subjects.append(subject)
 
@@ -123,7 +123,7 @@ def webhook():
 
     return jsonify(success=True), 200
 
-@api.route("/check-subscription/<int:subject_id>")
+@api.route("/check-subscription/<int:subject_id>", methods = ["GET"])
 def checkSubscription(subject_id):
 
     user_id = request.json.get("id")

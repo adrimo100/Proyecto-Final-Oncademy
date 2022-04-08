@@ -11,13 +11,14 @@ db.Column("subject_id", db.Integer, db.ForeignKey("subject.id"), primary_key = T
 )
 
 class User(db.Model):
+
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(70), unique = False, nullable = False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), unique=False, nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey("role.id"), nullable = False)
     role = db.relationship("Role", backref="user", lazy = True)
-    subjects = db.relationship("Subject", secondary = userSubjects, lazy = "subquery", backref = db.backref("User", lazy = True))
+    subjects = db.relationship("Subject", secondary = userSubjects, lazy = "subquery", backref = db.backref("users", lazy = True))
     
     def __repr__(self): 
         return self.full_name
