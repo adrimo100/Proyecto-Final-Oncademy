@@ -176,7 +176,7 @@ def get_payments():
     if user_name is None:
         payments = Payment.query.order_by(Payment.date.desc()).paginate(page=page, per_page=per_page)
     else:
-        payments = Payment.query.filter_by(user_name=user_name).order_by(Payment.date.desc()).paginate(page=page, per_page=per_page)
+        payments = Payment.query.join(Payment.user, aliased=True).filter(User.full_name.ilike(f"%{user_name}%")).order_by(Payment.date.desc()).paginate(page=page, per_page=per_page)
 
     return jsonify({
         "payments": [payment.serialize() for payment in payments.items],
