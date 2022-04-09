@@ -1,4 +1,4 @@
-import { getToken, removeToken, setToken } from "../utils";
+import { appFetch, getToken, removeToken, setToken } from "../utils";
 
 const getState = ({ getStore, getActions, setStore }) => {
   return {
@@ -86,13 +86,11 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
       addUser: async (user) => {
         try {
-          const res = await fetch(process.env.BACKEND_URL + "/api/users", {
+          const res = await appFetch("/api/users", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(user),
+            body: user,
           });
+
           const body = await res.json();
 
           if (res.ok) return getActions().setAuthenticatedUser(body);
@@ -109,13 +107,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 
       login: async ({ email, password }) => {
         try {
-          const res = await fetch(process.env.BACKEND_URL + "/api/login", {
+          const res = await appFetch("/api/login", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
+            body: { email, password },
           });
+
           const body = await res.json();
 
           if (res.ok) return getActions().setAuthenticatedUser(body);
@@ -146,16 +142,9 @@ const getState = ({ getStore, getActions, setStore }) => {
         if (!token) return;
 
         try {
-          const res = await fetch(
-            process.env.BACKEND_URL + "/api/authenticated",
-            {
-              headers: {
-                Authorization: `Bearer ${getToken()}`,
-              },
-            }
-          );
+          const res = await appFetch("/api/authenticated", null, true);
 
-          if (!res.ok) return removeToken()
+          if (!res.ok) return removeToken();
 
           const { user, token } = await res.json();
 

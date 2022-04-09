@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getToken } from "../utils";
+import { appFetch } from "../utils";
 import "../../styles/payments.css";
 import { Pagination } from "./pagination";
 import { Field, Form, Formik } from "formik";
@@ -16,13 +16,10 @@ export const Payments = () => {
       const queryParameters =
         "page=" + page + (userName ? `&userName=${userName}` : "");
 
-      const res = await fetch(
-        process.env.BACKEND_URL + `/api/payments?${queryParameters.toString()}`,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
+      const res = await appFetch(
+        "/api/payments?" + queryParameters,
+        null,
+        true
       );
       const body = await res.json();
 
