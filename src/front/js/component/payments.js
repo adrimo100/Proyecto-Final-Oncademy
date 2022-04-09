@@ -38,15 +38,18 @@ export const Payments = () => {
     getPayments();
   }, [page, userName]);
 
-  function handleSubmit({ userName }) {
-    setUserName((previousName) => {
-      // If the userName has not changed we trigger a search manually
-      // otherwise it will not be called because useEffect dependecies are the same
-      if (previousName === userName) {
-        getPayments();
-      }
-      return userName;
-    });
+  function handleSubmit(values) {
+    const previousName = userName;
+    const nextName = values.userName;
+
+    if (previousName === nextName) {
+      // useEffect wont be triggered if the name is the same
+      getPayments();
+    } else {
+      setPage(1);
+    }
+
+    setUserName(nextName);
   }
 
   return (
