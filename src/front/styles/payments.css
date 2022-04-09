@@ -1,0 +1,13 @@
+.payment-subject {
+  display: block;
+}
+.payments-form {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.payments-form input {
+  width: min-content;
+}

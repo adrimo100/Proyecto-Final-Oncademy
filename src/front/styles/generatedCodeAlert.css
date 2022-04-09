@@ -1,0 +1,9 @@
+.invitation-code {
+  font-size: 0.65rem;
+}
+
+@media (min-width: 768px) {
+  .invitation-code {
+    font-size: inherit;
+  }
+}

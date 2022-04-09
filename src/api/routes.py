@@ -226,3 +226,37 @@ def get_authenticated_user():
         "user": current_user.serialize(),
         "token": access_token
     })
+
+@api.route("/invitation-codes", methods=["POST"])
+@jwt_required()
+def create_invitation_code():
+    if current_user.role.name != "Admin":
+        return jsonify({"error": "Acción restringida a administradores."}), 403
+
+    invitation_code = InvitationCode()
+    db.session.add(invitation_code)
+    db.session.commit()
+
+    return jsonify({ "invitationCode": invitation_code.code }), 200
+
+# Gets payments and filter by user name if provided. Returns payments in pages
+@api.route("/payments", methods=["GET"])
+@jwt_required()
+def get_payments():
+    if current_user.role.name != "Admin":
+        return jsonify({"error": "Acción restringida a administradores."}), 403
+    
+    user_name = request.args.get("userName")
+    page = int(request.args.get("page")) or 1
+    per_page = 10
+
+    if user_name is None:
+        payments = Payment.query.order_by(Payment.date.desc()).paginate(page=page, per_page=per_page)
+    else:
+        payments = Payment.query.join(Payment.user, aliased=True).filter(User.full_name.ilike(f"%{user_name}%")).order_by(Payment.date.desc()).paginate(page=page, per_page=per_page)
+
+    return jsonify({
+        "payments": [payment.serialize() for payment in payments.items],
+        "total": payments.total,
+        "pages": payments.pages
+    })
