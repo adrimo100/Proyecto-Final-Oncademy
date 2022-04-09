@@ -71,3 +71,29 @@ export const setToken = (token) => {
 };
 
 export const getToken = () => localStorage.getItem("token");
+
+/**
+ * Helper that:
+ * - Adds server url to path.
+ * - If authenticated is true, adds Authorization header with token.
+ * - If method is POST, adds body as JSON and sets Content-Type header.
+ */
+export const appFetch = (path, requestInit = {}, authenticated) => {
+  const url = process.env.BACKEND_URL + path;
+  const init = {
+    // We assure headers is always defined
+    headers: {},
+    ...requestInit,
+  };
+
+  if (authenticated) {
+    init.headers["Authorization"] = "Bearer " + getToken();
+  }
+
+  if (init.method === "POST") {
+    init.body = JSON.stringify(init.body);
+    init.headers["Content-Type"] = "application/json";
+  }
+
+  return fetch(url, init);
+};
