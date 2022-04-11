@@ -238,7 +238,7 @@ def editUser():
     if(not user):
         return jsonify("El usuario no existe"), 404
 
-    setattr(User, field_name, new_value)
+    setattr(user, field_name, new_value)
     db.session.commit()
 
-    return jsonify(user.email), 200
+    return jsonify(user.serialize()), 200

@@ -159,8 +159,6 @@ export const TeacherDashboard = () => {
 
     if (new_value == "") return;
 
-    console.log(new_value, old_value, field_name);
-    console.log(actions);
     actions.editUser(new_value, old_value, field_name);
   };
 
