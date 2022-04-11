@@ -168,6 +168,20 @@ const getState = ({ getStore, getActions, setStore }) => {
           removeToken();
         }
       },
+
+      editUser: async (new_value, old_value, field_name) => {
+        await fetch(process.env.BACKEND_URL + "/api/editUser", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ new_value, old_value, field_name }),
+        })
+          .then((respond) => {
+            if (!respond.ok) throw new Error("Usurio no actualizado");
+          })
+          .catch((error) => alert(error));
+      },
     },
   };
 };

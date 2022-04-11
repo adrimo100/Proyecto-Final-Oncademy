@@ -226,3 +226,19 @@ def get_authenticated_user():
         "user": current_user.serialize(),
         "token": access_token
     })
+
+@api.route("/editUser", methods = ["PUT"])
+def editUser():
+    new_value = request.json.get("new_value")
+    old_value = request.json.get("old_value")
+    field_name = request.json.get("field_name")
+
+    user = User.query.filter(getattr(User, field_name) == old_value).first()
+
+    if(not user):
+        return jsonify("El usuario no existe"), 404
+
+    setattr(User, field_name, new_value)
+    db.session.commit()
+
+    return jsonify(user.email), 200
