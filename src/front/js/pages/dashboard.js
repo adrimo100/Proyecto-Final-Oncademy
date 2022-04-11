@@ -18,9 +18,9 @@ export const Dashboard = () => {
 
       {loading && <LoadingAlert text="Espera, estamos cargando tus datos..." />}
 
-      {user.role == "Admin" && <AdminDashboard />}
-      {user.role == "Student" && <StudentDashboard />}
-      {user.role == "Teacher" && <TeacherDashboard />}
+      {user?.role == "Admin" && <AdminDashboard />}
+      {user?.role == "Student" && <StudentDashboard />}
+      {user?.role == "Teacher" && <TeacherDashboard />}
     </>
   );
 };

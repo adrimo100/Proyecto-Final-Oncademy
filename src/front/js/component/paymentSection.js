@@ -10,15 +10,13 @@ export const PaymentSection = (props) => {
     if (!store.user) setMode(null);
     else if (store.user.role == "Student") {
       for (let subject of store.user.subjects) {
-        console.log(
-          `subject.id = ${subject.id}, props.subject.id = ${props.subject_obj.id}`
-        );
         if (subject.id == props.subject_obj.id) {
           setMode(true);
           break;
         }
       }
-    } else setMode(false);
+    } else if (store.user.role == "Teacher") setMode("Teacher");
+    else setMode(false);
   }, [store.user]);
 
   switch (mode) {
@@ -36,6 +34,9 @@ export const PaymentSection = (props) => {
           </h5>
         </div>
       );
+
+    case "Teacher":
+      return <div></div>;
 
     case true:
       return (
