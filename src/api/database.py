@@ -17,7 +17,12 @@ def set_up_db(app):
     db.init_app(app)
     app.app_context().push()
 
-    # ensure student, teacher and admin roles are present
+    if testing == False:
+        add_roles(db)   
+
+
+def add_roles(db):
+    """ Ensures student, teacher and admin roles are present """
     roles = [ 'Student', 'Teacher', 'Admin' ]
     for role in roles:
         if not Role.query.filter_by(name=role).first():
