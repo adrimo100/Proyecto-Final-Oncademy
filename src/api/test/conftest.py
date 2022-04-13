@@ -1,8 +1,7 @@
 from app import create_app
-from api.models import db
+from api.models import db, Role
 from api.database import add_roles
 import pytest
-from flask_migrate import Migrate
 
 
 @pytest.fixture(scope="session")
@@ -17,7 +16,15 @@ def app():
     # Tear down
     db.session.remove()
     db.drop_all()
-        
+
+
+@pytest.fixture(scope="session")
+def roles():
+    return {
+        role: Role.query.filter_by(name=role).first()
+        for role in ["Student", "Teacher", "Admin"]
+    }
+
 
 @pytest.fixture()
 def client(app):
