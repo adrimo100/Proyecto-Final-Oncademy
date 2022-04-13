@@ -4,7 +4,7 @@ from api.database import add_roles
 import pytest
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="session", autouse=True)
 def app():
     # Set up
     app = create_app(testing=True)
