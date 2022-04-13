@@ -242,3 +242,33 @@ def editUser():
     db.session.commit()
 
     return jsonify(user.serialize()), 200
+
+@api.route("/checkPassword", methods = ["PUT"])
+def checkPassword():
+    
+    email = request.json.get("email")
+    password = request.json.get("password")
+
+    user = User.query.filter_by(email=email).first()
+    if user is None or not user.password_is_valid(password):
+        return jsonify({"error": "Correo electrónico o contraseña incorrectos", "answer": False}), 401
+
+    return jsonify({"answer": True}), 200
+        
+@api.route("/changePassword", methods = ["PUT"])
+def editPassword():
+    email = request.json.get("email")
+    oldPassword = request.json.get("oldPassword")
+    newPassword = request.json.get("NewPassword")
+
+    user = User.query.filter_by(email=email).first()
+    if user is None or not user.password_is_valid(oldPassword):
+        return jsonify({"error": "Correo electrónico o contraseña incorrectos"}), 401
+
+    #Generate Hash of Password
+    hashed_pwd = generate_password_hash(newPassword)
+
+    setattr(user, password, hashed_pwd)
+    db.session.commit()
+
+    return jsonify("Contraseña cambiada con éxito"), 200
