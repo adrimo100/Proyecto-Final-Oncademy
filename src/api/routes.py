@@ -217,7 +217,7 @@ def get_users():
     return jsonify({
         "users": [user.serialize() for user in result.items],
         "total": result.total,
-        "page": result.page,
+        "pages": result.pages,
     })
 
 @api.route("/login", methods=["POST"])

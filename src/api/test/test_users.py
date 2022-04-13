@@ -59,7 +59,7 @@ class TestUsers:
         assert response.status_code == 200
         assert response.json["users"] == [admin.serialize()]
         assert response.json["total"] == 1
-        assert response.json["page"] == 1
+        assert response.json["pages"] == 1
 
     def test_fail_without_token(self, client):
         """
