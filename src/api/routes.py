@@ -142,6 +142,7 @@ def checkSubscription(subject_id):
         return jsonify(True), 200
     else:
         return jsonify(False),200
+        
 @api.route("/users", methods = ["POST"])
 def create_user():
     # Get user info and convert keys to snake_case
@@ -185,7 +186,12 @@ def create_user():
     hashed_pwd = generate_password_hash(form.data["password"])
 
     # Create user
-    user = User(full_name=form.data["full_name"], email=form.data["email"], password=hashed_pwd, role=role)
+    user = User(
+        full_name=form.data["full_name"],
+        email=form.data["email"],
+        password=hashed_pwd,
+        role=role
+    )
     db.session.add(user)
 
     # Save all changes in db
@@ -197,6 +203,21 @@ def create_user():
     return jsonify({
         "user": user.serialize(),
         "token": access_token
+    })
+
+@api.route("/users" , methods = ["GET"])
+@jwt_required()
+def get_users():
+    if current_user.role.name != "Admin":
+        return jsonify({ "error": "Acción restringida a administradores"}), 403
+
+    page = request.args.get("page", 1, type=int)
+    result = User.query.order_by(User.full_name).paginate(page, 10)
+
+    return jsonify({
+        "users": [user.serialize() for user in result.items],
+        "total": result.total,
+        "page": result.page,
     })
 
 @api.route("/login", methods=["POST"])
