@@ -167,10 +167,35 @@ export const EditUser = () => {
     actions.editUser(new_value, old_value, field_name);
   };
 
+  const checkPassword = async (password) => {
+    console.log("check Password");
+
+    const email = store.user.email;
+
+    const user = {
+      email,
+      password,
+    };
+
+    await fetch(process.env.BACKEND_URL + "/api/checkPassword", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    }).then(async (respond) => {
+      if (!respond.ok) return false;
+
+      return true;
+    });
+  };
+
   const editUserPassword = async () => {
     setShortNewPasswordError(false);
     setNoMatchError(false);
     setWrongOldPasswordError(false);
+
+    document.querySelector("#password-form").reset();
 
     if (newPassword.length < 8) {
       setShortNewPasswordError(true);
@@ -182,7 +207,7 @@ export const EditUser = () => {
       return;
     }
 
-    if (await actions.checkPassword(oldPassword)) {
+    if (!checkPassword(oldPassword)) {
       setWrongOldPasswordError(true);
       return;
     }
@@ -221,34 +246,56 @@ export const EditUser = () => {
         }}
       >
         <div className="d-flex">
-          <div></div>
           <div>
-            <div className="d-flex">
-              <input
-                type="password"
-                placeholder="Antigua Contraseña"
-                onChange={(e) => setOldPassword(e.target.value)}
-              ></input>
-              {wrongOldPasswordError ? (
-                <p className="text-danger">Contraseña Incorrecta</p>
-              ) : (
-                ""
-              )}
-              <input
-                type="password"
-                className="ms-4"
-                placeholder="Nueva Contraseña"
-                onChange={(e) => setNewPassword(e.target.value)}
-              ></input>
-              <input
-                type="password"
-                className="ms-1"
-                placeholder="Repetir Nueva Contraseña"
-                onChange={(e) => setRepeatedPassword(e.target.value)}
-              ></input>
-              <div>
+            <form className="d-xl-flex" id="password-form">
+              <div className="mt-2 mt-xl-0">
+                <input
+                  type="password"
+                  placeholder="Antigua Contraseña"
+                  className="form-control"
+                  onChange={(e) => setOldPassword(e.target.value)}
+                ></input>
+                {wrongOldPasswordError ? (
+                  <p className="text-danger">Contraseña Incorrecta</p>
+                ) : (
+                  ""
+                )}
+              </div>
+              <div className="mt-2 mt-xl-0">
+                <div className="d-xl-flex">
+                  <input
+                    type="password"
+                    className="ms-xl-4 form-control"
+                    placeholder="Nueva Contraseña"
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  ></input>
+
+                  <input
+                    type="password"
+                    className="ms-xl-1 form-control mt-2 mt-xl-0"
+                    placeholder="Repetir Nueva Contraseña"
+                    onChange={(e) => setRepeatedPassword(e.target.value)}
+                  ></input>
+                </div>
+                {nomatchError ? (
+                  <p className="text-danger ms-xl-4 mt-1 mt-xl-0">
+                    Las Contraseñas no coinciden
+                  </p>
+                ) : (
+                  ""
+                )}
+                {shortNewPasswordError ? (
+                  <p className="text-danger ms-xl-4 mt-1 mt-xl-0">
+                    La contraseña debe contener 8 caracteres o más
+                  </p>
+                ) : (
+                  ""
+                )}
+              </div>
+              <div className="ms-xl-4 mt-2 mt-xl-0">
                 <button
-                  className="btn btn-success ms-2"
+                  className="btn btn-success m-0 d-flex justify-content-center align-items-center
+                  "
                   onClick={(e) => {
                     e.preventDefault();
                     editUserPassword();
@@ -257,21 +304,8 @@ export const EditUser = () => {
                   Cambiar Contraseña
                 </button>
               </div>
-            </div>
-            <div className="d-block">
-              {nomatchError ? (
-                <p className="text-danger ms-4">Las Contraseñas no coinciden</p>
-              ) : (
-                ""
-              )}
-              {shortNewPasswordError ? (
-                <p className="text-danger ms-4">
-                  La contraseña debe contener 8 caracteres o más
-                </p>
-              ) : (
-                ""
-              )}
-            </div>
+            </form>
+            <div className="d-block"></div>
           </div>
         </div>
       </form>

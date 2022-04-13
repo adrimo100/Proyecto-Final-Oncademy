@@ -188,31 +188,6 @@ const getState = ({ getStore, getActions, setStore }) => {
           .catch((error) => alert(error));
       },
 
-      checkPassword: async (password) => {
-        console.log("check Password");
-
-        const store = getStore();
-
-        const email = store.user.email;
-
-        const user = {
-          email,
-          password,
-        };
-
-        await fetch(process.env.BACKEND_URL + "/api/checkPassword", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(user),
-        }).then((respond) => {
-          if (!respond.ok) return false;
-
-          return true;
-        });
-      },
-
       changePassword: async (email, oldPassword, newPassword) => {
         console.log("change password");
 
@@ -231,6 +206,8 @@ const getState = ({ getStore, getActions, setStore }) => {
         })
           .then((respond) => {
             if (!respond.ok) throw new Error("Contraseña o Email incorrecto");
+
+            alert("Contraseña cambiada con éxito");
           })
           .catch((error) => alert(error));
       },

@@ -259,7 +259,9 @@ def checkPassword():
 def editPassword():
     email = request.json.get("email")
     oldPassword = request.json.get("oldPassword")
-    newPassword = request.json.get("NewPassword")
+    newPassword = request.json.get("newPassword")
+
+    print(newPassword)
 
     user = User.query.filter_by(email=email).first()
     if user is None or not user.password_is_valid(oldPassword):
@@ -268,7 +270,7 @@ def editPassword():
     #Generate Hash of Password
     hashed_pwd = generate_password_hash(newPassword)
 
-    setattr(user, password, hashed_pwd)
+    user.password = hashed_pwd
     db.session.commit()
 
     return jsonify("Contraseña cambiada con éxito"), 200
