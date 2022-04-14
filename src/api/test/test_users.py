@@ -107,4 +107,15 @@ class TestGetUsersSuccess:
         for user in users:
             assert user.id in user_ids_from_api
         
+    @pytest.mark.xfail(reason="Not implemented")
+    @pytest.mark.parametrize("role", ["Student", "Teacher"])
+    def test_get_users_by_role_success(self, client, create_users, get_authorization_header, role):
+        users = create_users(("Admin", 1), ("Student", 15), ("Teacher", 15))
+        admin = next(user for user in users if user.role.name == "Admin")
 
+        response = client.get(
+            f"/api/users?role={role}", headers=get_authorization_header(admin)
+        )
+
+        assert response.status_code == 200
+        assert len(response.json["total"]) == 15
