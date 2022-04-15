@@ -213,18 +213,20 @@ def get_users():
 
     page = request.args.get("page", 1, type=int)
     role = request.args.get("role", None)
-
     result = None
 
     if role is None:
         result = User.query.order_by(User.full_name).paginate(page, 10)
     else:
-        result = (
-            User.query.join(User.role)
-            .filter(Role.name == role)
+        role = Role.query.filter_by(name=role).first()
+        if role is None:
+            return jsonify({"error": f"No existe el rol '{role}'"}), 400
+        result = (User.query
+            .filter_by(role=role)
             .order_by(User.full_name)
             .paginate(page, 10)
         )
+    
 
     return jsonify(
         {

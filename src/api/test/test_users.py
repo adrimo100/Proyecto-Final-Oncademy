@@ -49,13 +49,13 @@ def get_authorization_header():
     }
 
 
-class TestGetUsersInvalidRole:
-    def test_get_unauthenticated_should_fail(self, client):
+class TestGetUsersFailure:
+    def test_unauthenticated(self, client):
         response = client.get("/api/users")
         assert response.status_code == 401
 
     @pytest.mark.parametrize("role", ["Student", "Teacher"])
-    def test_get_as_student_or_teacher_should_fail(
+    def test_as_student_or_teacher(
         self, client, role, create_users, get_authorization_header
     ):
         user = create_users((role, 1)).pop()
@@ -63,10 +63,22 @@ class TestGetUsersInvalidRole:
         response = client.get("api/users", headers=get_authorization_header(user))
 
         assert response.status_code == 403
+    
+    @pytest.mark.parametrize("role", [1, "RandomFakeRole"])
+    def test_filter_by_invalid_role(
+        self, client, create_users, get_authorization_header, role
+    ):
+        admin = create_users(("Admin", 1)).pop()
+
+        response = client.get(
+            f"/api/users?role={role}", headers=get_authorization_header(admin)
+        )
+
+        assert response.status_code == 400
 
 
 class TestGetUsersSuccess:
-    def test_get_users_success(self, client, create_users, get_authorization_header):
+    def test_success(self, client, create_users, get_authorization_header):
         users = create_users(("Admin", 1), ("Student", 5))
         admin = next(user for user in users if user.role.name == "Admin")
 
@@ -75,7 +87,7 @@ class TestGetUsersSuccess:
         assert response.status_code == 200
         assert len(response.json["users"]) == len(users)
 
-    def test_get_users_implements_pagination(
+    def test_implements_pagination(
         self, client, create_users, get_authorization_header
     ):
         users = create_users(("Admin", 1), ("Student", 10), ("Teacher", 10))
@@ -107,7 +119,7 @@ class TestGetUsersSuccess:
             assert user.id in user_ids_from_api
 
     @pytest.mark.parametrize("role", ["Student", "Teacher"])
-    def test_get_users_by_role_success(
+    def test_filter_by_role(
         self, client, create_users, get_authorization_header, role
     ):
         users = create_users(("Admin", 1), ("Student", 15), ("Teacher", 15))
@@ -119,4 +131,5 @@ class TestGetUsersSuccess:
 
         assert response.status_code == 200
         assert response.json["total"] == 15
+
 
