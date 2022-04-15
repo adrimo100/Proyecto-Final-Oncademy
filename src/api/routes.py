@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Course, Subject, userSubjects, Role, Payment, InvitationCode
-from api.utils import generate_sitemap, APIException, SignupForm
+from api.utils import admin_required, generate_sitemap, APIException, SignupForm
 from flask_jwt_extended import create_access_token, current_user, jwt_required
 from werkzeug.security import generate_password_hash
 import json
@@ -207,10 +207,8 @@ def create_user():
 
 @api.route("/users", methods=["GET"])
 @jwt_required()
+@admin_required
 def get_users():
-    if current_user.role.name != "Admin":
-        return jsonify({"error": "Acción restringida a administradores"}), 403
-
     page = request.args.get("page", 1, type=int)
     role = request.args.get("role", None)
     result = None
@@ -267,10 +265,8 @@ def get_authenticated_user():
 
 @api.route("/invitation-codes", methods=["POST"])
 @jwt_required()
+@admin_required
 def create_invitation_code():
-    if current_user.role.name != "Admin":
-        return jsonify({"error": "Acción restringida a administradores."}), 403
-
     invitation_code = InvitationCode()
     db.session.add(invitation_code)
     db.session.commit()
@@ -280,10 +276,8 @@ def create_invitation_code():
 # Gets payments and filter by user name if provided. Returns payments in pages
 @api.route("/payments", methods=["GET"])
 @jwt_required()
+@admin_required
 def get_payments():
-    if current_user.role.name != "Admin":
-        return jsonify({"error": "Acción restringida a administradores."}), 403
-    
     user_name = request.args.get("userName")
     page = int(request.args.get("page")) or 1
     per_page = 10

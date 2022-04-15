@@ -1,5 +1,7 @@
+from functools import wraps
 from flask import jsonify, url_for
 from wtforms import Form, BooleanField, StringField, PasswordField, validators, ValidationError
+from flask_jwt_extended import current_user
 
 class APIException(Exception):
     status_code = 400
@@ -54,3 +56,11 @@ class SignupForm(Form):
         validators.EqualTo('password', 'Las contraseñas deben coincidir.')
     ])
     invitation_code = StringField('Invitation Code')
+
+def admin_required(f):
+    @wraps(f)
+    def decoreated_function(*args, **kwargs):
+        if current_user.role.name != 'Admin':
+            return jsonify({"error": "Acción restringida a administradores"}), 403
+        return f(*args, **kwargs)
+    return decoreated_function
