@@ -48,7 +48,6 @@ def get_authorization_header():
         "Authorization": f"Bearer {create_access_token(identity=user.id)}"
     }
 
-    
 
 class TestGetUsersInvalidRole:
     def test_get_unauthenticated_should_fail(self, client):
@@ -71,14 +70,14 @@ class TestGetUsersSuccess:
         users = create_users(("Admin", 1), ("Student", 5))
         admin = next(user for user in users if user.role.name == "Admin")
 
-        response = client.get(
-            "/api/users", headers=get_authorization_header(admin)
-        )
+        response = client.get("/api/users", headers=get_authorization_header(admin))
 
         assert response.status_code == 200
         assert len(response.json["users"]) == len(users)
 
-    def test_get_users_implements_pagination(self, client, create_users, get_authorization_header):
+    def test_get_users_implements_pagination(
+        self, client, create_users, get_authorization_header
+    ):
         users = create_users(("Admin", 1), ("Student", 10), ("Teacher", 10))
         admin = next(user for user in users if user.role.name == "Admin")
 
@@ -88,9 +87,11 @@ class TestGetUsersSuccess:
 
         assert response.status_code == 200
         assert len(response.json["users"]) == 10
-        assert response.json["pages"] == math.ceil(len(users) / 10) # 3 pages
+        assert response.json["pages"] == math.ceil(len(users) / 10)  # 3 pages
 
-    def test_get_all_users_using_pagination(self, client, create_users, get_authorization_header):
+    def test_get_all_users_using_pagination(
+        self, client, create_users, get_authorization_header
+    ):
         users = create_users(("Admin", 1), ("Student", 10), ("Teacher", 10))
         admin = next(user for user in users if user.role.name == "Admin")
         expected_pages = math.ceil(len(users) / 10)
@@ -100,16 +101,15 @@ class TestGetUsersSuccess:
             response = client.get(
                 f"/api/users?page={page}", headers=get_authorization_header(admin)
             )
-            user_ids_from_api.extend(
-                [user["id"] for user in response.json["users"]]
-            )
+            user_ids_from_api.extend([user["id"] for user in response.json["users"]])
 
         for user in users:
             assert user.id in user_ids_from_api
-        
-    @pytest.mark.xfail(reason="Not implemented")
+
     @pytest.mark.parametrize("role", ["Student", "Teacher"])
-    def test_get_users_by_role_success(self, client, create_users, get_authorization_header, role):
+    def test_get_users_by_role_success(
+        self, client, create_users, get_authorization_header, role
+    ):
         users = create_users(("Admin", 1), ("Student", 15), ("Teacher", 15))
         admin = next(user for user in users if user.role.name == "Admin")
 
@@ -118,4 +118,5 @@ class TestGetUsersSuccess:
         )
 
         assert response.status_code == 200
-        assert len(response.json["total"]) == 15
+        assert response.json["total"] == 15
+

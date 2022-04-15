@@ -205,20 +205,35 @@ def create_user():
         "token": access_token
     })
 
-@api.route("/users" , methods = ["GET"])
+@api.route("/users", methods=["GET"])
 @jwt_required()
 def get_users():
     if current_user.role.name != "Admin":
-        return jsonify({ "error": "Acción restringida a administradores"}), 403
+        return jsonify({"error": "Acción restringida a administradores"}), 403
 
     page = request.args.get("page", 1, type=int)
-    result = User.query.order_by(User.full_name).paginate(page, 10)
+    role = request.args.get("role", None)
 
-    return jsonify({
-        "users": [user.serialize() for user in result.items],
-        "total": result.total,
-        "pages": result.pages,
-    })
+    result = None
+
+    if role is None:
+        result = User.query.order_by(User.full_name).paginate(page, 10)
+    else:
+        result = (
+            User.query.join(User.role)
+            .filter(Role.name == role)
+            .order_by(User.full_name)
+            .paginate(page, 10)
+        )
+
+    return jsonify(
+        {
+            "users": [user.serialize() for user in result.items],
+            "total": result.total,
+            "pages": result.pages,
+        }
+    )
+
 
 @api.route("/login", methods=["POST"])
 def create_token():
