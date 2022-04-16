@@ -157,12 +157,16 @@ def create_user():
     # Validate data
     form = SignupForm(data=user_data)
     if form.validate() == False:
-        return jsonify({"validationErrors": form.errors}), 400
+        raise APIException(
+            "Alguno de los campos no es correcto, revísalos.",
+            400,
+            {"validationErrors": form.errors}
+        )
 
     # Check if user exists
     user = User.query.filter_by(email=form.data["email"]).first()
     if user != None:
-        return jsonify({"error": "El usuario ya existe."}), 400
+        raise APIException("El usuario ya existe", 400)
 
     # Assign role depending on invitation code
     role = None
@@ -174,7 +178,7 @@ def create_user():
         # Validate invitation code
         invitation_code = InvitationCode.query.filter_by(code=invitation_code).first()
         if invitation_code is None:
-            return jsonify({"error": "El código de invitación no es válido."}), 400
+            raise APIException("El código de invitación no es válido.", 400)
 
         # Remove invitation code and assign teacher role
         db.session.delete(invitation_code)
@@ -214,7 +218,7 @@ def get_users():
     else:
         role = Role.query.filter_by(name=role).first()
         if role is None:
-            return jsonify({"error": f"No existe el rol '{role}'"}), 400
+            raise APIException(f"No existe el rol '{role}'", 400)
         result = (
             User.query.filter_by(role=role).order_by(User.full_name).paginate(page, 10)
         )
@@ -235,7 +239,7 @@ def create_token():
 
     user = User.query.filter_by(email=email).first()
     if user is None or not user.password_is_valid(password):
-        return jsonify({"error": "Correo electrónico o contraseña incorrectos"}), 401
+        raise APIException("Correo electrónico o contraseña incorrectos", 401)
 
     # Create jwt
     access_token = create_access_token(identity=user.id)

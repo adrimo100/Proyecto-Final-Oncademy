@@ -6,16 +6,16 @@ from flask_jwt_extended import current_user
 class APIException(Exception):
     status_code = 400
 
-    def __init__(self, message, status_code=None, payload=None):
+    def __init__(self, error, status_code=None, payload=None):
         Exception.__init__(self)
-        self.message = message
+        self.error = error
         if status_code is not None:
             self.status_code = status_code
         self.payload = payload
 
     def to_dict(self):
         rv = dict(self.payload or ())
-        rv['message'] = self.message
+        rv['error'] = self.error
         return rv
 
 def has_no_empty_params(rule):
@@ -61,6 +61,6 @@ def admin_required(f):
     @wraps(f)
     def decoreated_function(*args, **kwargs):
         if current_user.role.name != 'Admin':
-            return jsonify({"error": "Acción restringida a administradores"}), 403
+            raise APIException("Acción restringida a administradores", 403)
         return f(*args, **kwargs)
     return decoreated_function
