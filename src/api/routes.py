@@ -256,6 +256,27 @@ def add_subjects_to_user(user_id):
 
     return jsonify({"subjects": [subject.serialize() for subject in user.subjects]})
 
+@api.route("/users/<int:user_id>/subjects/<int:subject_id>", methods=["DELETE"])
+@jwt_required()
+@admin_required
+def delete_subjects_from_user(user_id, subject_id):
+    # Validate user
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        raise APIException("El usuario no existe", 404)
+
+    # Validate subject
+    subject = Subject.query.filter_by(id=subject_id).first()
+    if subject is None:
+        raise APIException("La asignatura no existe", 404)
+    if subject not in user.subjects:
+        raise APIException("El usuario no tiene asignada la asignatura", 400)
+
+    # Remove subject from user
+    user.subjects.remove(subject)
+    db.session.commit()
+
+    return jsonify({"deletedSubject": subject.serialize()})
 
 @api.route("/login", methods=["POST"])
 def create_token():
