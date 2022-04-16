@@ -17,6 +17,9 @@ def app():
     db.session.remove()
     db.drop_all()
 
+@pytest.fixture()
+def client(app):
+    return app.test_client()
 
 @pytest.fixture(scope="session")
 def roles():
@@ -25,7 +28,3 @@ def roles():
         for role in ["Student", "Teacher", "Admin"]
     }
 
-
-@pytest.fixture()
-def client(app):
-    return app.test_client()

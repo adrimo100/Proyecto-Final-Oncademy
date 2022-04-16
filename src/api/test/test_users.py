@@ -1,7 +1,8 @@
 import json
 import pytest
 import math
-from api.models import User, db
+import random
+from api.models import Course, User, db, Subject
 from faker import Faker
 from flask_jwt_extended import create_access_token
 
@@ -78,12 +79,10 @@ class TestGetUsersFailure:
 
 
 class TestGetUsersSuccess:
-    # Arrange
     @pytest.fixture()
     def users(self, create_users):
         return create_users(("Admin", 1), ("Student", 15), ("Teacher", 15))
 
-    # Arrange
     @pytest.fixture()
     def admin(self, users):
         return next(user for user in users if user.role.name == "Admin")
@@ -137,3 +136,65 @@ class TestGetUsersSuccess:
         assert response.status_code == 200
         assert response.json["total"] == expected_users_count
 
+class TestUpdateUserSubjectsSuccess:
+    @pytest.fixture(scope="session")
+    def courses(self):
+        courses = [Course(name=f"{i} ESO") for i in (1, 2)]
+        db.session.add_all(courses)
+        db.session.commit()
+
+        yield courses
+
+        for course in courses:
+            db.session.delete(course)
+        db.session.commit()
+
+    @pytest.fixture(scope="session")
+    def subjects(self, courses):
+        subjects = [
+            Subject(
+                name=name,
+                course = random.choice(courses),
+                description=fake.paragraph(),
+                cardDescription=fake.paragraph(),
+                image_url=fake.pystr(),
+                start_date=fake.date(),
+                end_date=fake.date(),
+                stripe_id=fake.pystr(),
+            )
+            for name in ("Matemáticas", "Lengua", "Ciencias")]
+        db.session.add_all(subjects)
+        db.session.commit()
+
+        yield subjects
+
+        for subject in subjects:
+            db.session.delete(subject)
+        db.session.commit()
+
+    @pytest.fixture()
+    def users(self, create_users):
+        return create_users(("Admin", 1), ("Student", 1), ("Teacher", 1))
+
+    @pytest.fixture()
+    def admin(self, users):
+        return next(user for user in users if user.role.name == "Admin")
+
+
+    @pytest.mark.xfail(reason="Not implemented")
+    @pytest.mark.parametrize("role", ["Student", "Teacher"])
+    @pytest.mark.parametrize("subjects_count", [1, 2])
+    def test_success(
+        self, client, subjects, users, admin, get_authorization_header, role, subjects_count
+    ):
+        """ Test that we can add one or more subjects to a Student or a Teacher"""
+        new_subject_ids = [subject.id for subject in random.sample(subjects, subjects_count)]
+        user = next(user for user in users if user.role.name == role)
+        
+        response = client.post(
+            f"/api/users/{user.id}/subjects",
+            headers=get_authorization_header(admin),
+            json={"subjects": new_subject_ids})
+
+        assert response.status_code == 200
+        assert response.json["subjects"] == [subject.id for subject in user.subjects]
