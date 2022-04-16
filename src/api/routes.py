@@ -143,7 +143,7 @@ def checkSubscription(subject_id):
     else:
         return jsonify(False),200
         
-@api.route("/users", methods = ["POST"])
+@api.route("/users", methods=["POST"])
 def create_user():
     # Get user info and convert keys to snake_case
     user_data = {
@@ -151,20 +151,18 @@ def create_user():
         "email": request.json.get("email"),
         "password": request.json.get("password"),
         "repeat_password": request.json.get("repeatPassword"),
-        "invitation_code": request.json.get("invitationCode")
+        "invitation_code": request.json.get("invitationCode"),
     }
 
     # Validate data
     form = SignupForm(data=user_data)
-    if (form.validate() == False):
-        return jsonify({
-            "validationErrors": form.errors
-        }), 400
+    if form.validate() == False:
+        return jsonify({"validationErrors": form.errors}), 400
 
     # Check if user exists
     user = User.query.filter_by(email=form.data["email"]).first()
     if user != None:
-        return jsonify({ "error": "El usuario ya existe." }), 400
+        return jsonify({"error": "El usuario ya existe."}), 400
 
     # Assign role depending on invitation code
     role = None
@@ -175,13 +173,13 @@ def create_user():
     else:
         # Validate invitation code
         invitation_code = InvitationCode.query.filter_by(code=invitation_code).first()
-        if (invitation_code is None):
-            return jsonify({ "error": "El código de invitación no es válido."}), 400
-            
+        if invitation_code is None:
+            return jsonify({"error": "El código de invitación no es válido."}), 400
+
         # Remove invitation code and assign teacher role
         db.session.delete(invitation_code)
         role = Role.query.filter_by(name="Teacher").first()
-        
+
     # Hash password
     hashed_pwd = generate_password_hash(form.data["password"])
 
@@ -190,7 +188,7 @@ def create_user():
         full_name=form.data["full_name"],
         email=form.data["email"],
         password=hashed_pwd,
-        role=role
+        role=role,
     )
     db.session.add(user)
 
@@ -200,10 +198,8 @@ def create_user():
     # Create jwt
     access_token = create_access_token(identity=user.id)
 
-    return jsonify({
-        "user": user.serialize(),
-        "token": access_token
-    })
+    return jsonify({"user": user.serialize(), "token": access_token})
+
 
 @api.route("/users", methods=["GET"])
 @jwt_required()
@@ -219,12 +215,9 @@ def get_users():
         role = Role.query.filter_by(name=role).first()
         if role is None:
             return jsonify({"error": f"No existe el rol '{role}'"}), 400
-        result = (User.query
-            .filter_by(role=role)
-            .order_by(User.full_name)
-            .paginate(page, 10)
+        result = (
+            User.query.filter_by(role=role).order_by(User.full_name).paginate(page, 10)
         )
-    
 
     return jsonify(
         {
@@ -243,14 +236,12 @@ def create_token():
     user = User.query.filter_by(email=email).first()
     if user is None or not user.password_is_valid(password):
         return jsonify({"error": "Correo electrónico o contraseña incorrectos"}), 401
-    
+
     # Create jwt
     access_token = create_access_token(identity=user.id)
 
-    return jsonify({ 
-        "user": user.serialize(),
-        "token": access_token
-    })
+    return jsonify({"user": user.serialize(), "token": access_token})
+
 
 @api.route("/authenticated")
 @jwt_required()
@@ -258,10 +249,8 @@ def get_authenticated_user():
     # We re-generate a token with a new expiration date
     access_token = create_access_token(identity=current_user.id)
 
-    return jsonify({
-        "user": current_user.serialize(),
-        "token": access_token
-    })
+    return jsonify({"user": current_user.serialize(), "token": access_token})
+
 
 @api.route("/invitation-codes", methods=["POST"])
 @jwt_required()
@@ -271,7 +260,8 @@ def create_invitation_code():
     db.session.add(invitation_code)
     db.session.commit()
 
-    return jsonify({ "invitationCode": invitation_code.code }), 200
+    return jsonify({"invitationCode": invitation_code.code}), 200
+
 
 # Gets payments and filter by user name if provided. Returns payments in pages
 @api.route("/payments", methods=["GET"])
@@ -283,12 +273,21 @@ def get_payments():
     per_page = 10
 
     if user_name is None:
-        payments = Payment.query.order_by(Payment.date.desc()).paginate(page=page, per_page=per_page)
+        payments = Payment.query.order_by(Payment.date.desc()).paginate(
+            page=page, per_page=per_page
+        )
     else:
-        payments = Payment.query.join(Payment.user, aliased=True).filter(User.full_name.ilike(f"%{user_name}%")).order_by(Payment.date.desc()).paginate(page=page, per_page=per_page)
+        payments = (
+            Payment.query.join(Payment.user, aliased=True)
+            .filter(User.full_name.ilike(f"%{user_name}%"))
+            .order_by(Payment.date.desc())
+            .paginate(page=page, per_page=per_page)
+        )
 
-    return jsonify({
-        "payments": [payment.serialize() for payment in payments.items],
-        "total": payments.total,
-        "pages": payments.pages
-    })
+    return jsonify(
+        {
+            "payments": [payment.serialize() for payment in payments.items],
+            "total": payments.total,
+            "pages": payments.pages,
+        }
+    )

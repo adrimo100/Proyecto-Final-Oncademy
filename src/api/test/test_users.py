@@ -63,7 +63,7 @@ class TestGetUsersFailure:
         response = client.get("api/users", headers=get_authorization_header(user))
 
         assert response.status_code == 403
-    
+
     @pytest.mark.parametrize("role", [1, "RandomFakeRole"])
     def test_filter_by_invalid_role(
         self, client, create_users, get_authorization_header, role
@@ -119,9 +119,7 @@ class TestGetUsersSuccess:
             assert user.id in user_ids_from_api
 
     @pytest.mark.parametrize("role", ["Student", "Teacher"])
-    def test_filter_by_role(
-        self, client, create_users, get_authorization_header, role
-    ):
+    def test_filter_by_role(self, client, create_users, get_authorization_header, role):
         users = create_users(("Admin", 1), ("Student", 15), ("Teacher", 15))
         admin = next(user for user in users if user.role.name == "Admin")
 
@@ -131,5 +129,4 @@ class TestGetUsersSuccess:
 
         assert response.status_code == 200
         assert response.json["total"] == 15
-
 
