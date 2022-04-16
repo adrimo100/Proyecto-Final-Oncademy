@@ -248,7 +248,7 @@ def add_subjects_to_user(user_id):
         raise APIException("Alguna de las asignaturas no existe", 404)
     for subject in new_subjects:
         if subject in user.subjects:
-            raise APIException(f"El usuario ya tiene la asignatura '{subject.name}'", 400)
+            raise APIException(f"El usuario ya tiene asignada la asignatura '{subject.name}'", 400)
 
     # Add subjects to user
     user.subjects.extend(new_subjects)
