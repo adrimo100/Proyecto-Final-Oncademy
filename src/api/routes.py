@@ -231,6 +231,31 @@ def get_users():
         }
     )
 
+@api.route("/users/<int:user_id>/subjects", methods=["POST"])
+@jwt_required()
+@admin_required
+def add_subjects_to_user(user_id):
+    subject_ids = request.json.get("subjects", [])
+    
+    # Validate user
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        raise APIException("El usuario no existe", 404)
+    
+    # Validate subjects
+    new_subjects = Subject.query.filter(Subject.id.in_(subject_ids)).all()
+    if len(new_subjects) != len(subject_ids):
+        raise APIException("Alguna de las asignaturas no existe", 404)
+    for subject in new_subjects:
+        if subject in user.subjects:
+            raise APIException(f"El usuario ya tiene la asignatura '{subject.name}'", 400)
+
+    # Add subjects to user
+    user.subjects.extend(new_subjects)
+    db.session.commit()
+
+    return jsonify({"subjects": [subject.serialize() for subject in user.subjects]})
+
 
 @api.route("/login", methods=["POST"])
 def create_token():
@@ -295,3 +320,4 @@ def get_payments():
             "pages": payments.pages,
         }
     )
+

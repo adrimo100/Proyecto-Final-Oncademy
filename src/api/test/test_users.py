@@ -181,7 +181,6 @@ class TestUpdateUserSubjectsSuccess:
         return next(user for user in users if user.role.name == "Admin")
 
 
-    @pytest.mark.xfail(reason="Not implemented")
     @pytest.mark.parametrize("role", ["Student", "Teacher"])
     @pytest.mark.parametrize("subjects_count", [1, 2])
     def test_success(
@@ -197,4 +196,6 @@ class TestUpdateUserSubjectsSuccess:
             json={"subjects": new_subject_ids})
 
         assert response.status_code == 200
-        assert response.json["subjects"] == [subject.id for subject in user.subjects]
+        for subject in response.json["subjects"]:
+            assert subject["id"] in [subject.id for subject in user.subjects]
+        
