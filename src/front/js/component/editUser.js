@@ -60,6 +60,7 @@ export const EditUser = () => {
             <input
               type="text"
               onChange={(e) => setNewName(e.target.value)}
+              className="form-control"
             ></input>
 
             <button
@@ -129,6 +130,7 @@ export const EditUser = () => {
             <input
               type="text"
               onChange={(e) => setNewEmail(e.target.value)}
+              className="form-control"
             ></input>
 
             <button
