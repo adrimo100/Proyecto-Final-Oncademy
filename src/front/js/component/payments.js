@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { appFetch } from "../utils";
 import "../../styles/payments.css";
 import { Pagination } from "./pagination";
-import { Field, Form, Formik } from "formik";
+import { FilterByNameForm } from "../component/filterByNameForm";
 
 export const Payments = () => {
   const [userName, setUserName] = useState(null);
@@ -56,29 +56,7 @@ export const Payments = () => {
     <article>
       <h2>Pagos</h2>
 
-      <Formik initialValues={{ userName: "" }} onSubmit={handleSubmit}>
-        <Form className="payments-form mb-2">
-          <Field name="userName">
-            {({ field }) => (
-              <>
-                <label htmlFor="userName" className="form-label mb-0">
-                  Filtrar por nombre:
-                </label>
-                <input
-                  id="userName"
-                  className="form-control"
-                  type="text"
-                  placeholder="Jhon Doe"
-                  {...field}
-                />
-              </>
-            )}
-          </Field>
-          <button className="btn btn-primary" type="submit">
-            Buscar
-          </button>
-        </Form>
-      </Formik>
+      <FilterByNameForm filterKey="userName" placeholder="Juan Pérez" handleSubmit={handleSubmit} />
 
       {!payments.length && <p>No se han encontrado pagos.</p>}
       {payments.length > 0 && (
