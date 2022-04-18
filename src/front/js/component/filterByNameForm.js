@@ -2,7 +2,12 @@ import React from "react";
 import { Field, Form, Formik } from "formik";
 
 
-export const FilterByNameForm = ({ filterKey="userName", placeholder = "Pepe" , handleSubmit }) => (
+export const FilterByNameForm = ({
+  filterKey = "userName",
+  placeholder = "Pepe",
+  handleSubmit,
+  error,
+}) => (
   <Formik initialValues={{ [filterKey]: "" }} onSubmit={handleSubmit}>
     <Form className="payments-form mb-2">
       <Field name={filterKey}>
@@ -21,9 +26,12 @@ export const FilterByNameForm = ({ filterKey="userName", placeholder = "Pepe" , 
           </>
         )}
       </Field>
+
       <button className="btn btn-primary" type="submit">
         Buscar
       </button>
+
+      {error && <span className="text-danger">{error}</span>}
     </Form>
   </Formik>
 );
