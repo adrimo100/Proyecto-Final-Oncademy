@@ -56,7 +56,7 @@ export const Payments = () => {
     <article>
       <h2>Pagos</h2>
 
-      <FilterByNameForm filterKey="userName" placeholder="Juan Pérez" handleSubmit={handleSubmit} />
+      <FilterByNameForm placeholder="Juan Pérez" handleSubmit={handleSubmit} />
 
       {!payments.length && <p>No se han encontrado pagos.</p>}
       {payments.length > 0 && (

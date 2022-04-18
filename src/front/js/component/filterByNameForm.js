@@ -2,7 +2,7 @@ import React from "react";
 import { Field, Form, Formik } from "formik";
 
 
-export const FilterByNameForm = ({ filterKey, placeholder = "" , handleSubmit }) => (
+export const FilterByNameForm = ({ filterKey="userName", placeholder = "" , handleSubmit }) => (
   <Formik initialValues={{ [filterKey]: "" }} onSubmit={handleSubmit}>
     <Form className="payments-form mb-2">
       <Field name={filterKey}>
