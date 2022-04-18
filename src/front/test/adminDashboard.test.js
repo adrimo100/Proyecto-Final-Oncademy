@@ -1,13 +1,13 @@
 import React from "react"
-import { StudentList } from "../js/component/studentList";
+import { UserList } from "../js/component/userList";
 import { render, screen } from "./test-utils";
 import userEvent from "@testing-library/user-event"
 
 describe("AdminDashboard", () => {
-  describe("SudentsList", () => {  
-    it("should have a students section", () => {
-      render(<StudentList />);
-      const title = screen.getByRole("heading", { name: "Estudiantes" });
+  describe("UsersList", () => {  
+    it("should have a users section", () => {
+      render(<UserList />);
+      const title = screen.getByRole("heading", { name: /usuarios/i });
       
       expect(title).toBeInTheDocument()
     })
@@ -19,10 +19,10 @@ describe("AdminDashboard", () => {
         const submitButton = screen.getByRole("button", { name: /buscar/i });
         await user.click(submitButton);        
       }
-      
+
       it("should be possible to filter by name", async () => {
         const user = userEvent.setup()
-        render(<StudentList />);
+        render(<UserList />);
   
         await filterByName(user);
         
@@ -31,7 +31,7 @@ describe("AdminDashboard", () => {
 
       it("should display errors if there are any", async () => {
         const user = userEvent.setup()
-        render(<StudentList />);
+        render(<UserList />);
         const expectedError = "Couldn't connect."
         fetch.mockResponse(JSON.stringify({ error: expectedError }), { status: 400 })
   
