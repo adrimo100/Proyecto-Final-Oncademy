@@ -43,3 +43,11 @@ export const loginValidationSchema = yup.object({
   email,
   password: yup.string().required(requiredErrorText),
 });
+
+export const editUserEmail = yup.object({
+  email,
+});
+
+export const editUserPassword = yup.object({
+  password,
+});

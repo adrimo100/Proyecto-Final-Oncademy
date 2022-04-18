@@ -168,6 +168,49 @@ const getState = ({ getStore, getActions, setStore }) => {
           removeToken();
         }
       },
+
+      editUser: async (new_value, old_value, field_name) => {
+        await fetch(process.env.BACKEND_URL + "/api/editUser", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ new_value, old_value, field_name }),
+        })
+          .then((respond) => {
+            if (!respond.ok) throw new Error("Usurio no actualizado");
+
+            return respond.json();
+          })
+          .then((data) => {
+            setStore({ user: data });
+          })
+          .catch((error) => alert(error));
+      },
+
+      changePassword: async (email, oldPassword, newPassword) => {
+        console.log("change password");
+
+        const user_data = {
+          email,
+          oldPassword,
+          newPassword,
+        };
+
+        await fetch(process.env.BACKEND_URL + "/api/changePassword", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user_data),
+        })
+          .then((respond) => {
+            if (!respond.ok) throw new Error("Contraseña o Email incorrecto");
+
+            alert("Contraseña cambiada con éxito");
+          })
+          .catch((error) => alert(error));
+      },
     },
   };
 };
