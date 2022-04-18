@@ -54,6 +54,7 @@
 		"html-loader": "^3.0.1",
 		"html-webpack-plugin": "^5.5.0",
 		"jest": "^27.5.1",
+		"jest-fetch-mock": "^3.0.3",
 		"parse-github-url": "^1.0.2",
 		"prettier": "^2.5.1",
 		"react-test-renderer": "^18.0.0",
