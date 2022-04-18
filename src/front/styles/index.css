@@ -26,6 +26,6 @@
   flex-wrap: wrap;
 }
 
-.inline-form input {
+.inline-form input, .inline-form select {
   width: min-content;
 }
