@@ -7,12 +7,15 @@ import { FilterByNameForm } from "../component/filterByNameForm";
 export const Payments = () => {
   const [userName, setUserName] = useState(null);
   const [payments, setPayments] = useState([]);
+  const [error, setError] = useState(null)
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(0);
 
   async function getPayments() {
     try {
+      setError(null)
+
       const queryParameters =
         "page=" + page + (userName ? `&userName=${userName}` : "");
 
@@ -24,13 +27,15 @@ export const Payments = () => {
       const body = await res.json();
 
       if (!res.ok) {
-        throw new Error(body.error);
+        if (body.error) return setError(body.error);
+        throw new Error();
       }
       setPayments(body.payments);
       setTotal(body.total);
       setPages(body.pages);
     } catch (error) {
       console.error(error);
+      setError("No se ha podido conectar con el servidor, prueba más tarde.");
     }
   }
 
@@ -56,9 +61,9 @@ export const Payments = () => {
     <article>
       <h2>Pagos</h2>
 
-      <FilterByNameForm placeholder="Juan Pérez" handleSubmit={handleSubmit} />
+      <FilterByNameForm placeholder="Juan Pérez" handleSubmit={handleSubmit} error={error} />
 
-      {!payments.length && <p>No se han encontrado pagos.</p>}
+      {!payments.length && !error && <p>No se han encontrado pagos.</p>}
       {payments.length > 0 && (
         <div className="table-responsive-sm">
           <table className="table table-hover caption-top">
