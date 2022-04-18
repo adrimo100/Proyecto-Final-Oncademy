@@ -122,7 +122,6 @@
 .subject-btn {
   position: absolute;
   bottom: 5%;
-  left: 25%;
 }
 
 @media screen and (max-width: 767px) {

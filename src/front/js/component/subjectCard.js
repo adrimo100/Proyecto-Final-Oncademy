@@ -20,12 +20,23 @@ export const SubjectCard = (props) => {
 
             <p className="card-text">{props.subject.cardDescription}</p>
 
-            <Link
-              className="btn btn-primary subject-btn"
-              to={`/subject/${props.subject.id}`}
+            <div
+              className="d-flex justify-content-center align-items-center subject-btn"
+              style={{ width: "93%" }}
             >
-              Saber más...
-            </Link>
+              <Link
+                className="btn btn-primary"
+                to={`/subject/${props.subject.id}`}
+              >
+                Saber más...
+              </Link>
+
+              {props.dashboard ? (
+                <button className="btn btn-danger ms-1">
+                  Cancelar Subscripción
+                </button>
+              ) : null}
+            </div>
           </div>
         </div>
       </div>
