@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { appFetch } from "../utils";
-import { FilterByNameForm } from "./filterByNameForm"
+import { FilterUsersForm } from "./filterUsersForm";
 
 export const UserList = () => {
   const [ error, setError ] = useState(null);
@@ -29,6 +29,6 @@ export const UserList = () => {
     <article>
       <h2>Usuarios</h2>
 
-      <FilterByNameForm handleSubmit={handleSubmit} error={error}/>
+      <FilterUsersForm handleSubmit={handleSubmit} error={error}/>
     </article>
 )}

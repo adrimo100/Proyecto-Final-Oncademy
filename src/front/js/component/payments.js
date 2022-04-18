@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { appFetch } from "../utils";
 import "../../styles/payments.css";
 import { Pagination } from "./pagination";
-import { FilterByNameForm } from "../component/filterByNameForm";
+import { FilterPaymentsForm } from "./filterPaymentsForm";
 
 export const Payments = () => {
   const [userName, setUserName] = useState(null);
@@ -61,7 +61,7 @@ export const Payments = () => {
     <article>
       <h2>Pagos</h2>
 
-      <FilterByNameForm placeholder="Juan Pérez" handleSubmit={handleSubmit} error={error} />
+      <FilterPaymentsForm handleSubmit={handleSubmit} error={error} />
 
       {!payments.length && !error && <p>No se han encontrado pagos.</p>}
       {payments.length > 0 && (
