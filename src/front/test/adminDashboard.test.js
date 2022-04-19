@@ -2,8 +2,6 @@ import React from "react";
 import { UserList } from "../js/component/userList";
 import { render, screen } from "./test-utils";
 import userEvent from "@testing-library/user-event";
-import { waitFor } from "@testing-library/react";
-import { act } from "react-test-renderer";
 
 describe("AdminDashboard", () => {
   describe("UsersList", () => {
@@ -15,55 +13,48 @@ describe("AdminDashboard", () => {
     });
 
     describe("when filtering", () => {
-      async function filterByName(user) {
+      it("can filter by name", async () => {
+        const user = userEvent.setup();
+        render(<UserList />);
+  
         const input = screen.getByLabelText(/nombre/i);
         await user.type(input, "Jhon");
         const submitButton = screen.getByRole("button", { name: /buscar/i });
-        await user.click(submitButton);
-      }
-
-      it("should be possible to filter by name", async () => {
-        const user = userEvent.setup();
-        render(<UserList />);
-
-        await filterByName(user);
+        await user.click(submitButton);      
 
         expect(fetch.mock.calls[0][0]).toMatch(/userName=Jhon/);
       });
 
-      describe("by role", () => {
-        async function filterByRole(role) {
-          const user = userEvent.setup();
-          render(<UserList />);
+      it("can filter by role", async () => {
+        const user = userEvent.setup();
+        render(<UserList />);
 
-          const rolSelect = screen.getByRole("combobox", { name: /rol/i });
-
-          await user.selectOptions(rolSelect, role);
-
-          const submitButton = screen.getByRole("button", { name: /buscar/i });
-          await user.click(submitButton);
-        }
-        // selectOptions does not work
-        test.skip("can filter for teachers", async () => {
-          const user = userEvent.setup();
-          render(<UserList />);
-
-          const rolSelect = screen.getByRole("combobox", { name: /rol/i });
-          await user.selectOptions(rolSelect, "Teacher");
-
-          const submitButton = screen.getByRole("button", { name: /buscar/i });
-          await user.click(submitButton);
-
-          expect(fetch.mock.calls[0][0]).toMatch(/role=Teacher/);
+        const rolSelect = screen.getByRole("combobox", {
+          name: /rol/i,
         });
-        test("can filter for students", async () => {
-          await filterByRole("Estudiantes");
-
-          expect(fetch.mock.calls[0][0]).toMatch(/role=Student/);
+        await user.selectOptions(rolSelect, "Student");
+        const submitButton = screen.getByRole("button", {
+          name: /buscar/i,
         });
+        await user.click(submitButton);
+
+        expect(fetch.mock.calls[0][0]).toMatch(/role=Student/);
+      });
+      // selectOptions looks not to work
+      it.skip("can filter for teachers", async () => {
+        const user = userEvent.setup();
+        render(<UserList />);
+
+        const rolSelect = screen.getByRole("combobox", { name: /rol/i });
+        await user.selectOptions(rolSelect, "Teacher");
+
+        const submitButton = screen.getByRole("button", { name: /buscar/i });
+        await user.click(submitButton);
+
+        expect(fetch.mock.calls[0][0]).toMatch(/role=Teacher/);
       });
 
-      it("should display errors if there are any", async () => {
+      it("displays errors if there are any", async () => {
         const user = userEvent.setup();
         render(<UserList />);
         const expectedError = "Couldn't connect.";
@@ -71,7 +62,8 @@ describe("AdminDashboard", () => {
           status: 400,
         });
 
-        await filterByName(user);
+        const submitButton = screen.getByRole("button", { name: /buscar/i });
+        await user.click(submitButton);
         const error = await screen.findByText(expectedError);
 
         expect(error).toBeInTheDocument();
