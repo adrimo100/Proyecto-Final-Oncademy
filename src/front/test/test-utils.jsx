@@ -18,3 +18,5 @@ export * from "@testing-library/react";
 
 // override render method
 export { customRender as render };
+
+export const getLastFetchCall = () => fetch.mock.calls[fetch.mock.calls.length - 1]; 

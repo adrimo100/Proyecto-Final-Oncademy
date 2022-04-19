@@ -1,28 +1,59 @@
 import React from "react";
 import { UserList } from "../js/component/userList";
-import { render, screen } from "./test-utils";
+import { getLastFetchCall, render, screen } from "./test-utils";
 import userEvent from "@testing-library/user-event";
+import { faker } from "@faker-js/faker";
+
+faker.setLocale("es");
 
 describe("AdminDashboard", () => {
+  beforeEach(() => {
+    fetch.resetMocks();
+  })
+
   describe("UsersList", () => {
-    it("should have a users section", () => {
+    it("should have a title", () => {
       render(<UserList />);
       const title = screen.getByRole("heading", { name: /usuarios/i });
 
       expect(title).toBeInTheDocument();
+    });
+    describe("should display a list of users", () => {
+      const expectedUsers = new Array(10).fill(1).map(() => ({
+        full_name: faker.name.findName(),
+        subjects: faker.random.arrayElements([
+          { name: "Matemáticas" },
+          { name: "Física" },
+          { name: "Química" },
+        ]),
+      }));
+
+      test.each(expectedUsers.map(u => u.full_name))("should display user %s", async (user) => {
+        fetch.once(
+          JSON.stringify({
+            pages: 1,
+            total: 10,
+            users: expectedUsers,
+          })
+        );
+        render(<UserList />);
+
+        const userName = await screen.findByText(user);
+        expect(userName)
+      });
     });
 
     describe("when filtering", () => {
       it("can filter by name", async () => {
         const user = userEvent.setup();
         render(<UserList />);
-  
+
         const input = screen.getByLabelText(/nombre/i);
         await user.type(input, "Jhon");
         const submitButton = screen.getByRole("button", { name: /buscar/i });
-        await user.click(submitButton);      
+        await user.click(submitButton);
 
-        expect(fetch.mock.calls[0][0]).toMatch(/userName=Jhon/);
+        expect(getLastFetchCall()[0]).toMatch(/userName=Jhon/);
       });
 
       it("can filter by role", async () => {
@@ -38,7 +69,7 @@ describe("AdminDashboard", () => {
         });
         await user.click(submitButton);
 
-        expect(fetch.mock.calls[0][0]).toMatch(/role=Student/);
+        expect(getLastFetchCall()[0]).toMatch(/role=Student/);
       });
       // selectOptions looks not to work
       it.skip("can filter for teachers", async () => {
@@ -51,7 +82,7 @@ describe("AdminDashboard", () => {
         const submitButton = screen.getByRole("button", { name: /buscar/i });
         await user.click(submitButton);
 
-        expect(fetch.mock.calls[0][0]).toMatch(/role=Teacher/);
+        expect(getLastFetchCall()[0]).toMatch(/role=Teacher/);
       });
 
       it("displays errors if there are any", async () => {
