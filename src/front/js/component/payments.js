@@ -83,7 +83,7 @@ export const Payments = () => {
               {payments.map((payment) => (
                 <tr key={payment.id}>
                   <td>{payment.user}</td>
-                  <td>
+                  <td className="space-children">
                     {payment.subjects.map((subject) => (
                       <span className="payment-subject" key={subject}>
                         {subject}
