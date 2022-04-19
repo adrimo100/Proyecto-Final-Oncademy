@@ -1,7 +1,18 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { Context } from "../store/appContext";
+
+import { Button, Modal } from "react-bootstrap";
+
 export const SubjectCard = (props) => {
+  const { store, actions } = useContext(Context);
+
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
     <div className="col-12 col-md-6 col-xl-4 col-xxl-3 mb-3 mx-0 p-0 d-flex justify-content-center align-items-center">
       <div className="card" style={{ width: "15rem" }}>
@@ -32,7 +43,7 @@ export const SubjectCard = (props) => {
               </Link>
 
               {props.dashboard ? (
-                <button className="btn btn-danger ms-1">
+                <button className="btn btn-danger ms-1" onClick={handleShow}>
                   Cancelar Subscripción
                 </button>
               ) : null}
@@ -40,6 +51,21 @@ export const SubjectCard = (props) => {
           </div>
         </div>
       </div>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>AVISO</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{`Estás a punto de cancelar ${props.subject.name} - ${props.subject.course_name}. ¿Estás seguro?`}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Salir
+          </Button>
+          <Button variant="danger" onClick={handleClose}>
+            Cancelar Subscripción
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
