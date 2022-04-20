@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { usePagination } from "../utils";
 import { AppTd } from "./AppTd";
+import { EditSubjectsModal } from "./editSubjectsModal";
 import { FilterUsersForm } from "./filterUsersForm";
 import { Pagination } from "./pagination";
 
@@ -29,6 +30,8 @@ export const UsersSection = () => {
     });
     setPage(1);
   }
+
+  const [editedUser, setEditedUser] = useState(null);
 
   return (
     <article>
@@ -63,7 +66,13 @@ export const UsersSection = () => {
                     </div>
 
                     <div>
-                      <button className="btn btn-outline-primary btn-sm">
+                      <button
+                        className="btn btn-outline-primary btn-sm"
+                        aria-label="editar asignaturas"
+                        data-bs-toggle="modal"
+                        data-bs-target="#edit-subjects"
+                        onClick={() => setEditedUser(user)}
+                      >
                         <i className="bi bi-pencil" />
                       </button>
                     </div>
@@ -82,6 +91,8 @@ export const UsersSection = () => {
           </table>
         </div>
       )}
+
+      <EditSubjectsModal user={editedUser}/>
     </article>
   );
 };
