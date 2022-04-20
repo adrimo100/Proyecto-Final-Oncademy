@@ -1,59 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { appFetch } from "../utils";
+import React, { useState } from "react";
+import { usePagination } from "../utils";
 import { FilterUsersForm } from "./filterUsersForm";
 import { Pagination } from "./pagination";
 
 export const UserList = () => {
-  const [userName, setUserName] = useState(null);
-  const [role, setRole] = useState("Student");
+  const [filters, setFilters] = useState({
+    userName: null,
+    role: "Student",
+  });
+
   const [page, setPage] = useState(1);
 
-  const [users, setUsers] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [pages, setPages] = useState(0);
-  const [error, setError] = useState(null);
-
-  async function getUsers() {
-    try {
-      setError(null);
-
-      const params = new URLSearchParams();
-      userName && params.set("userName", userName);
-      params.set("role", role);
-      params.set("page", page);
-      
-      const res = await appFetch(
-        "/api/users?" + params.toString(),
-        null,
-        true
-      );
-      const body = await res.json();
-
-      if (!res.ok) {
-        throw new Error(
-          body.error ||
-            "No se ha podido conectar con el servidor, prueba más tarde."
-        );
-      }
-
-      setUsers(body.users);
-      setTotal(body.total);
-      setPages(body.pages);
-    } catch (error) {
-      console.error(error);
-      setError(error.message);
-    }
-  }
+  const {
+    items: users,
+    total,
+    pages,
+    error,
+  } = usePagination({
+    path: "/api/users",
+    parameters: { ...filters, page },
+  });
 
   function handleSubmit(values) {
+    setFilters({
+      userName: values.userName,
+      role: values.role,
+    });
     setPage(1);
-    setUserName(values.userName);
-    setRole(values.role);
   }
-
-  useEffect(() => {
-    getUsers()
-  }, [page, userName, role]);
 
   return (
     <article>
