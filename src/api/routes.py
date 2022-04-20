@@ -328,19 +328,20 @@ def create_invitation_code():
 def get_payments():
     user_name = request.args.get("userName")
     page = int(request.args.get("page")) or 1
-    per_page = 10
 
-    if user_name is None:
-        payments = Payment.query.order_by(Payment.date.desc()).paginate(
-            page=page, per_page=per_page
-        )
-    else:
-        payments = (
-            Payment.query.join(Payment.user, aliased=True)
+    stmt = Payment.query
+
+    # Add user name filter
+    if user_name:
+        stmt = (stmt
+            .join(Payment.user, aliased=True)
             .filter(User.full_name.ilike(f"%{user_name}%"))
-            .order_by(Payment.date.desc())
-            .paginate(page=page, per_page=per_page)
         )
+
+    # Get results paginated and ordered by date
+    payments = (stmt
+        .order_by(Payment.date.desc())
+        .paginate(page, 10))
 
     return jsonify(
         {
