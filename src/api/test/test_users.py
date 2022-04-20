@@ -14,7 +14,7 @@ class TestGetUsersSuccess:
         response = client.get("/api/users", headers=get_authorization_header(admin))
 
         assert response.status_code == 200
-        for user in response.json["users"]:
+        for user in response.json["items"]:
             assert user["id"] in [user.id for user in users]
 
     def test_implements_pagination(
@@ -27,7 +27,7 @@ class TestGetUsersSuccess:
         )
 
         assert response.status_code == 200
-        assert len(response.json["users"]) == 10
+        assert len(response.json["items"]) == 10
         assert response.json["pages"] == expected_total_pages
         assert response.json["total"] == len(users)
 
@@ -42,7 +42,7 @@ class TestGetUsersSuccess:
             response = client.get(
                 f"/api/users?page={page}", headers=get_authorization_header(admin)
             )
-            user_ids_from_api.extend([user["id"] for user in response.json["users"]])
+            user_ids_from_api.extend([user["id"] for user in response.json["items"]])
 
         # Assert that all users were fetched from the api
         for user in users:

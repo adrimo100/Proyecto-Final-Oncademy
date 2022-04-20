@@ -232,7 +232,7 @@ def get_users():
 
     return jsonify(
         {
-            "users": [user.serialize() for user in result.items],
+            "items": [user.serialize() for user in result.items],
             "total": result.total,
             "pages": result.pages,
         }
