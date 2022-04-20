@@ -1,19 +1,20 @@
 import React from "react";
-import { UserList } from "../js/component/userList";
 import { getLastFetchCall, render, screen } from "./test-utils";
 import userEvent from "@testing-library/user-event";
 import { faker } from "@faker-js/faker";
+import { UsersSection } from "../js/component/usersSection";
+import { waitFor } from "@testing-library/react";
 
 faker.setLocale("es");
 
 describe("AdminDashboard", () => {
   beforeEach(() => {
     fetch.resetMocks();
-  })
+  });
 
   describe("UsersList", () => {
     it("should have a title", () => {
-      render(<UserList />);
+      render(<UsersSection />);
       const title = screen.getByRole("heading", { name: /usuarios/i });
 
       expect(title).toBeInTheDocument();
@@ -28,76 +29,69 @@ describe("AdminDashboard", () => {
         ]),
       }));
 
-      test.each(expectedUsers.map(u => u.full_name))("should display user %s", async (user) => {
-        fetch.once(
-          JSON.stringify({
-            pages: 1,
-            total: 10,
-            users: expectedUsers,
-          })
-        );
-        render(<UserList />);
+      test.each(expectedUsers.map((u) => u.full_name))(
+        "should display user %s",
+        async (user) => {
+          fetch.once(
+            JSON.stringify({
+              pages: 1,
+              total: 10,
+              items: expectedUsers,
+            })
+          );
+          render(<UsersSection />);
 
-        const userName = await screen.findByText(user);
-        expect(userName)
+          const userName = await screen.findByText(user);
+          expect(userName);
+        }
+      );
+    });
+
+    it("displays errors if there are any", async () => {
+      const expectedError = "Couldn't connect.";
+      fetch.mockResponse(JSON.stringify({ error: expectedError }), {
+        status: 400,
       });
+      render(<UsersSection />);
+
+      const error = await screen.findByText(expectedError);
+
+      expect(error).toBeInTheDocument();
     });
 
     describe("when filtering", () => {
       it("can filter by name", async () => {
         const user = userEvent.setup();
-        render(<UserList />);
+        render(<UsersSection />);
 
         const input = screen.getByLabelText(/nombre/i);
         await user.type(input, "Jhon");
         const submitButton = screen.getByRole("button", { name: /buscar/i });
         await user.click(submitButton);
 
-        expect(getLastFetchCall()[0]).toMatch(/userName=Jhon/);
+        await waitFor(() => {
+          expect(getLastFetchCall()[0]).toMatch(/userName=Jhon/);
+        });
       });
 
-      it("can filter by role", async () => {
+      it.each(["Student", "Teacher"])("can filter by role %s", async (role) => {
         const user = userEvent.setup();
-        render(<UserList />);
+        render(<UsersSection />);
 
         const rolSelect = screen.getByRole("combobox", {
           name: /rol/i,
         });
-        await user.selectOptions(rolSelect, "Student");
+        await user.selectOptions(rolSelect, role);
         const submitButton = screen.getByRole("button", {
           name: /buscar/i,
         });
         await user.click(submitButton);
 
-        expect(getLastFetchCall()[0]).toMatch(/role=Student/);
-      });
-      // selectOptions looks not to work
-      it.skip("can filter for teachers", async () => {
-        const user = userEvent.setup();
-        render(<UserList />);
-
-        const rolSelect = screen.getByRole("combobox", { name: /rol/i });
-        await user.selectOptions(rolSelect, "Teacher");
-
-        const submitButton = screen.getByRole("button", { name: /buscar/i });
-        await user.click(submitButton);
-
-        expect(getLastFetchCall()[0]).toMatch(/role=Teacher/);
-      });
-
-      it("displays errors if there are any", async () => {
-        const user = userEvent.setup();
-        render(<UserList />);
-        const expectedError = "Couldn't connect.";
-        fetch.mockResponse(JSON.stringify({ error: expectedError }), {
-          status: 400,
+        await waitFor(() => {
+          expect(getLastFetchCall()[0]).toMatch(
+            new RegExp(`role=${role}`, "i")
+          );
         });
-
-        const submitButton = screen.getByRole("button", { name: /buscar/i });
-        await user.click(submitButton);
-        const error = await screen.findByText(expectedError);
-
-        expect(error).toBeInTheDocument();
       });
     });
   });

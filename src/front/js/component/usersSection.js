@@ -3,7 +3,7 @@ import { usePagination } from "../utils";
 import { FilterUsersForm } from "./filterUsersForm";
 import { Pagination } from "./pagination";
 
-export const UserList = () => {
+export const UsersSection = () => {
   const [filters, setFilters] = useState({
     userName: null,
     role: "Student",
