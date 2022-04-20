@@ -212,7 +212,6 @@ def get_users():
     user_name = request.args.get("userName", None)
     role_name = request.args.get("role", None)
     page = request.args.get("page", 1, type=int)
-    result = None
 
     stmt = User.query
     
