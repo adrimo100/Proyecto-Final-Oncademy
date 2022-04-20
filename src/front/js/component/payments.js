@@ -3,6 +3,7 @@ import { usePagination } from "../utils";
 import "../../styles/payments.css";
 import { Pagination } from "./pagination";
 import { FilterPaymentsForm } from "./filterPaymentsForm";
+import { AppTd } from "./AppTd";
 
 export const Payments = () => {
   const [userName, setUserName] = useState(null);
@@ -45,16 +46,18 @@ export const Payments = () => {
             <tbody>
               {payments.map((payment) => (
                 <tr key={payment.id}>
-                  <td>{payment.user}</td>
-                  <td className="space-children">
-                    {payment.subjects.map((subject) => (
-                      <span className="payment-subject" key={subject}>
-                        {subject}
-                      </span>
-                    ))}
-                  </td>
-                  <td>{payment.date}</td>
-                  <td>{payment.quantity}</td>
+                  <AppTd>{payment.user}</AppTd>
+                  <AppTd>
+                    <div className="space-children">
+                      {payment.subjects.map((subject) => (
+                        <span className="payment-subject" key={subject}>
+                          {subject}
+                        </span>
+                      ))}
+                    </div>
+                  </AppTd>
+                  <AppTd>{payment.date}</AppTd>
+                  <AppTd>{payment.quantity}</AppTd>
                 </tr>
               ))}
             </tbody>

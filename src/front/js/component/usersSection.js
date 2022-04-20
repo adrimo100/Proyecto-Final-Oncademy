@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { usePagination } from "../utils";
+import { AppTd } from "./AppTd";
 import { FilterUsersForm } from "./filterUsersForm";
 import { Pagination } from "./pagination";
 
@@ -51,14 +52,22 @@ export const UsersSection = () => {
             <tbody>
               {users.map((user) => (
                 <tr key={user.id}>
-                  <td>{user.full_name}</td>
-                  <td className="space-children">
-                    {user.subjects.map((subject) => (
-                      <span className="d-block" key={subject.id}>
-                        {subject.name} ({subject.course_name})
-                      </span>
-                    ))}
-                  </td>
+                  <AppTd>{user.full_name}</AppTd>
+                  <AppTd className="justify-content-between">
+                    <div className="space-children">
+                      {user.subjects.map((subject) => (
+                        <span className="d-block" key={subject.id}>
+                          {subject.name} ({subject.course_name})
+                        </span>
+                      ))}
+                    </div>
+
+                    <div>
+                      <button className="btn btn-outline-primary btn-sm">
+                        <i className="bi bi-pencil" />
+                      </button>
+                    </div>
+                  </AppTd>
                 </tr>
               ))}
             </tbody>

@@ -33,3 +33,13 @@
 .space-children > *:not(:last-child) {
   margin-bottom: 0.75rem;
 }
+
+table, tr {
+  height: 1px;
+}
+
+.vertical-center {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
