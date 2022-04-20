@@ -8,11 +8,13 @@ export const StudentDashboard = () => {
   const { store, actions } = useContext(Context);
 
   const displaySubjects = () => {
-    if (store.user?.subjects.lenght == 0)
+    console.log(store.user?.subjects.length);
+
+    if (store.user?.subjects.length == 0)
       return (
         <div className="mt-4">
           <strong>
-            <li>No Tienes Asignaturas Asignadas</li>
+            <li>No Tienes Asignaturas</li>
           </strong>
         </div>
       );

@@ -9,7 +9,7 @@ export const TeacherDashboard = () => {
   const { store, actions } = useContext(Context);
 
   const displaySubjects = () => {
-    if (store.user?.subjects.lenght == 0)
+    if (store.user?.subjects.length == 0)
       return (
         <div className="mt-4">
           <strong>
