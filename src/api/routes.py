@@ -344,7 +344,7 @@ def get_payments():
 
     return jsonify(
         {
-            "payments": [payment.serialize() for payment in payments.items],
+            "items": [payment.serialize() for payment in payments.items],
             "total": payments.total,
             "pages": payments.pages,
         }

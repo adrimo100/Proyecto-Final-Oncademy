@@ -1,60 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { appFetch } from "../utils";
+import React, { useState } from "react";
+import { usePagination } from "../utils";
 import "../../styles/payments.css";
 import { Pagination } from "./pagination";
 import { FilterPaymentsForm } from "./filterPaymentsForm";
 
 export const Payments = () => {
   const [userName, setUserName] = useState(null);
-  const [payments, setPayments] = useState([]);
-  const [error, setError] = useState(null)
-  const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [pages, setPages] = useState(0);
 
-  async function getPayments() {
-    try {
-      setError(null)
+  const {
+    items: payments,
+    total,
+    pages,
+    error,
+  } = usePagination({ path: "/api/payments", parameters: { userName, page } });
 
-      const queryParameters =
-        "page=" + page + (userName ? `&userName=${userName}` : "");
-
-      const res = await appFetch(
-        "/api/payments?" + queryParameters,
-        null,
-        true
-      );
-      const body = await res.json();
-
-      if (!res.ok) {
-        if (body.error) return setError(body.error);
-        throw new Error();
-      }
-      setPayments(body.payments);
-      setTotal(body.total);
-      setPages(body.pages);
-    } catch (error) {
-      console.error(error);
-      setError("No se ha podido conectar con el servidor, prueba más tarde.");
-    }
-  }
-
-  useEffect(() => {
-    getPayments();
-  }, [page, userName]);
-
-  function handleSubmit(values) {
-    const previousName = userName;
-    const nextName = values.userName;
-
-    if (previousName === nextName) {
-      // useEffect wont be triggered if the name is the same
-      getPayments();
-    } else {
-      setPage(1);
-    }
-
-    setUserName(nextName);
+  function handleSubmit({userName}) {
+    setUserName(userName);
+    setPage(1)
   }
 
   return (
