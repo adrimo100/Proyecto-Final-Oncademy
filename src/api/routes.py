@@ -209,19 +209,27 @@ def create_user():
 @jwt_required()
 @admin_required
 def get_users():
+    user_name = request.args.get("userName", None)
+    role_name = request.args.get("role", None)
     page = request.args.get("page", 1, type=int)
-    role = request.args.get("role", None)
     result = None
 
-    if role is None:
-        result = User.query.order_by(User.full_name).paginate(page, 10)
-    else:
-        role = Role.query.filter_by(name=role).first()
+    stmt = User.query
+    
+    # Validate and add role filter
+    if role_name:
+        role = Role.query.filter_by(name=role_name).first()
         if role is None:
-            raise APIException(f"No existe el rol '{role}'", 400)
-        result = (
-            User.query.filter_by(role=role).order_by(User.full_name).paginate(page, 10)
-        )
+            raise APIException(f"No existe el rol '{role_name}'", 400)
+
+        stmt = stmt.filter_by(role=role)
+
+    # Add user name filter
+    if user_name:
+        stmt = stmt.filter(User.full_name.ilike(f"%{user_name}%"))
+
+    # Get results paginated and ordered alphabetically by user name
+    result = stmt.order_by(User.full_name).paginate(page, 10)
 
     return jsonify(
         {
