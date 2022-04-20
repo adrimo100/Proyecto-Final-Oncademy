@@ -233,6 +233,11 @@ const getState = ({ getStore, getActions, setStore }) => {
           .then((respond) => {
             if (!respond.ok) throw new Error("Cancelación fallida");
 
+            return respond.json();
+          })
+          .then((data) => {
+            setStore({ user: data });
+
             alert("Cancelación exitosa");
           })
           .catch((error) => alert(error));

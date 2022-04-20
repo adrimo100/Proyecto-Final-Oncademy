@@ -281,4 +281,37 @@ def editPassword():
 @api.route("cancelSubscription", methods = ["PUT"])
 @jwt_required()
 def cancelSubscription():
-    return None
+    
+    user_email = request.json.get("user_email")
+    subject_id = request.json.get("subject")
+
+    user = User.query.filter_by(email = user_email).first()
+
+    if(not user):
+        return jsonify("El usuario no existe"), 404
+
+    subject = Subject.query.filter_by(id = subject_id).first()
+
+    if(not subject):
+        return jsonify("La asignatura no existe"), 404
+
+    payment = Payment.query.filter_by(user_id = user.id).filter(Payment.subjects.any(id = subject.id)).first()
+
+    if(not payment):
+        return jsonify("La subscripción no existe"), 404
+
+    subscription_id = payment.stripe_subscription_id
+
+    #Cancelamos la subscripción
+    stripe.Subscription.delete(subscription_id)
+
+    #Eliminamos el pago
+    db.session.delete(payment)
+
+    #Eliminamos la asignatura del alumno
+    user.subjects.remove(subject)
+
+    db.session.commit()
+
+    return jsonify(user.serialize()), 200
+
