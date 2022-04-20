@@ -4,17 +4,26 @@ import { FilterUsersForm } from "./filterUsersForm";
 import { Pagination } from "./pagination";
 
 export const UserList = () => {
-  const [users, setUsers] = useState([])
-  const [total, setTotal] = useState(0)
-  const [page, setPage] = useState(1)
-  const [pages, setPages] = useState(0)
+  const [userName, setUserName] = useState(null);
+  const [role, setRole] = useState("Student");
+  const [page, setPage] = useState(1);
+
+  const [users, setUsers] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [pages, setPages] = useState(0);
   const [error, setError] = useState(null);
 
-  async function handleSubmit({ userName, role = "Student" }) {
+  async function getUsers() {
     try {
       setError(null);
+
+      const params = new URLSearchParams();
+      userName && params.set("userName", userName);
+      params.set("role", role);
+      params.set("page", page);
+      
       const res = await appFetch(
-        `/api/users?role=${role}${userName ? `&userName=${userName}` : ""}`,
+        "/api/users?" + params.toString(),
         null,
         true
       );
@@ -36,9 +45,15 @@ export const UserList = () => {
     }
   }
 
+  function handleSubmit(values) {
+    setPage(1);
+    setUserName(values.userName);
+    setRole(values.role);
+  }
+
   useEffect(() => {
-    handleSubmit({ userName: null});
-  }, [])
+    getUsers()
+  }, [page, userName, role]);
 
   return (
     <article>
