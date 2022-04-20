@@ -24,7 +24,7 @@ export const GeneratedCodeAlert = ({ invitationCode }) => {
       </span>
       <div className="fs-3">
         {copied ? (
-          <i class="bi bi-check-lg"></i>
+          <i className="bi bi-check-lg"></i>
         ) : (
           <a href="#" onClick={handleCopy}>
             <i className="bi bi-clipboard text-success"></i>
