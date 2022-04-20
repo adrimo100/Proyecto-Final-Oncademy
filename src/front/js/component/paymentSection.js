@@ -45,7 +45,7 @@ export const PaymentSection = (props) => {
           id="subject-alert"
         >
           <h6 className="text-white m-0 py-1 text-center">
-            ¡¡¡YA ESTAS INSCRITO EN ESTA ASIGNATURA, GESTIONALA DESDE EL PANEL
+            ¡¡¡YA ESTÁS INSCRITO EN ESTA ASIGNATURA, GESTIONALA DESDE EL PANEL
             DE CONTROL!!!
           </h6>
         </div>

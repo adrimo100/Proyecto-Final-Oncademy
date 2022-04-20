@@ -228,6 +228,7 @@ def get_authenticated_user():
     })
 
 @api.route("/editUser", methods = ["PUT"])
+@jwt_required()
 def editUser():
     new_value = request.json.get("new_value")
     old_value = request.json.get("old_value")
@@ -244,6 +245,7 @@ def editUser():
     return jsonify(user.serialize()), 200
 
 @api.route("/checkPassword", methods = ["PUT"])
+@jwt_required()
 def checkPassword():
     
     email = request.json.get("email")
@@ -256,6 +258,7 @@ def checkPassword():
     return jsonify({"answer": True}), 200
         
 @api.route("/changePassword", methods = ["PUT"])
+@jwt_required()
 def editPassword():
     email = request.json.get("email")
     oldPassword = request.json.get("oldPassword")
@@ -274,3 +277,41 @@ def editPassword():
     db.session.commit()
 
     return jsonify("Contraseña cambiada con éxito"), 200
+
+@api.route("cancelSubscription", methods = ["PUT"])
+@jwt_required()
+def cancelSubscription():
+    
+    user_email = request.json.get("user_email")
+    subject_id = request.json.get("subject")
+
+    user = User.query.filter_by(email = user_email).first()
+
+    if(not user):
+        return jsonify("El usuario no existe"), 404
+
+    subject = Subject.query.filter_by(id = subject_id).first()
+
+    if(not subject):
+        return jsonify("La asignatura no existe"), 404
+
+    payment = Payment.query.filter_by(user_id = user.id).filter(Payment.subjects.any(id = subject.id)).first()
+
+    if(not payment):
+        return jsonify("La subscripción no existe"), 404
+
+    subscription_id = payment.stripe_subscription_id
+
+    #Cancelamos la subscripción
+    stripe.Subscription.delete(subscription_id)
+
+    #Eliminamos el pago
+    db.session.delete(payment)
+
+    #Eliminamos la asignatura del alumno
+    user.subjects.remove(subject)
+
+    db.session.commit()
+
+    return jsonify(user.serialize()), 200
+
