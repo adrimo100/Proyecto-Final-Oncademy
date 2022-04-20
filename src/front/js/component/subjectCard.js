@@ -61,7 +61,13 @@ export const SubjectCard = (props) => {
           <Button variant="secondary" onClick={handleClose}>
             Salir
           </Button>
-          <Button variant="danger" onClick={handleClose}>
+          <Button
+            variant="danger"
+            onClick={(e) => {
+              handleClose();
+              actions.cancelSubscription(props.subject.id);
+            }}
+          >
             Cancelar Subscripción
           </Button>
         </Modal.Footer>

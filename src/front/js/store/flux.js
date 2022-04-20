@@ -174,6 +174,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
           },
           body: JSON.stringify({ new_value, old_value, field_name }),
         })
@@ -201,6 +202,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
           },
           body: JSON.stringify(user_data),
         })
@@ -208,6 +210,30 @@ const getState = ({ getStore, getActions, setStore }) => {
             if (!respond.ok) throw new Error("Contraseña o Email incorrecto");
 
             alert("Contraseña cambiada con éxito");
+          })
+          .catch((error) => alert(error));
+      },
+
+      cancelSubscription: async (subject_id) => {
+        const store = getStore();
+
+        const cancel_data = {
+          user_email: store.user.email,
+          subject: subject_id,
+        };
+
+        await fetch(process.env.BACKEND_URL + "/api/cancelSubscription", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: JSON.stringify(cancel_data),
+        })
+          .then((respond) => {
+            if (!respond.ok) throw new Error("Cancelación fallida");
+
+            alert("Cancelación exitosa");
           })
           .catch((error) => alert(error));
       },

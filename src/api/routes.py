@@ -228,6 +228,7 @@ def get_authenticated_user():
     })
 
 @api.route("/editUser", methods = ["PUT"])
+@jwt_required()
 def editUser():
     new_value = request.json.get("new_value")
     old_value = request.json.get("old_value")
@@ -244,6 +245,7 @@ def editUser():
     return jsonify(user.serialize()), 200
 
 @api.route("/checkPassword", methods = ["PUT"])
+@jwt_required()
 def checkPassword():
     
     email = request.json.get("email")
@@ -256,6 +258,7 @@ def checkPassword():
     return jsonify({"answer": True}), 200
         
 @api.route("/changePassword", methods = ["PUT"])
+@jwt_required()
 def editPassword():
     email = request.json.get("email")
     oldPassword = request.json.get("oldPassword")
@@ -274,3 +277,8 @@ def editPassword():
     db.session.commit()
 
     return jsonify("Contraseña cambiada con éxito"), 200
+
+@api.route("cancelSubscription", methods = ["PUT"])
+@jwt_required()
+def cancelSubscription():
+    return None
