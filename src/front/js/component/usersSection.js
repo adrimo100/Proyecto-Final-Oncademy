@@ -35,8 +35,6 @@ export const UsersSection = () => {
 
   return (
     <article>
-      <h2>Usuarios</h2>
-
       <FilterUsersForm handleSubmit={handleSubmit} error={error} />
 
       {users.length > 0 && (

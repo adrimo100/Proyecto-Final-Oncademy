@@ -5,6 +5,8 @@ import { faker } from "@faker-js/faker";
 import { UsersSection } from "../js/component/usersSection";
 import { waitFor } from "@testing-library/react";
 
+jest.mock("../js/component/editSubjectsModal");
+
 faker.setLocale("es");
 
 describe("AdminDashboard", () => {
@@ -13,12 +15,6 @@ describe("AdminDashboard", () => {
   });
 
   describe("UsersList", () => {
-    it("should have a title", () => {
-      render(<UsersSection />);
-      const title = screen.getByRole("heading", { name: /usuarios/i });
-
-      expect(title).toBeInTheDocument();
-    });
     describe("should display a list of users", () => {
       const expectedUsers = new Array(10).fill(1).map(() => ({
         full_name: faker.name.findName(),

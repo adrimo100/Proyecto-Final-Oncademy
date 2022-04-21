@@ -23,8 +23,6 @@ export const Payments = () => {
 
   return (
     <article>
-      <h2>Pagos</h2>
-
       <FilterPaymentsForm handleSubmit={handleSubmit} error={error} />
 
       {!payments.length && !error && <p>No se han encontrado pagos.</p>}

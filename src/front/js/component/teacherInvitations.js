@@ -34,8 +34,6 @@ export const TeacherInvitations = () => {
 
   return (
     <article>
-      <h2>Invita nuevos profesores</h2>
-
       <p>
         Para que un nuevo profesor pueda registrase, debes generar un código de
         invitación y hacérselo llegar. Deberá introducirlo en el formulario de
