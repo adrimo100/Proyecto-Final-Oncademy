@@ -68,7 +68,7 @@ class TestAddUserSubjects:
         )
 
         assert response.status_code == 200
-        for subject in response.json["subjects"]:
+        for subject in response.json["user"]["subjects"]:
             assert subject["id"] in [subject.id for subject in user.subjects]
 
     @pytest.mark.parametrize(
