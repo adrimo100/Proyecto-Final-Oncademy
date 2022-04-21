@@ -37,6 +37,8 @@ export const UsersSection = () => {
     <article>
       <FilterUsersForm handleSubmit={handleSubmit} error={error} />
 
+      {!users.length && !error && <p>No se han encontrado usuarios.</p>}
+
       {users.length > 0 && (
         <div className="table-responsive-sm">
           <table className="table table-hover caption-top">
