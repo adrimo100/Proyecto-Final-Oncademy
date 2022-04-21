@@ -6,9 +6,9 @@ import { UsersSection } from "./usersSection";
 export const AdminDashboard = () => {
   return (
     <main className="app-container py-4">
+      <UsersSection />
       <TeacherInvitations />
       <Payments />
-      <UsersSection />
     </main>
   );
 };

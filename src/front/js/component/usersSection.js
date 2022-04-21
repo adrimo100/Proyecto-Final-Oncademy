@@ -92,7 +92,7 @@ export const UsersSection = () => {
         </div>
       )}
 
-      <EditSubjectsModal user={editedUser}/>
+      <EditSubjectsModal user={editedUser} setEditedUser={setEditedUser} />
     </article>
   );
 };

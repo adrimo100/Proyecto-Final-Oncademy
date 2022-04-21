@@ -261,7 +261,7 @@ def add_subjects_to_user(user_id):
     user.subjects.extend(new_subjects)
     db.session.commit()
 
-    return jsonify({"subjects": [subject.serialize() for subject in user.subjects]})
+    return jsonify({"user": user.serialize()})
 
 @api.route("/users/<int:user_id>/subjects/<int:subject_id>", methods=["DELETE"])
 @jwt_required()
@@ -283,7 +283,7 @@ def delete_subjects_from_user(user_id, subject_id):
     user.subjects.remove(subject)
     db.session.commit()
 
-    return jsonify({"deletedSubject": subject.serialize()})
+    return jsonify({"user": user.serialize()})
 
 @api.route("/login", methods=["POST"])
 def create_token():
@@ -350,3 +350,11 @@ def get_payments():
         }
     )
 
+@api.route("/subjects", methods=["GET"])
+def get_subjects():
+    subjects = Subject.query.all()
+
+    return jsonify(subjects=[
+        { "id": subject.id, "name": subject.name, "course": subject.course.name } 
+        for subject in subjects
+    ])
