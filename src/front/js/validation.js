@@ -43,3 +43,15 @@ export const loginValidationSchema = yup.object({
   email,
   password: yup.string().required(requiredErrorText),
 });
+
+
+export const subjectValidationSchema = yup.object({
+  name: yup.string().required(requiredErrorText).max(50, maxErrorGenerator),
+  description: yup.string().required(requiredErrorText),
+  cardDescription: yup.string().required(requiredErrorText).max(200, maxErrorGenerator),
+  image_url: yup.string().required(requiredErrorText),
+  start_date: yup.string(),
+  end_date: yup.string(),
+  course_id: yup.number(),
+  stripe_id: yup.string().required(requiredErrorText),
+});
