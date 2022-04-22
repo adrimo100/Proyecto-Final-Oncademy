@@ -5,7 +5,7 @@ import { SelectCourseField } from "./selectCourseField";
 
 export const FilterSubjectsForm = ({ handleSubmit, error }) => {
   return (
-    <Formik initialValues={{ name: "", courseId: "" }} onSubmit={handleSubmit}>
+    <Formik initialValues={{ name: "", course_id: "" }} onSubmit={handleSubmit}>
       <Form className="inline-form mb-2">
         <TextField name="name" label="Filtrar por nombre:" inline />
 

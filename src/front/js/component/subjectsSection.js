@@ -3,6 +3,7 @@ import { usePagination } from "../utils";
 import { FilterSubjectsForm } from "./filterSubjectsForm";
 import { AppTd } from "./AppTd";
 import { Pagination } from "./pagination"
+import { UpdateSubjectModal } from "./updateSubjectModal";
 
 export const SubjectsSection = () => {
   const [filters, setFilters] = useState({});
@@ -15,9 +16,12 @@ export const SubjectsSection = () => {
     total,
   } = usePagination({ path: "/api/subjects", parameters: { ...filters, page } });
 
+  
   function handleSubmit(filters) {
     setFilters(filters);
   }
+  
+  const [editedSubjectId, setEditedSubjectId] = useState(null);
 
   return (
     <article>
@@ -54,7 +58,8 @@ export const SubjectsSection = () => {
                       className="btn btn-sm"
                       aria-label="editar asignatura"
                       data-bs-toggle="modal"
-                      data-bs-target="#edit-subject"
+                      data-bs-target="#update-subject"
+                      onClick={() => setEditedSubjectId(subject.id)}
                     >
                       <i className="bi bi-pencil" />
                     </button>
@@ -79,6 +84,8 @@ export const SubjectsSection = () => {
           </table>
         </div>
       )}
+
+      <UpdateSubjectModal subjectId={editedSubjectId}/>
     </article>
   );
 };

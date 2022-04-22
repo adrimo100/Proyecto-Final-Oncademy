@@ -2,7 +2,7 @@ import { Field } from "formik";
 import React, { useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 
-export const SelectCourseField = ({ allOption }) => {
+export const SelectCourseField = ({ allOption, className = "", label }) => {
   const { store, actions } = useContext(Context);
 
   useEffect(() => {
@@ -12,18 +12,26 @@ export const SelectCourseField = ({ allOption }) => {
   }, []);
   
   return (
-    <Field
-      as="select"
-      className="form-select"
-      name="courseId"
-      aria-label="filtrar por curso"
-    >
-      {allOption && <option value="">Todos</option>}
-      {store.courses.map((course) => (
-        <option key={course.id} value={course.id}>
-          {course.name}
-        </option>
-      ))}
-    </Field>
+    <>
+      {label && (
+        <label htmlFor="course_id" className={`form-label`}>
+          {label}
+        </label>
+      )}
+      <Field
+        as="select"
+        className={`form-select ${className}`}
+        name="course_id"
+        id="course_id"
+        aria-label="filtrar por curso"
+      >
+        {allOption && <option value="">Todos los cursos</option>}
+        {store.courses.map((course) => (
+          <option key={course.id} value={course.id}>
+            {course.name}
+          </option>
+        ))}
+      </Field>
+    </>
   );
 }
