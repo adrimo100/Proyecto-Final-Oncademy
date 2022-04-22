@@ -56,7 +56,6 @@ class Role(db.Model):
         }
 
 class Subject(db.Model):
-
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(50), unique = False, nullable = False)
     description = db.Column(db.String(), unique = False, nullable = False)

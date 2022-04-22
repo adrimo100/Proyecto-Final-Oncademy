@@ -338,23 +338,39 @@ def get_payments():
         )
 
     # Get results paginated and ordered by date
-    payments = (stmt
+    result = (stmt
         .order_by(Payment.date.desc())
         .paginate(page, 10))
 
     return jsonify(
         {
-            "items": [payment.serialize() for payment in payments.items],
-            "total": payments.total,
-            "pages": payments.pages,
+            "items": [payment.serialize() for payment in result.items],
+            "total": result.total,
+            "pages": result.pages,
         }
     )
 
 @api.route("/subjects", methods=["GET"])
 def get_subjects():
-    subjects = Subject.query.all()
+    subject_name = request.args.get("subjectName")
+    course_id = request.args.get("courseId", None, int)
+    page = request.args.get("page", 1, int)
 
-    return jsonify(subjects=[
-        { "id": subject.id, "name": subject.name, "course": subject.course.name } 
-        for subject in subjects
-    ])
+    stmt = Subject.query
+
+    # Add subject name filter
+    if subject_name:
+        stmt = stmt.filter(Subject.name.ilike(f"%{subject_name}%"))
+
+    # Add course filter
+    if course_id:
+        stmt = stmt.filter_by(course_id=course_id)
+
+    # Get results paginated and ordered alphabetically by subject name
+    result = stmt.order_by(Subject.name).paginate(page, 10)
+
+    return jsonify({
+        "items": [subject.serialize() for subject in result.items],
+        "total": result.total,
+        "pages": result.pages,
+    })
