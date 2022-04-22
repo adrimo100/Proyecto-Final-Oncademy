@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import { useRouteMatch } from "react-router-dom";
 import { Payments } from "./payments";
+import { SubjectsSection } from "./subjectsSection";
 import { TeacherInvitations } from "./teacherInvitations";
 import { UsersSection } from "./usersSection";
 
@@ -19,6 +20,11 @@ export const AdminDashboard = () => {
       title: "Usuarios",
       Component: UsersSection,
       path: "users",
+    },
+    {
+      title: "Asignaturas",
+      Component: SubjectsSection,
+      path: "subjects",
     },
     {
       title: "Pagos",

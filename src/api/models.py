@@ -61,8 +61,8 @@ class Subject(db.Model):
     description = db.Column(db.String(), unique = False, nullable = False)
     cardDescription = db.Column(db.String(200), unique = False, nullable = False)
     image_url = db.Column(db.String(), unique = False, nullable = False)
-    start_date = db.Column(db.DateTime, unique = False, nullable = True)
-    end_date = db.Column(db.DateTime, unique = False, nullable = True)
+    start_date = db.Column(db.Date, unique = False, nullable = True)
+    end_date = db.Column(db.Date, unique = False, nullable = True)
     course_id = db.Column(db.Integer, db.ForeignKey("course.id"), nullable = True)
     course = db.relationship("Course", backref = "subject", lazy = True)
     stripe_id = db.Column(db.String(), unique = False, nullable = False)
@@ -78,8 +78,8 @@ class Subject(db.Model):
             "description": self.description,
             "cardDescription": self.cardDescription,
             "image_url": self.image_url,
-            "start_date": self.start_date,
-            "end_date": self.end_date,
+            "start_date": self.start_date and self.start_date.strftime("%d/%m/%y"),
+            "end_date": self.end_date and self.end_date.strftime("%d/%m/%y"),
             "course_name": self.course.name,
             "stripe_id": self.stripe_id
         }

@@ -352,7 +352,7 @@ def get_payments():
 
 @api.route("/subjects", methods=["GET"])
 def get_subjects():
-    subject_name = request.args.get("subjectName")
+    subject_name = request.args.get("name")
     course_id = request.args.get("courseId", None, int)
     page = request.args.get("page", 1, int)
 
@@ -374,3 +374,7 @@ def get_subjects():
         "total": result.total,
         "pages": result.pages,
     })
+
+@api.route("subjects", methods=["POST"])
+def create_subject():
+    pass
