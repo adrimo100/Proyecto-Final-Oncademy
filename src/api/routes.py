@@ -242,6 +242,13 @@ def editUser():
     setattr(user, field_name, new_value)
     db.session.commit()
 
+    if(field_name == "email" and user.stripe_id):
+        stripe.Customer.modify(
+        user.stripe_id,
+        email = new_value,
+        )
+
+
     return jsonify(user.serialize()), 200
 
 @api.route("/checkPassword", methods = ["PUT"])
