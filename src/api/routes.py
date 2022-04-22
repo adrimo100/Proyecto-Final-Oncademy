@@ -331,20 +331,31 @@ def createCheckoutSession():
 
     price_id = subject.stripe_id
 
-    #We create a stripe customer
-    customer_obj = stripe.Customer.create(email = user_email,)
-    
-    if(not customer_obj):
-        return jsonify("No se puedo crear el usuario"), 500
+    user = User.query.filter_by(email = user_email).first()
 
-    customer_id = customer_obj.id
+    if(not user):
+        return("El usuario no existe"), 404
+
+    if(not user.stripe_id):
+
+        #We create a stripe customer
+        customer_obj = stripe.Customer.create(email = user_email,)
+        
+        if(not customer_obj):
+            return jsonify("No se puedo crear el usuario"), 500
+
+        setattr(user, "stripe_id", customer_obj.id)
+
+        db.session.commit()
+    
+
 
     #We create the checkout session
 
     stripe_session = stripe.checkout.Session.create(
     success_url= success_url,
     cancel_url= cancel_url,
-    customer= customer_id,
+    customer= user.stripe_id,
     line_items=[
     {
       "price": price_id,
