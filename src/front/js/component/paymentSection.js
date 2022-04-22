@@ -66,7 +66,9 @@ export const PaymentSection = (props) => {
             <button
               type="button"
               className="btn btn-primary text-center"
-              onClick={() => actions.checkoutSubjectStripe(props.subject_obj)}
+              onClick={() =>
+                actions.checkoutSubjectStripe(props.subject_obj.id)
+              }
             >
               INSCRIBIRSE{" "}
               <svg

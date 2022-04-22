@@ -278,7 +278,7 @@ def editPassword():
 
     return jsonify("Contraseña cambiada con éxito"), 200
 
-@api.route("cancelSubscription", methods = ["PUT"])
+@api.route("/cancelSubscription", methods = ["PUT"])
 @jwt_required()
 def cancelSubscription():
     
@@ -314,4 +314,52 @@ def cancelSubscription():
     db.session.commit()
 
     return jsonify(user.serialize()), 200
+
+@api.route("/createCheckoutSession", methods =["POST"])
+@jwt_required()
+def createCheckoutSession():
+
+    user_email = request.json.get("user_email")
+    success_url = request.json.get("success_url")
+    cancel_url = request.json.get("cancel_url")
+    subject_id = request.json.get("subject_id")
+
+    subject = Subject.query.filter_by(id = subject_id).first()
+
+    if(not subject):
+        return jsonify("Asignatura no encontrada"), 404
+
+    price_id = subject.stripe_id
+
+    #We create a stripe customer
+    customer_obj = stripe.Customer.create(email = user_email,)
+    
+    if(not customer_obj):
+        return jsonify("No se puedo crear el usuario"), 500
+
+    customer_id = customer_obj.id
+
+    #We create the checkout session
+
+    stripe_session = stripe.checkout.Session.create(
+    success_url= success_url,
+    cancel_url= cancel_url,
+    customer= customer_id,
+    line_items=[
+    {
+      "price": price_id,
+      "quantity": 1,
+    },
+    ],
+    mode= "subscription"
+    )
+
+    if(not stripe_session):
+        return jsonify("No se pudo crear la sesión de pago"), 500
+
+    return jsonify({"session_url": stripe_session.get("url")}), 200
+
+
+
+
 

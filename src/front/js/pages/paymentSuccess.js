@@ -24,8 +24,8 @@ export const PaymentSuccess = () => {
       .then((data) => setSubject(data))
       .catch((error) => console.log(error));
 
-    if (actions.checkSubscription(params.subject_id)) setPaymentDone(true);
-    else setPaymentDone(false);
+    if (!actions.checkSubscription(params.subject_id)) setPaymentDone(false);
+    else setPaymentDone(true);
   }, []);
 
   const displayInfo = () => {
