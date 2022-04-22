@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { usePagination } from "../utils";
 import { AppTd } from "./AppTd";
-import { EditSubjectsModal } from "./editSubjectsModal";
+import { EditUserSubjectsModal } from "./editUserSubjectsModal";
 import { FilterUsersForm } from "./filterUsersForm";
 import { Pagination } from "./pagination";
 
@@ -92,7 +92,7 @@ export const UsersSection = () => {
         </div>
       )}
 
-      <EditSubjectsModal user={editedUser} setEditedUser={setEditedUser} />
+      <EditUserSubjectsModal user={editedUser} setEditedUser={setEditedUser} />
     </article>
   );
 };

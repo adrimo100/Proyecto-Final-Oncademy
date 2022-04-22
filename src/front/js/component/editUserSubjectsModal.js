@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { appFetch, usePagination } from "../utils";
 
-export const EditSubjectsModal = ({ user, setEditedUser }) => {
+export const EditUserSubjectsModal = ({ user, setEditedUser }) => {
   // Parse user subjects
   const userSubjects =
     user?.subjects.map((subject) => ({
