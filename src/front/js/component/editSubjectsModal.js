@@ -1,30 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { appFetch } from "../utils";
+import { appFetch, usePagination } from "../utils";
 
 export const EditSubjectsModal = ({ user, setEditedUser }) => {
-  const userSubjects = user?.subjects.map((subject) => ({
-    id: subject.id,
-    name: `${subject.name} (${subject.course_name})`,
-  }));
+  // Parse user subjects
+  const userSubjects =
+    user?.subjects.map((subject) => ({
+      id: subject.id,
+      name: `${subject.name} (${subject.course_name})`,
+    })) || [];
 
+  // Fetch all subjects using an infinite scrolling list
   const [subjects, setSubjects] = useState([]);
+  const [page, setPage] = useState(1);
+  const { items, pages } = usePagination({
+    path: "/api/subjects",
+    parameters: { page },
+  });
+
   useEffect(() => {
-    async function fetchData() {
-      const res = await appFetch("/api/subjects");
-      if (res.ok) {
-        const body = await res.json();
+    // Parse subjects names
+    const newSubjects = items.map((subject) => ({
+      id: subject.id,
+      name: `${subject.name} (${subject.course_name})`,
+    }));
 
-        // Parse subjects names
-        const subjects = body.subjects.map((subject) => ({
-          id: subject.id,
-          name: `${subject.name} (${subject.course})`,
-        }));
-
-        setSubjects(subjects);
-      }
-    }
-    fetchData();
-  }, []);
+    setSubjects([ ...subjects, ...newSubjects ]);
+  }, [items]);
 
   const [assignableSubjects, setAssignableSubjects] = useState([]);
   useEffect(() => {
@@ -35,7 +36,7 @@ export const EditSubjectsModal = ({ user, setEditedUser }) => {
         );
       })
     );
-  }, [userSubjects]);
+  }, [userSubjects, subjects]);
 
   async function addSubject(subjectId) {
     const res = await appFetch(
@@ -129,6 +130,11 @@ export const EditSubjectsModal = ({ user, setEditedUser }) => {
                     </li>
                   ))}
                 </ul>
+                {page < pages && (
+                  <button className="btn btn-link mt-1" onClick={() => setPage(page + 1)}>
+                    Mostrar más
+                  </button>
+                )}
               </article>
             </div>
           </div>
