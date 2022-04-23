@@ -77,7 +77,7 @@ def date_validator(form, field):
 class SignupForm(Form):
     full_name = StringField(
         "Name",
-        [required_validator, validators.Length(min=7, max=70, message=min_max_error)],
+        [required_validator, validators.Length(max=70, message=max_error)],
     )
     email = StringField(
         "Email",

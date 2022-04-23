@@ -7,7 +7,6 @@ const maxErrorGenerator = ({ max }) => `Debe tener ${max} o menos caracteres`;
 const fullName = yup
   .string()
   .required(requiredErrorText)
-  .min(5, minErrorGenerator)
   .max(70, maxErrorGenerator);
 
 const email = yup
