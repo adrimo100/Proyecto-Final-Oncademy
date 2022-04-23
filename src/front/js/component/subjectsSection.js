@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { usePagination } from "../utils";
+import { appFetch, usePagination } from "../utils";
 import { FilterSubjectsForm } from "./filterSubjectsForm";
 import { AppTd } from "./AppTd";
 import { Pagination } from "./pagination"
@@ -20,9 +20,13 @@ export const SubjectsSection = () => {
   function handleSubmit(filters) {
     setFilters(filters);
   }
+
+  function deleteSubject(id) {
+    appFetch(`/api/subjects/${id}`, { method: "DELETE" }, true)
+  }
   
   const [editedSubjectId, setEditedSubjectId] = useState(null);
-
+  
   return (
     <article>
       <FilterSubjectsForm handleSubmit={handleSubmit} error={error} />
@@ -66,6 +70,7 @@ export const SubjectsSection = () => {
                     <button
                       className="btn btn-sm"
                       aria-label="eliminar asignatura"
+                      onClick={() => deleteSubject(subject.id)}
                     >
                       <i className="bi bi-trash-fill text-danger" />
                     </button>

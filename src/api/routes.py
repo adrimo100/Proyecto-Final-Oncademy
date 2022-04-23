@@ -420,3 +420,18 @@ def update_subject(subject_id):
     db.session.commit()
 
     return jsonify({"subject": subject.serialize()})
+
+
+@jwt_required()
+@admin_required
+@api.route("/subjects/<int:subject_id>", methods=["DELETE"])
+def delete_subject(subject_id):
+    # Check if subject exists
+    subject = Subject.query.get(subject_id)
+    if subject is None:
+        raise APIException("La asignatura no existe", 404)
+
+    db.session.delete(subject)
+    db.session.commit()
+
+    return jsonify(message="Asignatura eliminada con éxito")
