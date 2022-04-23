@@ -1,15 +1,21 @@
-import { Field } from "formik";
+import { useField } from "formik";
 import React, { useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 
 export const SelectCourseField = ({ allOption, className = "", label }) => {
-  const { store, actions } = useContext(Context);
+  const { store: { courses }, actions } = useContext(Context);
+  const lastCourseId = courses.slice(-1)[0]?.id
+  const [field, meta, helpers] = useField("course_id");
 
   useEffect(() => {
-    if (!store.courses.length) {
+    if (!courses.length) {
       actions.getCourses();
     }
   }, []);
+
+  useEffect(() => {
+    !allOption && helpers.setValue(lastCourseId)
+  }, [lastCourseId])
   
   return (
     <>
@@ -18,20 +24,21 @@ export const SelectCourseField = ({ allOption, className = "", label }) => {
           {label}
         </label>
       )}
-      <Field
+      <select
         as="select"
-        className={`form-select ${className}`}
+        className={`form-select ${className} ${meta.touched && meta.error && "border-danger"}`}
         name="course_id"
         id="course_id"
         aria-label="filtrar por curso"
+        {...field}
       >
         {allOption && <option value="">Todos los cursos</option>}
-        {store.courses.map((course) => (
+        {courses.map((course) => (
           <option key={course.id} value={+course.id}>
             {course.name}
           </option>
         ))}
-      </Field>
+      </select>
     </>
   );
 }
