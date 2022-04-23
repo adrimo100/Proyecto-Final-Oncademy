@@ -374,9 +374,25 @@ def get_subjects():
         "pages": result.pages,
     })
 
-@api.route("subjects", methods=["POST"])
+@jwt_required()
+@admin_required
+@api.route("/subjects", methods=["POST"])
 def create_subject():
-    pass
+    # Validate subject data
+    form = SubjectForm(data=request.json)
+    if form.validate() == False:
+        raise APIException(
+            "Alguno de los campos no es correcto, revísalos.",
+            400,
+            {"validationErrors": form.errors}
+        )
+
+    # Create subject and add it to the db
+    subject = Subject(**form.data)
+    db.session.add(subject)
+    db.session.commit()
+
+    return jsonify(subject=subject.serialize())
 
 @jwt_required()
 @admin_required
