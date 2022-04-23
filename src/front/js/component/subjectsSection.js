@@ -3,7 +3,7 @@ import { usePagination } from "../utils";
 import { FilterSubjectsForm } from "./filterSubjectsForm";
 import { AppTd } from "./AppTd";
 import { Pagination } from "./pagination"
-import { UpdateSubjectModal } from "./updateSubjectModal";
+import { SubjectModal } from "./subjectModal";
 
 export const SubjectsSection = () => {
   const [filters, setFilters] = useState({});
@@ -26,7 +26,7 @@ export const SubjectsSection = () => {
   return (
     <article>
       <FilterSubjectsForm handleSubmit={handleSubmit} error={error} />
-
+        
       {!subjects.length && !error && <p>No se han encontrado asignaturas.</p>}
 
       {subjects.length > 0 && (
@@ -85,7 +85,8 @@ export const SubjectsSection = () => {
         </div>
       )}
 
-      <UpdateSubjectModal subjectId={editedSubjectId}/>
+      <SubjectModal subjectId={editedSubjectId} variant="update" />
+      <SubjectModal variant="create" />
     </article>
   );
 };
