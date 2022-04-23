@@ -80,6 +80,7 @@ class Subject(db.Model):
             "image_url": self.image_url,
             "start_date": self.start_date and self.start_date.strftime("%d/%m/%y"),
             "end_date": self.end_date and self.end_date.strftime("%d/%m/%y"),
+            "course_id": self.course_id,
             "course_name": self.course.name,
             "stripe_id": self.stripe_id
         }

@@ -3,14 +3,13 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Course, Subject, userSubjects, Role, Payment, InvitationCode
-from api.utils import admin_required, generate_sitemap, APIException, SignupForm
+from api.utils import admin_required, generate_sitemap, APIException, SignupForm, SubjectForm
 from flask_jwt_extended import create_access_token, current_user, jwt_required
 from werkzeug.security import generate_password_hash
 import json
 import os
-import datetime
-
 import stripe
+import datetime
 
 api = Blueprint('api', __name__)
 
@@ -378,3 +377,30 @@ def get_subjects():
 @api.route("subjects", methods=["POST"])
 def create_subject():
     pass
+
+@jwt_required()
+@admin_required
+@api.route("/subjects/<int:subject_id>", methods=["PUT"])
+def update_subject(subject_id):
+    # Validate subject data
+    form = SubjectForm(data=request.json)
+
+    if form.validate() == False:
+        raise APIException(
+            "Alguno de los campos no es correcto, revísalos.",
+            400,
+            {"validationErrors": form.errors}
+        )
+
+    # Check if subject exists
+    subject = Subject.query.get(subject_id)
+    if subject is None:
+        raise APIException("La asignatura no existe", 404)
+
+    # Update subject data if it's different
+    for key, value in form.data.items():
+        if getattr(subject, key) != value:
+            setattr(subject, key, value)
+    db.session.commit()
+
+    return jsonify({"subject": subject.serialize()})

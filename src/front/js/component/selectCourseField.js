@@ -27,7 +27,7 @@ export const SelectCourseField = ({ allOption, className = "", label }) => {
       >
         {allOption && <option value="">Todos los cursos</option>}
         {store.courses.map((course) => (
-          <option key={course.id} value={course.id}>
+          <option key={course.id} value={+course.id}>
             {course.name}
           </option>
         ))}
