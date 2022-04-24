@@ -34,35 +34,32 @@ const getState = ({ getStore, getActions, setStore }) => {
           .catch((error) => console.log(error));
       },
 
-      checkoutSubjectStripe: (subject) => {
-        var stripe = Stripe(
-          "pk_test_51KjoxdLkR53a2kgb9ksFzfaSbUQZqFRWbLgBEfthEjPdiuSTvJks30xNmjb1cIdw1Ie43Wf6Y4sjsYtRCZU4v9bl00G9hMyzMs"
-        );
+      checkoutSubjectStripe: async (subject_id) => {
+        const store = getStore();
 
-        stripe
-          .redirectToCheckout({
-            lineItems: [{ price: subject.stripe_id, quantity: 1 }],
-            mode: "subscription",
-            /*
-             * Do not rely on the redirect to the successUrl for fulfilling
-             * purchases, customers may not always reach the success_url after
-             * a successful payment.
-             * Instead use one of the strategies described in
-             * https://stripe.com/docs/payments/checkout/fulfill-orders
-             */
-            successUrl: window.location.href + `/success`,
-            cancelUrl: window.location.href,
+        const session_data = {
+          user_email: store.user?.email,
+          success_url: window.location.href + `/success`,
+          cancel_url: window.location.href,
+          subject_id: subject_id,
+        };
+
+        await fetch(process.env.BACKEND_URL + "/api/createCheckoutSession", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: JSON.stringify(session_data),
+        })
+          .then((response) => {
+            if (!response.ok)
+              throw new Error("Error al crear la sesión de pago");
+
+            return response.json();
           })
-          .then(function (result) {
-            if (result.error) {
-              /*
-               * If `redirectToCheckout` fails due to a browser or network
-               * error, display the localized error message to your customer.
-               */
-              var displayError = document.getElementById("error-message");
-              displayError.textContent = result.error.message;
-            }
-          });
+          .then((data) => window.location.replace(data.session_url))
+          .catch((error) => alert(error));
       },
 
       checkSubscription: async (subject_id) => {
@@ -81,6 +78,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           })
           .then((data) => {
             console.log(data);
+            return data;
           })
           .catch((error) => console.log(error));
       },
@@ -152,6 +150,80 @@ const getState = ({ getStore, getActions, setStore }) => {
         } catch (error) {
           console.warn(error);
         }
+      },
+
+      editUser: async (new_value, old_value, field_name) => {
+        await fetch(process.env.BACKEND_URL + "/api/editUser", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: JSON.stringify({ new_value, old_value, field_name }),
+        })
+          .then((respond) => {
+            if (!respond.ok) throw new Error("Usurio no actualizado");
+
+            return respond.json();
+          })
+          .then((data) => {
+            setStore({ user: data });
+          })
+          .catch((error) => alert(error));
+      },
+
+      changePassword: async (email, oldPassword, newPassword) => {
+        console.log("change password");
+
+        const user_data = {
+          email,
+          oldPassword,
+          newPassword,
+        };
+
+        await fetch(process.env.BACKEND_URL + "/api/changePassword", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: JSON.stringify(user_data),
+        })
+          .then((respond) => {
+            if (!respond.ok) throw new Error("Contraseña o Email incorrecto");
+
+            alert("Contraseña cambiada con éxito");
+          })
+          .catch((error) => alert(error));
+      },
+
+      cancelSubscription: async (subject_id) => {
+        const store = getStore();
+
+        const cancel_data = {
+          user_email: store.user.email,
+          subject: subject_id,
+        };
+
+        await fetch(process.env.BACKEND_URL + "/api/cancelSubscription", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: JSON.stringify(cancel_data),
+        })
+          .then((respond) => {
+            if (!respond.ok) throw new Error("Cancelación fallida");
+
+            return respond.json();
+          })
+          .then((data) => {
+            setStore({ user: data });
+
+            alert("Cancelación exitosa");
+          })
+          .catch((error) => alert(error));
       },
     },
   };

@@ -43,6 +43,13 @@ export const loginValidationSchema = yup.object({
   password: yup.string().required(requiredErrorText),
 });
 
+export const editUserEmail = yup.object({
+  email,
+});
+
+export const editUserPassword = yup.object({
+  password,
+});
 
 export const subjectValidationSchema = yup.object({
   name: yup.string().required(requiredErrorText).max(50, maxErrorGenerator),

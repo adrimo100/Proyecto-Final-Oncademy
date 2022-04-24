@@ -435,3 +435,159 @@ def delete_subject(subject_id):
     db.session.commit()
 
     return jsonify(message="Asignatura eliminada con éxito")
+
+
+@api.route("/editUser", methods = ["PUT"])
+@jwt_required()
+def editUser():
+    new_value = request.json.get("new_value")
+    old_value = request.json.get("old_value")
+    field_name = request.json.get("field_name")
+
+    user = User.query.filter(getattr(User, field_name) == old_value).first()
+
+    if(not user):
+        return jsonify("El usuario no existe"), 404
+
+    setattr(user, field_name, new_value)
+    db.session.commit()
+
+    if(field_name == "email" and user.stripe_id):
+        stripe.Customer.modify(
+        user.stripe_id,
+        email = new_value,
+        )
+
+
+    return jsonify(user.serialize()), 200
+
+@api.route("/checkPassword", methods = ["PUT"])
+@jwt_required()
+def checkPassword():
+    
+    email = request.json.get("email")
+    password = request.json.get("password")
+
+    user = User.query.filter_by(email=email).first()
+    if user is None or not user.password_is_valid(password):
+        return jsonify({"error": "Correo electrónico o contraseña incorrectos", "answer": False}), 401
+
+    return jsonify({"answer": True}), 200
+        
+@api.route("/changePassword", methods = ["PUT"])
+@jwt_required()
+def editPassword():
+    email = request.json.get("email")
+    oldPassword = request.json.get("oldPassword")
+    newPassword = request.json.get("newPassword")
+
+    print(newPassword)
+
+    user = User.query.filter_by(email=email).first()
+    if user is None or not user.password_is_valid(oldPassword):
+        return jsonify({"error": "Correo electrónico o contraseña incorrectos"}), 401
+
+    #Generate Hash of Password
+    hashed_pwd = generate_password_hash(newPassword)
+
+    user.password = hashed_pwd
+    db.session.commit()
+
+    return jsonify("Contraseña cambiada con éxito"), 200
+
+@api.route("/cancelSubscription", methods = ["PUT"])
+@jwt_required()
+def cancelSubscription():
+    
+    user_email = request.json.get("user_email")
+    subject_id = request.json.get("subject")
+
+    user = User.query.filter_by(email = user_email).first()
+
+    if(not user):
+        return jsonify("El usuario no existe"), 404
+
+    subject = Subject.query.filter_by(id = subject_id).first()
+
+    if(not subject):
+        return jsonify("La asignatura no existe"), 404
+
+    payment = Payment.query.filter_by(user_id = user.id).filter(Payment.subjects.any(id = subject.id)).first()
+
+    if(not payment):
+        return jsonify("La subscripción no existe"), 404
+
+    subscription_id = payment.stripe_subscription_id
+
+    #Cancelamos la subscripción
+    stripe.Subscription.delete(subscription_id)
+
+    #Eliminamos el pago
+    db.session.delete(payment)
+
+    #Eliminamos la asignatura del alumno
+    user.subjects.remove(subject)
+
+    db.session.commit()
+
+    return jsonify(user.serialize()), 200
+
+@api.route("/createCheckoutSession", methods =["POST"])
+@jwt_required()
+def createCheckoutSession():
+
+    user_email = request.json.get("user_email")
+    success_url = request.json.get("success_url")
+    cancel_url = request.json.get("cancel_url")
+    subject_id = request.json.get("subject_id")
+
+    subject = Subject.query.filter_by(id = subject_id).first()
+
+    if(not subject):
+        return jsonify("Asignatura no encontrada"), 404
+
+    price_id = subject.stripe_id
+
+    user = User.query.filter_by(email = user_email).first()
+
+    if(not user):
+        return("El usuario no existe"), 404
+
+    if(not user.stripe_id):
+
+        #We create a stripe customer
+        customer_obj = stripe.Customer.create(email = user_email,)
+        
+        if(not customer_obj):
+            return jsonify("No se puedo crear el usuario"), 500
+
+        setattr(user, "stripe_id", customer_obj.id)
+
+        db.session.commit()
+    
+
+
+    #We create the checkout session
+
+    stripe_session = stripe.checkout.Session.create(
+    success_url= success_url,
+    cancel_url= cancel_url,
+    customer= user.stripe_id,
+    line_items=[
+    {
+      "price": price_id,
+      "quantity": 1,
+    },
+    ],
+    mode= "subscription"
+    )
+
+    if(not stripe_session):
+        return jsonify("No se pudo crear la sesión de pago"), 500
+
+    return jsonify({"session_url": stripe_session.get("url")}), 200
+
+
+
+
+

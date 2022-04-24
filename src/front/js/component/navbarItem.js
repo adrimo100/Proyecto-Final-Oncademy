@@ -28,7 +28,7 @@ export const NavbarItem = ({
           {...props}
           className={`btn btn-${
             secondary ? "secondary" : "primary"
-          } border-light rounded-pill text-uppercase text-decoration-none `}
+          } border-light text-uppercase text-decoration-none `}
         >
           <NavItemText text={text} />
           {icon}

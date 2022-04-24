@@ -10,15 +10,13 @@ export const PaymentSection = (props) => {
     if (!store.user) setMode(null);
     else if (store.user.role == "Student") {
       for (let subject of store.user.subjects) {
-        console.log(
-          `subject.id = ${subject.id}, props.subject.id = ${props.subject_obj.id}`
-        );
         if (subject.id == props.subject_obj.id) {
           setMode(true);
           break;
         }
       }
-    } else setMode(false);
+    } else if (store.user.role == "Teacher") setMode("Teacher");
+    else setMode(false);
   }, [store.user]);
 
   switch (mode) {
@@ -37,6 +35,9 @@ export const PaymentSection = (props) => {
         </div>
       );
 
+    case "Teacher":
+      return <div></div>;
+
     case true:
       return (
         <div
@@ -44,7 +45,7 @@ export const PaymentSection = (props) => {
           id="subject-alert"
         >
           <h6 className="text-white m-0 py-1 text-center">
-            ¡¡¡YA ESTAS INSCRITO EN ESTA ASIGNATURA, GESTIONALA DESDE EL PANEL
+            ¡¡¡YA ESTÁS INSCRITO EN ESTA ASIGNATURA, GESTIONALA DESDE EL PANEL
             DE CONTROL!!!
           </h6>
         </div>
@@ -65,7 +66,9 @@ export const PaymentSection = (props) => {
             <button
               type="button"
               className="btn btn-primary text-center"
-              onClick={() => actions.checkoutSubjectStripe(props.subject_obj)}
+              onClick={() =>
+                actions.checkoutSubjectStripe(props.subject_obj.id)
+              }
             >
               INSCRIBIRSE{" "}
               <svg
