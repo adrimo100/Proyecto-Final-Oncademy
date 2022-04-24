@@ -149,5 +149,6 @@ export const usePagination = ({ path , parameters }) => {
     total,
     pages,
     error,
+    refetch: getItems,
   }
 }

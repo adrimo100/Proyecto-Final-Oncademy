@@ -14,6 +14,7 @@ export const SubjectsSection = () => {
     error,
     pages,
     total,
+    refetch
   } = usePagination({ path: "/api/subjects", parameters: { ...filters, page } });
 
   
@@ -21,8 +22,13 @@ export const SubjectsSection = () => {
     setFilters(filters);
   }
 
-  function deleteSubject(id) {
-    appFetch(`/api/subjects/${id}`, { method: "DELETE" }, true)
+  function handleChangedSubjects() {
+    refetch()
+  }
+
+  async function deleteSubject(id) {
+    await appFetch(`/api/subjects/${id}`, { method: "DELETE" }, true)
+    handleChangedSubjects()
   }
   
   const [editedSubjectId, setEditedSubjectId] = useState(null);
@@ -30,7 +36,7 @@ export const SubjectsSection = () => {
   return (
     <article>
       <FilterSubjectsForm handleSubmit={handleSubmit} error={error} />
-        
+
       {!subjects.length && !error && <p>No se han encontrado asignaturas.</p>}
 
       {subjects.length > 0 && (
@@ -90,8 +96,12 @@ export const SubjectsSection = () => {
         </div>
       )}
 
-      <SubjectModal subjectId={editedSubjectId} variant="update" />
-      <SubjectModal variant="create" />
+      <SubjectModal
+        subjectId={editedSubjectId}
+        variant="update"
+        onChangedSubjects={handleChangedSubjects}
+      />
+      <SubjectModal variant="create" onChangedSubjects={handleChangedSubjects} />
     </article>
   );
 };

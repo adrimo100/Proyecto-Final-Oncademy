@@ -18,6 +18,7 @@ export const UsersSection = () => {
     total,
     pages,
     error,
+    refetch
   } = usePagination({
     path: "/api/users",
     parameters: { ...filters, page },
@@ -32,6 +33,11 @@ export const UsersSection = () => {
   }
 
   const [editedUser, setEditedUser] = useState(null);
+  
+  function handleUpdatedUser(user) {
+    setEditedUser(user);
+    refetch()
+  }
 
   return (
     <article>
@@ -92,7 +98,7 @@ export const UsersSection = () => {
         </div>
       )}
 
-      <EditUserSubjectsModal user={editedUser} setEditedUser={setEditedUser} />
+      <EditUserSubjectsModal user={editedUser} onUpdatedUser={handleUpdatedUser} />
     </article>
   );
 };

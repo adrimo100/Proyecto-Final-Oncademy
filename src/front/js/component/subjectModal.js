@@ -5,16 +5,20 @@ import { subjectValidationSchema } from "../validation";
 import { SelectCourseField } from "./selectCourseField";
 import { TextField } from "./textFIeld";
 
-export const SubjectModal = ({ subjectId = null, variant = "update" }) => {
+export const SubjectModal = ({ subjectId = null, variant = "update", onChangedSubjects }) => {
   const updating = variant == "update";
 
   // Operation status state
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
+  // Reset form status.
   // Get subject information if we are updating
   const [subject, setSubject] = useState(null);
   useEffect(() => {
+    setError(null)
+    setSuccess(false)
+    
     async function fetchSubject() {
       const res = await appFetch(`/api/Subjects/${subjectId}`);
 
@@ -63,6 +67,7 @@ export const SubjectModal = ({ subjectId = null, variant = "update" }) => {
       } else {
         setSuccess(true);
         updating && setSubject(body.subject);
+        onChangedSubjects()
       }
     } catch (err) {
       console.error(err);

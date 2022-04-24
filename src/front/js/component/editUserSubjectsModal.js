@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { appFetch, usePagination } from "../utils";
 
-export const EditUserSubjectsModal = ({ user, setEditedUser }) => {
+export const EditUserSubjectsModal = ({ user, onUpdatedUser }) => {
   // Parse user subjects
   const userSubjects =
     user?.subjects.map((subject) => ({
@@ -50,7 +50,7 @@ export const EditUserSubjectsModal = ({ user, setEditedUser }) => {
 
     if (res.ok) {
       const body = await res.json();
-      setEditedUser(body.user);
+      onUpdatedUser(body.user);
     }
   }
 
@@ -63,7 +63,7 @@ export const EditUserSubjectsModal = ({ user, setEditedUser }) => {
 
     if (res.ok) {
       const body = await res.json();
-      setEditedUser(body.user);
+      onUpdatedUser(body.user);
     }
   }
 
