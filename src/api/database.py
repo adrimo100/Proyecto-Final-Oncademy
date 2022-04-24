@@ -11,7 +11,7 @@ def set_up_db(app):
     if db_url is None:
         raise KeyError(f"{db_url_env_var} is not set")
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace("postgres://", "postgresql://")
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     MIGRATE = Migrate(app, db, compare_type = True)
     db.init_app(app)
