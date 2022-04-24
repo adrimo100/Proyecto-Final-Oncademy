@@ -11,7 +11,7 @@ from api.utils import APIException, generate_sitemap
 from api.routes import api
 
 def create_app(testing = False):
-    static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
+    static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../public/')
 
     app = Flask(__name__)
     app.url_map.strict_slashes = False
