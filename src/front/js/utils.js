@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Context } from "./store/appContext";
 import { useHistory } from "react-router-dom";
 
@@ -71,3 +71,84 @@ export const setToken = (token) => {
 };
 
 export const getToken = () => localStorage.getItem("token");
+
+/**
+ * Helper that:
+ * - Adds server url to path.
+ * - If authenticated is true, adds Authorization header with token.
+ * - If method is POST or PUT, adds body as JSON and sets Content-Type header.
+ */
+export const appFetch = (path, requestInit = {}, authenticated) => {
+  const url = process.env.BACKEND_URL + path;
+  const init = {
+    // We assure headers is always defined
+    headers: {},
+    ...requestInit,
+  };
+
+  if (authenticated) {
+    init.headers["Authorization"] = "Bearer " + getToken();
+  }
+
+  if (init.method === "POST" || init.method === "PUT") {
+    init.body = JSON.stringify(init.body);
+    init.headers["Content-Type"] = "application/json";
+  }
+
+  return fetch(url, init);
+};
+
+export const usePagination = ({ path , parameters }) => {
+  const [items, setItems] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [pages, setPages] = useState(0);
+  const [error, setError] = useState(null);
+
+  // We memoize the query parameters to avoid unnecessary re-rendering
+  // and therefore unnecessary fetching.
+  const queryString = useMemo(() => {
+      const params = new URLSearchParams();
+      Object.entries(parameters).forEach(([key, value]) => {
+        if (value) {
+          params.append(key, value);
+        }
+      });
+      return params.toString();
+  }, [parameters])
+
+  async function getItems() {
+    try {
+      setError(null);
+
+      // Fetch the items
+      const res = await appFetch(`${path}?${queryString}`, null, true);
+      const body = await res.json();
+
+      // Handle unsuccessful responses
+      if (!res.ok) {
+        if (body.error) return setError(body.error);
+        throw new Error();
+      }
+
+      // Store response data in state
+      setItems(body.items);
+      setTotal(body.total);
+      setPages(body.pages);
+    } catch (error) {
+      console.error(error);
+      setError("No se ha podido conectar con el servidor, prueba más tarde.");
+    }
+  }
+
+  useEffect(() => {
+    getItems();
+  }, [queryString]);
+
+  return {
+    items,
+    total,
+    pages,
+    error,
+    refetch: getItems,
+  }
+}

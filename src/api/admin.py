@@ -1,10 +1,10 @@
-  
 import os
 from flask_admin import Admin
 from .models import db, User, Role, Subject, Course, Payment, InvitationCode
 from flask_admin.contrib.sqla import ModelView
 
-def setup_admin(app):
+def set_up_admin(app):
+    """ Sets up the Flask-Admin extension """
     app.secret_key = os.environ.get('FLASK_APP_KEY', 'sample key')
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
     admin = Admin(app, name='4Geeks Admin', template_mode='bootstrap3')

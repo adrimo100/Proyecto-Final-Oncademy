@@ -1,16 +1,14 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Course, Subject, userSubjects, Role, Payment, InvitationCode
-from api.utils import generate_sitemap, APIException, SignupForm
+from flask import request, jsonify, Blueprint
+from api.models import db, User, Course, Subject, Role, Payment, InvitationCode
+from api.utils import admin_required, APIException, SignupForm, SubjectForm
 from flask_jwt_extended import create_access_token, current_user, jwt_required
 from werkzeug.security import generate_password_hash
-import json
 import os
-import datetime
-
 import stripe
+import datetime
 
 api = Blueprint('api', __name__)
 
@@ -142,7 +140,8 @@ def checkSubscription(subject_id):
         return jsonify(True), 200
     else:
         return jsonify(False),200
-@api.route("/users", methods = ["POST"])
+        
+@api.route("/users", methods=["POST"])
 def create_user():
     # Get user info and convert keys to snake_case
     user_data = {
@@ -150,20 +149,22 @@ def create_user():
         "email": request.json.get("email"),
         "password": request.json.get("password"),
         "repeat_password": request.json.get("repeatPassword"),
-        "invitation_code": request.json.get("invitationCode")
+        "invitation_code": request.json.get("invitationCode"),
     }
 
     # Validate data
     form = SignupForm(data=user_data)
-    if (form.validate() == False):
-        return jsonify({
-            "validationErrors": form.errors
-        }), 400
+    if form.validate() == False:
+        raise APIException(
+            "Alguno de los campos no es correcto, revísalos.",
+            400,
+            {"validationErrors": form.errors}
+        )
 
     # Check if user exists
     user = User.query.filter_by(email=form.data["email"]).first()
     if user != None:
-        return jsonify({ "error": "El usuario ya existe." }), 400
+        raise APIException("El usuario ya existe", 400)
 
     # Assign role depending on invitation code
     role = None
@@ -174,18 +175,23 @@ def create_user():
     else:
         # Validate invitation code
         invitation_code = InvitationCode.query.filter_by(code=invitation_code).first()
-        if (invitation_code is None):
-            return jsonify({ "error": "El código de invitación no es válido."}), 400
-            
+        if invitation_code is None:
+            raise APIException("El código de invitación no es válido.", 400)
+
         # Remove invitation code and assign teacher role
         db.session.delete(invitation_code)
         role = Role.query.filter_by(name="Teacher").first()
-        
+
     # Hash password
     hashed_pwd = generate_password_hash(form.data["password"])
 
     # Create user
-    user = User(full_name=form.data["full_name"], email=form.data["email"], password=hashed_pwd, role=role)
+    user = User(
+        full_name=form.data["full_name"],
+        email=form.data["email"],
+        password=hashed_pwd,
+        role=role,
+    )
     db.session.add(user)
 
     # Save all changes in db
@@ -194,10 +200,88 @@ def create_user():
     # Create jwt
     access_token = create_access_token(identity=user.id)
 
-    return jsonify({
-        "user": user.serialize(),
-        "token": access_token
-    })
+    return jsonify({"user": user.serialize(), "token": access_token})
+
+
+@api.route("/users", methods=["GET"])
+@jwt_required()
+@admin_required
+def get_users():
+    user_name = request.args.get("userName", None)
+    role_name = request.args.get("role", None)
+    page = request.args.get("page", 1, type=int)
+
+    stmt = User.query
+    
+    # Validate and add role filter
+    if role_name:
+        role = Role.query.filter_by(name=role_name).first()
+        if role is None:
+            raise APIException(f"No existe el rol '{role_name}'", 400)
+
+        stmt = stmt.filter_by(role=role)
+
+    # Add user name filter
+    if user_name:
+        stmt = stmt.filter(User.full_name.ilike(f"%{user_name}%"))
+
+    # Get results paginated and ordered alphabetically by user name
+    result = stmt.order_by(User.full_name).paginate(page, 10)
+
+    return jsonify(
+        {
+            "items": [user.serialize() for user in result.items],
+            "total": result.total,
+            "pages": result.pages,
+        }
+    )
+
+@api.route("/users/<int:user_id>/subjects", methods=["POST"])
+@jwt_required()
+@admin_required
+def add_subjects_to_user(user_id):
+    subject_ids = request.json.get("subjects", [])
+    
+    # Validate user
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        raise APIException("El usuario no existe", 404)
+    
+    # Validate subjects
+    new_subjects = Subject.query.filter(Subject.id.in_(subject_ids)).all()
+    if len(new_subjects) != len(subject_ids):
+        raise APIException("Alguna de las asignaturas no existe", 404)
+    for subject in new_subjects:
+        if subject in user.subjects:
+            raise APIException(f"El usuario ya tiene asignada la asignatura '{subject.name}'", 400)
+
+    # Add subjects to user
+    user.subjects.extend(new_subjects)
+    db.session.commit()
+
+    return jsonify({"user": user.serialize()})
+
+@api.route("/users/<int:user_id>/subjects/<int:subject_id>", methods=["DELETE"])
+@jwt_required()
+@admin_required
+def delete_subjects_from_user(user_id, subject_id):
+    # Validate user
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        raise APIException("El usuario no existe", 404)
+
+    # Validate subject
+    subject = Subject.query.filter_by(id=subject_id).first()
+    if subject is None:
+        raise APIException("La asignatura no existe", 404)
+    if subject not in user.subjects:
+        raise APIException("El usuario no tiene asignada la asignatura", 400)
+
+    # Remove subject from user
+    user.subjects.remove(subject)
+    db.session.commit()
+
+    return jsonify({"user": user.serialize()})
 
 @api.route("/login", methods=["POST"])
 def create_token():
@@ -206,15 +290,13 @@ def create_token():
 
     user = User.query.filter_by(email=email).first()
     if user is None or not user.password_is_valid(password):
-        return jsonify({"error": "Correo electrónico o contraseña incorrectos"}), 401
-    
+        raise APIException("Correo electrónico o contraseña incorrectos", 401)
+
     # Create jwt
     access_token = create_access_token(identity=user.id)
 
-    return jsonify({ 
-        "user": user.serialize(),
-        "token": access_token
-    })
+    return jsonify({"user": user.serialize(), "token": access_token})
+
 
 @api.route("/authenticated")
 @jwt_required()
@@ -222,10 +304,137 @@ def get_authenticated_user():
     # We re-generate a token with a new expiration date
     access_token = create_access_token(identity=current_user.id)
 
+    return jsonify({"user": current_user.serialize(), "token": access_token})
+
+
+@api.route("/invitation-codes", methods=["POST"])
+@jwt_required()
+@admin_required
+def create_invitation_code():
+    invitation_code = InvitationCode()
+    db.session.add(invitation_code)
+    db.session.commit()
+
+    return jsonify({"invitationCode": invitation_code.code}), 200
+
+
+# Gets payments and filter by user name if provided. Returns payments in pages
+@api.route("/payments", methods=["GET"])
+@jwt_required()
+@admin_required
+def get_payments():
+    user_name = request.args.get("userName")
+    page = int(request.args.get("page")) or 1
+
+    stmt = Payment.query
+
+    # Add user name filter
+    if user_name:
+        stmt = (stmt
+            .join(Payment.user, aliased=True)
+            .filter(User.full_name.ilike(f"%{user_name}%"))
+        )
+
+    # Get results paginated and ordered by date
+    result = (stmt
+        .order_by(Payment.date.desc())
+        .paginate(page, 10))
+
+    return jsonify(
+        {
+            "items": [payment.serialize() for payment in result.items],
+            "total": result.total,
+            "pages": result.pages,
+        }
+    )
+
+@api.route("/subjects", methods=["GET"])
+def get_subjects():
+    subject_name = request.args.get("name")
+    course_id = request.args.get("course_id", None, int)
+    page = request.args.get("page", 1, int)
+
+    stmt = Subject.query
+
+    # Add subject name filter
+    if subject_name:
+        stmt = stmt.filter(Subject.name.ilike(f"%{subject_name}%"))
+
+    # Add course filter
+    if course_id:
+        stmt = stmt.filter_by(course_id=course_id)
+
+    # Get results paginated and ordered alphabetically by subject name
+    result = stmt.order_by(Subject.name).paginate(page, 10)
+
     return jsonify({
-        "user": current_user.serialize(),
-        "token": access_token
+        "items": [subject.serialize() for subject in result.items],
+        "total": result.total,
+        "pages": result.pages,
     })
+
+@jwt_required()
+@admin_required
+@api.route("/subjects", methods=["POST"])
+def create_subject():
+    # Validate subject data
+    form = SubjectForm(data=request.json)
+    if form.validate() == False:
+        raise APIException(
+            "Alguno de los campos no es correcto, revísalos.",
+            400,
+            {"validationErrors": form.errors}
+        )
+
+    # Create subject and add it to the db
+    subject = Subject(**form.data)
+    db.session.add(subject)
+    db.session.commit()
+
+    return jsonify(subject=subject.serialize())
+
+@jwt_required()
+@admin_required
+@api.route("/subjects/<int:subject_id>", methods=["PUT"])
+def update_subject(subject_id):
+    # Validate subject data
+    form = SubjectForm(data=request.json)
+
+    if form.validate() == False:
+        raise APIException(
+            "Alguno de los campos no es correcto, revísalos.",
+            400,
+            {"validationErrors": form.errors}
+        )
+
+    # Check if subject exists
+    subject = Subject.query.get(subject_id)
+    if subject is None:
+        raise APIException("La asignatura no existe", 404)
+
+    # Update subject data if it's different
+    for key, value in form.data.items():
+        if getattr(subject, key) != value:
+            setattr(subject, key, value)
+    db.session.commit()
+
+    return jsonify({"subject": subject.serialize()})
+
+
+@jwt_required()
+@admin_required
+@api.route("/subjects/<int:subject_id>", methods=["DELETE"])
+def delete_subject(subject_id):
+    # Check if subject exists
+    subject = Subject.query.get(subject_id)
+    if subject is None:
+        raise APIException("La asignatura no existe", 404)
+
+    db.session.delete(subject)
+    db.session.commit()
+
+    return jsonify(message="Asignatura eliminada con éxito")
+
 
 @api.route("/editUser", methods = ["PUT"])
 @jwt_required()

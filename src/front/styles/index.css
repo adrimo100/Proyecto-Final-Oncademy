@@ -18,3 +18,28 @@
     padding: 0;
   }
 }
+
+.inline-form {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.inline-form input, .inline-form select {
+  width: min-content;
+}
+
+.space-children > *:not(:last-child) {
+  margin-bottom: 0.75rem;
+}
+
+table, tr {
+  height: 1px;
+}
+
+.vertical-center {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}

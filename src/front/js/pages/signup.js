@@ -1,7 +1,7 @@
 import { Form, Formik } from "formik";
 import React, { useContext, useState } from "react";
 import "../../styles/auth.css";
-import { TextField } from "../component/textFIeld";
+import { TextField } from "../component/textField";
 import { signupValidationSchema } from "../validation";
 import { Context } from "../store/appContext";
 import { toCamelCase, useRedirectAuthenticated } from "../utils";

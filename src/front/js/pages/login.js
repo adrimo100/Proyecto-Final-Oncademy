@@ -2,7 +2,7 @@ import { Form, Formik } from "formik";
 import React, { useContext, useState } from "react";
 import "../../styles/auth.css";
 import { AppHeader } from "../component/appHeader";
-import { TextField } from "../component/textFIeld";
+import { TextField } from "../component/textField";
 import { Context } from "../store/appContext";
 import { useRedirectAuthenticated } from "../utils";
 import { loginValidationSchema } from "../validation";

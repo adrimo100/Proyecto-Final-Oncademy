@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 import random
 from werkzeug.security import check_password_hash
 
+
 db = SQLAlchemy()
 
 
@@ -56,14 +57,13 @@ class Role(db.Model):
         }
 
 class Subject(db.Model):
-
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(50), unique = False, nullable = False)
     description = db.Column(db.String(), unique = False, nullable = False)
     cardDescription = db.Column(db.String(200), unique = False, nullable = False)
     image_url = db.Column(db.String(), unique = False, nullable = False)
-    start_date = db.Column(db.DateTime, unique = False, nullable = True)
-    end_date = db.Column(db.DateTime, unique = False, nullable = True)
+    start_date = db.Column(db.Date, unique = False, nullable = True)
+    end_date = db.Column(db.Date, unique = False, nullable = True)
     course_id = db.Column(db.Integer, db.ForeignKey("course.id"), nullable = True)
     course = db.relationship("Course", backref = "subject", lazy = True)
     stripe_id = db.Column(db.String(), unique = False, nullable = False)
@@ -79,8 +79,9 @@ class Subject(db.Model):
             "description": self.description,
             "cardDescription": self.cardDescription,
             "image_url": self.image_url,
-            "start_date": self.start_date,
-            "end_date": self.end_date,
+            "start_date": self.start_date and self.start_date.strftime("%d/%m/%y"),
+            "end_date": self.end_date and self.end_date.strftime("%d/%m/%y"),
+            "course_id": self.course_id,
             "course_name": self.course.name,
             "stripe_id": self.stripe_id
         }
@@ -115,13 +116,13 @@ class Payment(db.Model):
     subjects = db.relationship("Subject", secondary = subjects, lazy = "subquery", backref = db.backref("payments", lazy = True))
 
     def serialize(self):
-        return{
+        return {
             "id": self.id,
-            "date": self.date,
+            "date": self.date.strftime("%d-%m-%Y - %H:%M:%S"),
             "quantity": self.quantity,
+            "user": self.user.full_name,
+            "subjects": [ f"{subject.name} ({subject.course.name})" for subject in self.subjects],
             "stripe_subscription_id": self.stripe_subscription_id,
-            "user": self.user,
-            "subjects": self.subjects
         }
 
 class InvitationCode(db.Model):
