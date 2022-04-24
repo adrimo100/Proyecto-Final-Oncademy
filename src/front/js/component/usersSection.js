@@ -73,13 +73,13 @@ export const UsersSection = () => {
 
                     <div>
                       <button
-                        className="btn btn-outline-primary btn-sm"
+                        className="btn"
                         aria-label="editar asignaturas"
                         data-bs-toggle="modal"
                         data-bs-target="#edit-subjects"
                         onClick={() => setEditedUser(user)}
                       >
-                        <i className="bi bi-pencil" />
+                        <i className="bi bi-pencil text-primary" />
                       </button>
                     </div>
                   </AppTd>

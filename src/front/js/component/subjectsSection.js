@@ -71,7 +71,7 @@ export const SubjectsSection = () => {
                       data-bs-target="#update-subject"
                       onClick={() => setEditedSubjectId(subject.id)}
                     >
-                      <i className="bi bi-pencil" />
+                      <i className="bi bi-pencil text-primary" />
                     </button>
                     <button
                       className="btn btn-sm"
