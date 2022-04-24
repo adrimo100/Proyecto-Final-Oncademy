@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Formik } from "formik";
-import { TextField } from "./textFIeld";
+import { TextField } from "./textField";
 import { SelectCourseField } from "./selectCourseField";
 
 export const FilterSubjectsForm = ({ handleSubmit, error }) => {

@@ -1,12 +1,11 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Course, Subject, userSubjects, Role, Payment, InvitationCode
-from api.utils import admin_required, generate_sitemap, APIException, SignupForm, SubjectForm
+from flask import request, jsonify, Blueprint
+from api.models import db, User, Course, Subject, Role, Payment, InvitationCode
+from api.utils import admin_required, APIException, SignupForm, SubjectForm
 from flask_jwt_extended import create_access_token, current_user, jwt_required
 from werkzeug.security import generate_password_hash
-import json
 import os
 import stripe
 import datetime

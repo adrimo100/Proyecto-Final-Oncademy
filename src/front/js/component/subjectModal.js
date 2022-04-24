@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { appFetch } from "../utils";
 import { subjectValidationSchema } from "../validation";
 import { SelectCourseField } from "./selectCourseField";
-import { TextField } from "./textFIeld";
+import { TextField } from "./textField";
 
 export const SubjectModal = ({ subjectId = null, variant = "update", onChangedSubjects }) => {
   const updating = variant == "update";

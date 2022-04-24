@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Formik } from "formik";
-import { TextField } from "./textFIeld";
+import { TextField } from "./textField";
 
 export const FilterPaymentsForm = ({ handleSubmit, error }) => (
   <Formik initialValues={{ userName: "" }} onSubmit={handleSubmit}>

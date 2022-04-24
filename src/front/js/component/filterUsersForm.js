@@ -1,6 +1,6 @@
 import React from "react";
 import { Field, Form, Formik } from "formik";
-import { TextField } from "./textFIeld";
+import { TextField } from "./textField";
 
 export const FilterUsersForm = ({ handleSubmit, error }) => (
   <Formik
