@@ -5,6 +5,7 @@ import { Route } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import { useRouteMatch } from "react-router-dom";
+import { EditUser } from "./editUser";
 import { Payments } from "./payments";
 import { SubjectsSection } from "./subjectsSection";
 import { TeacherInvitations } from "./teacherInvitations";
@@ -36,6 +37,11 @@ export const AdminDashboard = () => {
       Component: TeacherInvitations,
       path: "teacher-invitations",
     },
+    {
+      title: "Perfil",
+      Component: EditUser,
+      path: "profile"
+    }
   ];
 
   return (
