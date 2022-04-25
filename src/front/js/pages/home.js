@@ -93,14 +93,12 @@ export const Home = () => {
                   </svg>
                 </div>
                 <div className="my-4">
-                  <h4>CARASTERÍSTICA 1</h4>
+                  <h4>Aula Invertida</h4>
                 </div>
                 <div>
                   <p>
-                    Odio scelerisque mauris facilisis turpis vitae ut blandit
-                    pellentesque interdum. Posuere sit quam neque, purus sem
-                    adipiscing. Nullam lectus mauris, ac quisque enim,
-                    pellentesque. Sapie
+                    Creemos en la eficacia de esta metodología, que en los últimos años ha demostrado
+                    dar mejores resultados que la educación tradicional.
                   </p>
                 </div>
               </div>
@@ -118,14 +116,12 @@ export const Home = () => {
                   </svg>
                 </div>
                 <div className="my-4">
-                  <h4>CARASTERÍSTICA 2</h4>
+                  <h4>Apuntes Propios</h4>
                 </div>
                 <div>
                   <p>
-                    Odio scelerisque mauris facilisis turpis vitae ut blandit
-                    pellentesque interdum. Posuere sit quam neque, purus sem
-                    adipiscing. Nullam lectus mauris, ac quisque enim,
-                    pellentesque. Sapie
+                    Contaras siempre con el apoyo de nuestros propios apuntes, para asegurarnos que tienes 
+                    siempre un contenido base para estudiar.
                   </p>
                 </div>
               </div>
@@ -143,14 +139,12 @@ export const Home = () => {
                   </svg>
                 </div>
                 <div className="my-4">
-                  <h4>CARASTERÍSTICA 3</h4>
+                  <h4>Ejercicios y Feedback</h4>
                 </div>
                 <div>
                   <p>
-                    Odio scelerisque mauris facilisis turpis vitae ut blandit
-                    pellentesque interdum. Posuere sit quam neque, purus sem
-                    adipiscing. Nullam lectus mauris, ac quisque enim,
-                    pellentesque. Sapie
+                    Contarás con nuestras colecciones de ejercicios, los cuales podrás entregar a los profesores
+                    para que los corrijan y te devuelvan comentarios para mejorar.
                   </p>
                 </div>
               </div>
