@@ -96,8 +96,9 @@
 		"formik": "^2.2.9",
 		"prop-types": "^15.6.1",
 		"react": "^18.0.0",
-		"react-dom": "^18.0.0",
 		"react-bootstrap": "^2.3.0",
+		"react-dom": "^18.0.0",
+		"react-draft-wysiwyg": "^1.14.7",
 		"react-polyfills": "0.0.1",
 		"react-router-dom": "^5.2.0",
 		"yup": "^0.32.11"
