@@ -119,6 +119,20 @@ def webhook():
 
         db.session.commit()
 
+    #Si borramos usuario desde stripe
+    elif event['type'] == 'customer.deleted':
+      customer = event['data']['object']
+      
+      user = User.query.filter_by(email = customer["email"]).first()
+
+      if(not user):
+          return jsonify("El usuario no exite"), 404
+
+
+      user.stripe_id = ""
+
+      db.session.commit()
+      
     return jsonify(success=True), 200
 
 @api.route("/check-subscription/<int:subject_id>", methods = ["GET"])
