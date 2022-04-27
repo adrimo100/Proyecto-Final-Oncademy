@@ -16,6 +16,7 @@ export const Subject = () => {
   const [subject, setSubject] = useState(null);
   const [teachers, setTeachers] = useState([]);
 
+
   useEffect(() => {
     fetch(process.env.BACKEND_URL + `/api/Subjects/${params.subject_id}`)
       .then((response) => {
@@ -83,13 +84,7 @@ export const Subject = () => {
           <div>
             <strong>DETALLES</strong>
             <div className="ps-2">
-              <li id="subject-description">
-                {subject
-                  ? subject.description
-                    ? subject.description
-                    : ""
-                  : ""}
-              </li>
+                <div dangerouslySetInnerHTML={{ __html: subject?.description}}/>
             </div>
           </div>
           <div className="mt-4">
