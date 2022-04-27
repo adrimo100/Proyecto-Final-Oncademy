@@ -45,5 +45,5 @@ export const NavbarItem = ({
 };
 
 const NavItemText = ({ text }) => (
-  <span className="d-none d-md-inline me-2">{text}</span>
+  <span className="d-none d-lg-inline me-2">{text}</span>
 );
