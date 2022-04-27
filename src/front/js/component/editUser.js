@@ -59,6 +59,7 @@ export const EditUser = () => {
           >
             <input
               type="text"
+              placeholder={store.user?.full_name}
               onChange={(e) => setNewName(e.target.value)}
               className="form-control"
             ></input>
@@ -129,6 +130,7 @@ export const EditUser = () => {
           >
             <input
               type="text"
+              placeholder= {store.user?.email}
               onChange={(e) => setNewEmail(e.target.value)}
               className="form-control"
             ></input>
