@@ -22,7 +22,7 @@ export const EditUser = () => {
     if (!editName)
       return (
         <div className="d-flex">
-          <p className="ps-1 m-0">{store.user?.full_name}</p>
+          <p className="ps-1 mt-1 mb-1">{store.user?.full_name}</p>
           <div className="m-0 p-0">
             <button
               className="btn btn-whites ms-1 p-0"
@@ -92,7 +92,7 @@ export const EditUser = () => {
     if (!editEmail)
       return (
         <div className="d-flex">
-          <p className="ps-1 m-0">{store.user?.email}</p>
+          <p className="ps-1 mt-1 mb-1">{store.user?.email}</p>
           <div className="m-0 p-0">
             <button
               className="btn btn-whites ms-1 p-0"
