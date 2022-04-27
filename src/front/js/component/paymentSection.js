@@ -15,7 +15,7 @@ export const PaymentSection = (props) => {
           break;
         }
       }
-    } else if (store.user.role == "Teacher") setMode("Teacher");
+    } else if (store.user.role != "Student") setMode("Teacher");
     else setMode(false);
   }, [store.user]);
 
