@@ -22,7 +22,7 @@ export const Navbar = () => {
             <>
               <NavbarItem
                 button
-                to="/#subjects"
+                to="/#subjects-space"
                 icon={<i className="bi bi-book" />}
                 text="Asignaturas"
               />

@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
 import { SubjectCard } from "../component/subjectCard";
+import { useLocation } from "react-router-dom";
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
@@ -45,6 +46,14 @@ export const Home = () => {
   const displaySubjects = (subject, index) => {
     return <SubjectCard key={index} subject={subject}></SubjectCard>;
   };
+
+  const subjectsRef = React.createRef();
+  const { hash } = useLocation()
+  useEffect(() => {
+    if (hash === "#subjects-space") {
+      subjectsRef.current?.scrollIntoView();
+    }
+  }, [hash])
 
   return (
     <div className="text-center">
@@ -152,7 +161,7 @@ export const Home = () => {
           </div>
           <div className="col-md-2 d-none d-md-block"></div>
         </div>
-        <div className="row my-5" id="subjects-space">
+        <div className="row my-5" id="subjects-space" ref={subjectsRef}>
           <div className="col-md-2 d-none d-md-block"></div>
           <div className="col-12 col-md-8 text-center px-0" id="subjecst-div">
             <div className="container-fluid">
