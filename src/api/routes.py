@@ -128,7 +128,6 @@ def webhook():
       if(not user):
           return jsonify("El usuario no exite"), 404
 
-
       user.stripe_id = ""
 
       db.session.commit()
