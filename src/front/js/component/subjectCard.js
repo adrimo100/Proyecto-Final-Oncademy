@@ -15,7 +15,7 @@ export const SubjectCard = (props) => {
 
   return (
     <div className="col-12 col-md-6 col-xl-4 col-xxl-3 mb-3 mx-0 p-0 d-flex justify-content-center align-items-center">
-      <div className="card" style={{ width: "15rem" }}>
+      <div className="card" style={{ width: "14rem" }}>
         <div className="card-body p-0">
           <img
             src={
