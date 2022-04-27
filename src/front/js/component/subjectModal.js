@@ -2,8 +2,10 @@ import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { appFetch } from "../utils";
 import { subjectValidationSchema } from "../validation";
+import { RichTextField } from "./richTextField";
 import { SelectCourseField } from "./selectCourseField";
 import { TextField } from "./textField";
+
 
 export const SubjectModal = ({ subjectId = null, variant = "update", onChangedSubjects }) => {
   const updating = variant == "update";
@@ -109,7 +111,7 @@ export const SubjectModal = ({ subjectId = null, variant = "update", onChangedSu
                 return (
                   <Form>
                     <TextField name="name" label="Nombre" />
-                    <TextField
+                    <RichTextField
                       name="description"
                       label="Descripción en detalles"
                     />
