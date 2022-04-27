@@ -22,6 +22,13 @@ export const Navbar = () => {
             <>
               <NavbarItem
                 button
+                to="/#subjects"
+                icon={<i className="bi bi-book" />}
+                text="Asignaturas"
+              />
+
+              <NavbarItem
+                button
                 secondary
                 to="/dashboard"
                 icon={<DashboardIcon />}
