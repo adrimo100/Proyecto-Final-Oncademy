@@ -83,7 +83,8 @@ class Subject(db.Model):
             "end_date": self.end_date and self.end_date.strftime("%d/%m/%y"),
             "course_id": self.course_id,
             "course_name": self.course.name,
-            "stripe_id": self.stripe_id
+            "stripe_id": self.stripe_id,
+            "users": [{ "full_name": u.full_name, "role": u.role.name } for u in self.users],
         }
 
 
