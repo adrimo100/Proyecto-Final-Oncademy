@@ -167,6 +167,7 @@ export const Home = () => {
                   displayFilters(course, course.id)
                 )}
               </div>
+              <hr/>
               <div
                 className="row mt-4 d-flex justify-content-center align-items-center"
                 id="subjects-cards"
