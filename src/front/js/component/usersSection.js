@@ -39,6 +39,8 @@ export const UsersSection = () => {
     refetch()
   }
 
+  const selectedUserRole = filters.role === "Student" ? "Estudiantes" : "Profesores";
+
   return (
     <article>
       <FilterUsersForm handleSubmit={handleSubmit} error={error} />
@@ -53,7 +55,8 @@ export const UsersSection = () => {
             </caption>
             <thead>
               <tr>
-                <th scope="col">Usuario</th>
+                <th scope="col">{selectedUserRole}</th>
+                <th scope="col">Email</th>
                 <th scope="col">Asignaturas</th>
               </tr>
             </thead>
@@ -62,6 +65,7 @@ export const UsersSection = () => {
               {users.map((user) => (
                 <tr key={user.id}>
                   <AppTd>{user.full_name}</AppTd>
+                  <AppTd>{user.email}</AppTd>
                   <AppTd className="justify-content-between">
                     <div className="space-children">
                       {user.subjects.map((subject) => (
@@ -98,7 +102,10 @@ export const UsersSection = () => {
         </div>
       )}
 
-      <EditUserSubjectsModal user={editedUser} onUpdatedUser={handleUpdatedUser} />
+      <EditUserSubjectsModal
+        user={editedUser}
+        onUpdatedUser={handleUpdatedUser}
+      />
     </article>
   );
 };
