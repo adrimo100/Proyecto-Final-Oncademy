@@ -129,7 +129,7 @@ export const Home = () => {
                 </div>
                 <div>
                   <p>
-                    Contaras siempre con el apoyo de nuestros propios apuntes, para asegurarnos que tienes 
+                    Contarás siempre con el apoyo de nuestros propios apuntes, para asegurarnos que tienes 
                     siempre un contenido base para estudiar.
                   </p>
                 </div>
