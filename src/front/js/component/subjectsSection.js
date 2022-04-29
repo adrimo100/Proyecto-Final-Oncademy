@@ -4,6 +4,7 @@ import { FilterSubjectsForm } from "./filterSubjectsForm";
 import { AppTd } from "./AppTd";
 import { Pagination } from "./pagination"
 import { SubjectModal } from "./subjectModal";
+import { SubjectUsersModal } from "./subjectUsersModal";
 
 export const SubjectsSection = () => {
   const [filters, setFilters] = useState({});
@@ -32,6 +33,9 @@ export const SubjectsSection = () => {
   }
   
   const [editedSubjectId, setEditedSubjectId] = useState(null);
+
+  // Subject to show in the subject users modal
+  const [watchedSubject, setWatchedSubject] = useState(null)
   
   return (
     <article>
@@ -64,6 +68,16 @@ export const SubjectsSection = () => {
                   <AppTd>{subject.end_date}</AppTd>
 
                   <AppTd>
+                    <button
+                      className="btn btn-sm"
+                      aria-label="ver usuarios de asignatura"
+                      data-bs-toggle="modal"
+                      data-bs-target="#subject-users"
+                      onClick={() => setWatchedSubject(subject)}
+                    >
+                      <i className="bi bi-people text-primary" />
+                    </button>
+
                     <button
                       className="btn btn-sm"
                       aria-label="editar asignatura"
@@ -101,7 +115,11 @@ export const SubjectsSection = () => {
         variant="update"
         onChangedSubjects={handleChangedSubjects}
       />
-      <SubjectModal variant="create" onChangedSubjects={handleChangedSubjects} />
+      <SubjectModal
+        variant="create"
+        onChangedSubjects={handleChangedSubjects}
+      />
+      <SubjectUsersModal subject={watchedSubject} />
     </article>
   );
 };
