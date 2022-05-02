@@ -18,6 +18,7 @@ export const PaymentSection = (props) => {
   const handleShow = () => setShow(true);
 
   useEffect(() => {
+    
     if (!store.user) setMode(null);
     else if (store.user.role == "Student") {
       for (let subject of store.user.subjects) {
