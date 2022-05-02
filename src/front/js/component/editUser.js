@@ -227,16 +227,31 @@ export const EditUser = () => {
 
   return (
     <div>
-      <div>
-        <h2>Tus Datos</h2>
-      </div>
-      <div className="d-flex  align-items-center">
-        <strong>Nombre:</strong>
-        {nameSection()}
-      </div>
-      <div className="d-flex  align-items-center">
-        <strong>Email:</strong>
-        {emailSection()}
+      <div className="row">
+        <div className="col-12 col-lg-6">
+          <div>
+          <h2>Tus Datos</h2>
+          </div>
+          <div className="d-flex  align-items-center">
+            <strong>Nombre:</strong>
+            {nameSection()}
+          </div>
+          <div className="d-flex  align-items-center">
+            <strong>Email:</strong>
+            {emailSection()}
+          </div>
+        </div>
+        <div className="col-12 col-lg-6 mt-2 mt-lg-0">
+          <form>
+            <div class="mb-3">
+              <h2>Foto de Perfil</h2>
+              <div className="mt-2 d-flex align-items-center">
+                <strong for="formFile" class="form-label">Cambiar Foto</strong>
+                <input class="form-control ms-1 w-50" type="file" id="formFile" accept=".png, .jpg"/>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
 
       <hr />
