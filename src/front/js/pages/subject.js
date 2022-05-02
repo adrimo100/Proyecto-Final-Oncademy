@@ -81,7 +81,7 @@ export const Subject = () => {
       <div className="row mt-4" id="subject-details">
         <div className="col-2 d-none d-md-block"></div>
         <div className="col-12 col-md-8">
-          <div className="card p-3 d-flex justify-content-center">
+          <div className="card p-3 d-flex justify-content-center text-white"  style={{background:"#212529"}} >
               <div className="row">
                   <div className="col-12 col-lg-6">
                     <div>
