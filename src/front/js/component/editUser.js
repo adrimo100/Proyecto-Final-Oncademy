@@ -246,7 +246,7 @@ export const EditUser = () => {
         </div>
         <div className="col-12 col-lg-6 mt-2 mt-lg-0">
           <form id="avatar-form">
-            <div class="mb-3">
+            <div>
               <h2>Foto de Perfil</h2>
               <div id="dashboard-avatar" style={{background: store.user.avatar ? store.user.avatar : "gray"}}></div>
               <div className="mt-3 d-flex align-items-center">
@@ -266,6 +266,10 @@ export const EditUser = () => {
                     document.querySelector("#avatar-form").reset();
                     return;
                   }
+
+                  actions.changeAvatar(selectedAvatar);
+
+                  return;
                     
                 }}>Cambiar Foto</button>
               </div>
@@ -334,8 +338,8 @@ export const EditUser = () => {
               </div>
               <div className="ms-xl-4 mt-2 mt-xl-0">
                 <button
-                  className="btn btn-success m-0 d-flex justify-content-center align-items-center
-                  "
+                  className="btn btn-success m-0 d-flex justify-content-center align-items-center"
+                  style={{whiteSpace: "nowrap"}}
                   onClick={(e) => {
                     e.preventDefault();
                     editUserPassword();

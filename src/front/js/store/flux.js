@@ -173,7 +173,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       changeAvatar: async(file) => {
-          console.log(file)
+          alert(file)
       },
 
       changePassword: async (email, oldPassword, newPassword) => {
