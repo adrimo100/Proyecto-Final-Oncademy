@@ -263,6 +263,7 @@ export const EditUser = () => {
 
                   if(selectedAvatar.name.split('.').pop() != "png" && selectedAvatar.name.split('.').pop() != "jpg"){
                     alert("Formato de archivo no válido")
+                    document.querySelector("#avatar-form").reset();
                     return;
                   }
                     
