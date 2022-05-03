@@ -3,9 +3,10 @@ import "../../styles/generatedCodeAlert.css";
 
 export const GeneratedCodeAlert = ({ invitationCode }) => {
   const [copied, setCopied] = useState(false);
+  const url = window.location.origin + "/signup?code=" + invitationCode;
 
   function handleCopy() {
-    navigator.clipboard.writeText(invitationCode);
+    navigator.clipboard.writeText(url);
     setCopied(true);
 
     setTimeout(() => {
@@ -19,8 +20,8 @@ export const GeneratedCodeAlert = ({ invitationCode }) => {
       role="alert"
     >
       <span>
-        Código generado con éxito:{" "}
-        <b className="invitation-code">{invitationCode}</b>
+        Enlace generado con éxito: {" "}
+        <b className="invitation-code">{url}</b>
       </span>
       <div className="fs-3">
         {copied ? (
