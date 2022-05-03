@@ -6,17 +6,24 @@ import { signupValidationSchema } from "../validation";
 import { Context } from "../store/appContext";
 import { toCamelCase, useRedirectAuthenticated } from "../utils";
 import { AppHeader } from "../component/appHeader";
+import { useLocation } from "react-router-dom";
 
 export const Signup = () => {
   useRedirectAuthenticated();
   const { store, actions } = useContext(Context);
+
+  const location = useLocation();
+  const invitationCode = new URLSearchParams(location.search).get("code");
 
   const [formError, setFormError] = useState("");
 
   async function hanldeSubmit(values, { setFieldError }) {
     setFormError("");
 
-    const { error, validationErrors } = await actions.addUser(values);
+    const { error, validationErrors } = await actions.addUser({
+      ...values,
+      invitationCode,
+    });
 
     if (error) setFormError(error);
 
@@ -29,7 +36,9 @@ export const Signup = () => {
 
   return (
     <main>
-      <AppHeader className="auth-header">NUEVO USUARIO</AppHeader>
+      <AppHeader className="auth-header">
+        NUEVO {invitationCode ? "PROFESOR" : "ALUMNO"}
+      </AppHeader>
 
       <Formik
         initialValues={{
@@ -37,7 +46,6 @@ export const Signup = () => {
           email: "",
           password: "",
           repeatPassword: "",
-          invitationCode: "",
         }}
         validationSchema={signupValidationSchema}
         onSubmit={hanldeSubmit}
@@ -50,10 +58,6 @@ export const Signup = () => {
             label="Repite la contraseña"
             name="repeatPassword"
             type="password"
-          />
-          <TextField
-            label="Código de invitación (opcional)"
-            name="invitationCode"
           />
 
           <button type="submit" className="btn btn-primary">
