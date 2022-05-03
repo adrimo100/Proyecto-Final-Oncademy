@@ -35,14 +35,12 @@ export const TeacherInvitations = () => {
   return (
     <article>
       <p>
-        Para que un nuevo profesor pueda registrase, debes generar un código de
-        invitación y hacérselo llegar. Deberá introducirlo en el formulario de
-        registro, en el apartado de "Código de invitación". De no hacerlo, al
-        registrarse lo hará como alumno.
+        Si un profesor quiere crear su cuenta, deberá hacerlo a través de un link de un 
+        solo uso que puedes generar aquí.
       </p>
 
       <button className="btn btn-primary mb-3" onClick={generateCode}>
-        Generar un código de invitación
+        Generar un enlace
       </button>
 
       {invitationCode && <GeneratedCodeAlert invitationCode={invitationCode} />}
