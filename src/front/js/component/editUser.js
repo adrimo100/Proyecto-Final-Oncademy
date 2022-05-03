@@ -245,7 +245,8 @@ export const EditUser = () => {
           <form>
             <div class="mb-3">
               <h2>Foto de Perfil</h2>
-              <div className="mt-2 d-flex align-items-center">
+              <div id="dashboard-avatar"></div>
+              <div className="mt-3 d-flex align-items-center">
                 <strong for="formFile" class="form-label">Cambiar Foto</strong>
                 <input class="form-control ms-1 w-50" type="file" id="formFile" accept=".png, .jpg"/>
               </div>
