@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import { act } from "react-test-renderer";
 import { Context } from "../store/appContext";
 
 export const EditUser = () => {
@@ -244,17 +245,30 @@ export const EditUser = () => {
           </div>
         </div>
         <div className="col-12 col-lg-6 mt-2 mt-lg-0">
-          <form>
+          <form id="avatar-form">
             <div class="mb-3">
               <h2>Foto de Perfil</h2>
               <div id="dashboard-avatar" style={{background: store.user.avatar ? store.user.avatar : "gray"}}></div>
               <div className="mt-3 d-flex align-items-center">
-                <strong for="formFile" class="form-label">Cambiar Foto</strong>
                 <input class="form-control ms-1 w-50" type="file" id="formFile" accept=".png, .jpg" onChange={(e) => {
-                  setSelectedAvatar(e.target.files[0])
-                  
+                  setSelectedAvatar(e.target.files[0]);
                 }}/>
+                <button className="btn btn-primary ms-2" onClick={(e) =>{
+                  e.preventDefault()
+
+                  if(!selectedAvatar){
+                    alert("Selecciona un archivo válido primero")
+                    return;
+                  }
+
+                  if(selectedAvatar.name.split('.').pop() != "png" && selectedAvatar.name.split('.').pop() != "jpg"){
+                    alert("Formato de archivo no válido")
+                    return;
+                  }
+                    
+                }}>Cambiar Foto</button>
               </div>
+              
             </div>
           </form>
         </div>
