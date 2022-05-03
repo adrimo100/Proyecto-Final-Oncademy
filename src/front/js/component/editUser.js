@@ -10,6 +10,8 @@ export const EditUser = () => {
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
 
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
+
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [repeatedPassword, setRepeatedPassword] = useState("");
@@ -245,10 +247,13 @@ export const EditUser = () => {
           <form>
             <div class="mb-3">
               <h2>Foto de Perfil</h2>
-              <div id="dashboard-avatar"></div>
+              <div id="dashboard-avatar" style={{background: store.user.avatar ? store.user.avatar : "gray"}}></div>
               <div className="mt-3 d-flex align-items-center">
                 <strong for="formFile" class="form-label">Cambiar Foto</strong>
-                <input class="form-control ms-1 w-50" type="file" id="formFile" accept=".png, .jpg"/>
+                <input class="form-control ms-1 w-50" type="file" id="formFile" accept=".png, .jpg" onChange={(e) => {
+                  setSelectedAvatar(e.target.files[0])
+                  
+                }}/>
               </div>
             </div>
           </form>

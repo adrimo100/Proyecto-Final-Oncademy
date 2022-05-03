@@ -8,7 +8,6 @@ export const StudentDashboard = () => {
   const { store, actions } = useContext(Context);
 
   const displaySubjects = () => {
-    console.log(store.user?.subjects.length);
 
     if (store.user?.subjects.length == 0)
       return (
