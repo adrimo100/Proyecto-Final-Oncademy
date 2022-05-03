@@ -173,11 +173,30 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       changeAvatar: async(file) => {
-          alert(file)
+          let formData = new FormData();
+          formData.append("avatar", file)
+
+          await fetch(process.env.BACKEND_URL + "/api/changeAvatar", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${getToken()}`,
+            },
+            body: formData,
+          })
+          .then(respond => {
+            if(!respond.ok)
+              throw new Error("Error al cambiar el Avatar")
+
+            return respond.json()
+          })
+          .then(data => {
+            setStore({user: data})
+          })
+          .catch(error => alert(error))
       },
 
       changePassword: async (email, oldPassword, newPassword) => {
-        console.log("change password");
 
         const user_data = {
           email,

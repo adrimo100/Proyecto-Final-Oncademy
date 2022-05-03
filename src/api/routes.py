@@ -473,6 +473,12 @@ def editUser():
 
     return jsonify(user.serialize()), 200
 
+@api.route("changeAvatar", methods = ["PUT"])
+@jwt_required()
+def changeAvatar():
+    
+    return jsonify("ok"), 200
+
 @api.route("/checkPassword", methods = ["PUT"])
 @jwt_required()
 def checkPassword():
