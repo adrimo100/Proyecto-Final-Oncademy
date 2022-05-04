@@ -10,7 +10,6 @@ export const UsersSection = () => {
     userName: null,
     role: "Student",
   });
-
   const [page, setPage] = useState(1);
 
   const {
@@ -32,10 +31,20 @@ export const UsersSection = () => {
     setPage(1);
   }
 
-  const [editedUser, setEditedUser] = useState(null);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [updatedUser, setUpdatedUser] = useState(null);
+
+  function openUpdateModal(user) {
+    setUpdatedUser(user);
+    setShowUpdateModal(true);
+  }
+  function closeUpdateModal() {
+    setUpdatedUser(null);
+    setShowUpdateModal(false);
+  }
   
   function handleUpdatedUser(user) {
-    setEditedUser(user);
+    setUpdatedUser(user);
     refetch()
   }
 
@@ -79,9 +88,7 @@ export const UsersSection = () => {
                       <button
                         className="btn"
                         aria-label="editar asignaturas"
-                        data-bs-toggle="modal"
-                        data-bs-target="#edit-subjects"
-                        onClick={() => setEditedUser(user)}
+                        onClick={() => openUpdateModal(user)}
                       >
                         <i className="bi bi-pencil text-primary" />
                       </button>
@@ -103,7 +110,9 @@ export const UsersSection = () => {
       )}
 
       <EditUserSubjectsModal
-        user={editedUser}
+        show={showUpdateModal}
+        handleClose={closeUpdateModal}
+        user={updatedUser}
         onUpdatedUser={handleUpdatedUser}
       />
     </article>

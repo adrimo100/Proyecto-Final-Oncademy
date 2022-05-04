@@ -1,39 +1,25 @@
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
+import { Modal } from "react-bootstrap";
 import { appFetch } from "../utils";
 import { subjectValidationSchema } from "../validation";
 import { RichTextField } from "./richTextField";
 import { SelectCourseField } from "./selectCourseField";
 import { TextField } from "./textField";
+import "../../styles/subjectModal.css";
+import { toast } from "react-toastify";
 
+export const SubjectModal = ({
+  subject,
+  setSubject,
+  onChangedSubjects,
+  show,
+  handleClose,
+}) => {
+  const updating = !!subject;
 
-export const SubjectModal = ({ subjectId = null, variant = "update", onChangedSubjects }) => {
-  const updating = variant == "update";
-
-  // Operation status state
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-
-  // Reset form status.
-  // Get subject information if we are updating
-  const [subject, setSubject] = useState(null);
-  useEffect(() => {
-    setError(null)
-    setSuccess(false)
-    
-    async function fetchSubject() {
-      const res = await appFetch(`/api/Subjects/${subjectId}`);
-
-      if (res.ok) {
-        const body = await res.json();
-        setSubject(body);
-      } else {
-        setError("Error obteniendo los detalles de la asignatura.");
-      }
-    }
-
-    updating && subjectId && fetchSubject();
-  }, [subjectId]);
 
   function setFormValues() {
     return {
@@ -49,7 +35,7 @@ export const SubjectModal = ({ subjectId = null, variant = "update", onChangedSu
   }
 
   async function handleSubmit(values, { setFieldError }) {
-    const path = updating ? `/api/subjects/${subjectId}` : "/api/subjects";
+    const path = updating ? `/api/subjects/${subject.id}` : "/api/subjects";
     const method = updating ? "PUT" : "POST";
     setSuccess(false);
     setError(null);
@@ -67,9 +53,14 @@ export const SubjectModal = ({ subjectId = null, variant = "update", onChangedSu
           });
         }
       } else {
+        toast(
+          `Asignatura ${updating ? "actualizada" : "creada"} correctamente.`,
+          { type: "success" }
+        );
         setSuccess(true);
         updating && setSubject(body.subject);
-        onChangedSubjects()
+        onChangedSubjects();
+        handleClose();
       }
     } catch (err) {
       console.error(err);
@@ -78,78 +69,58 @@ export const SubjectModal = ({ subjectId = null, variant = "update", onChangedSu
   }
 
   return (
-    <div
-      id={`${updating ? "update" : "create"}-subject`}
-      className="modal fade"
-      tabIndex="-1"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h2 className="modal-title fs-3">
-              {updating ? "Editando" : "Nueva"} Asignatura
-            </h2>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            />
-          </div>
+    <Modal show={show} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>{updating ? "Editando" : "Nueva"} Asignatura</Modal.Title>
+      </Modal.Header>
 
-          <div className="modal-body">
-            <Formik
-              initialValues={setFormValues()}
-              validationSchema={subjectValidationSchema}
-              onSubmit={handleSubmit}
-            >
-              {({ isSubmitting, setValues }) => {
-                useEffect(() => {
-                  updating && setValues(setFormValues());
-                }, [subject]);
+      <Formik
+        initialValues={setFormValues()}
+        validationSchema={subjectValidationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting, setValues }) => {
+          useEffect(() => {
+            updating && setValues(setFormValues());
+          }, [subject]);
 
-                return (
-                  <Form>
-                    <TextField name="name" label="Nombre" />
-                    <RichTextField
-                      name="description"
-                      label="Descripción en detalles"
-                    />
-                    <TextField
-                      name="cardDescription"
-                      label="Descripción en carta"
-                    />
-                    <TextField name="image_url" label="URL de imágen" />
-                    <TextField
-                      name="start_date"
-                      label="Fecha de inicio (dd/mm/aa)"
-                    />
-                    <TextField
-                      name="end_date"
-                      label="Fecha de fin (dd/mm/aa)"
-                    />
-                    <SelectCourseField className="mb-3" label="Curso" />
-                    <TextField name="stripe_id" label="Id de stripe" />
-                    <button
-                      className="btn btn-primary mb-3"
-                      type="submit"
-                      disabled={isSubmitting}
-                    >
-                      {updating ? "Editar" : "Crear"}
-                    </button>
-                    {success && (
-                      <p className="text-success">
-                        Asignatura {updating ? "actualizada" : "creada"}{" "}
-                        correctamente.
-                      </p>
-                    )}
-                  </Form>
-                );
-              }}
-            </Formik>
-          </div>
-        </div>
-      </div>
-    </div>
+          return (
+            <Form>
+              <Modal.Body>
+                <TextField name="name" label="Nombre" />
+                <RichTextField
+                  name="description"
+                  label="Descripción en detalles"
+                />
+                <TextField
+                  name="cardDescription"
+                  label="Descripción en carta"
+                />
+                <TextField name="image_url" label="URL de imágen" />
+                <TextField
+                  name="start_date"
+                  label="Fecha de inicio (dd/mm/aa)"
+                />
+                <TextField name="end_date" label="Fecha de fin (dd/mm/aa)" />
+                <SelectCourseField className="mb-3" label="Curso" />
+                <TextField name="stripe_id" label="Id de stripe" />
+              </Modal.Body>
+
+              <Modal.Footer className="subjects-modal-footer">
+                <button
+                  className="btn btn-primary"
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  {updating ? "Editar" : "Crear"}
+                </button>
+
+                {error && <p className="w-100 py-2 text-danger">{error}</p>}
+              </Modal.Footer>
+            </Form>
+          );
+        }}
+      </Formik>
+    </Modal>
   );
 };
