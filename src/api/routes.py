@@ -1,16 +1,25 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-from flask import request, jsonify, Blueprint
+from flask import Flask, request, jsonify, Blueprint
 from api.models import db, User, Course, Subject, Role, Payment, InvitationCode
 from api.utils import admin_required, APIException, SignupForm, SubjectForm
-from flask_jwt_extended import create_access_token, current_user, jwt_required
+from flask_jwt_extended import create_access_token, current_user, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash
-import os
+import os, glob
 import stripe
 import datetime
+from werkzeug.utils import secure_filename 
+
+
+app = Flask(__name__)
+
 
 api = Blueprint('api', __name__)
+
+UPLOAD_FOLDER = './src/avatars'
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 # Set your secret key. Remember to switch to your live secret key in production.
 # See your keys here: https://dashboard.stripe.com/apikeys
@@ -472,11 +481,31 @@ def editUser():
 
     return jsonify(user.serialize()), 200
 
-@api.route("changeAvatar", methods = ["PUT"])
+@api.route("/changeAvatar", methods = ["PUT"])
 @jwt_required()
 def changeAvatar():
+
+    file = request.files['file']
+
+    filename = secure_filename(file.filename)
+
+    user_id = get_jwt_identity()
+
+    user = User.query.filter_by(id = user_id).first()
+
+    if(not user):
+        return jsonify("Usuario no encontrado"), 404
+
+    if(user.avatar):
+            os.remove("src/avatars/" + user.avatar) 
+        
+
+    file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename.replace(" ", "_")))
+
+    user.avatar = file.filename.replace(" ", "_")
+    db.session.commit()
     
-    return jsonify("ok"), 200
+    return jsonify(user.serialize()), 200
 
 @api.route("/checkPassword", methods = ["PUT"])
 @jwt_required()

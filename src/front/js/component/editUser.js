@@ -245,7 +245,7 @@ export const EditUser = () => {
           </div>
         </div>
         <div className="col-12 col-lg-6 mt-2 mt-lg-0">
-          <form id="avatar-form">
+          <form id="avatar-form" encType="multipart/form-data">
             <div>
               <h2>Foto de Perfil</h2>
               <div id="dashboard-avatar" style={{background: store.user.avatar ? store.user.avatar : "gray"}}></div>

@@ -174,12 +174,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 
       changeAvatar: async(file) => {
           let formData = new FormData();
-          formData.append("avatar", file)
+          formData.append("file", file)
 
           await fetch(process.env.BACKEND_URL + "/api/changeAvatar", {
             method: "PUT",
             headers: {
-              "Content-Type": "application/json",
               Authorization: `Bearer ${getToken()}`,
             },
             body: formData,
@@ -192,6 +191,8 @@ const getState = ({ getStore, getActions, setStore }) => {
           })
           .then(data => {
             setStore({user: data})
+
+            alert("Avatar cambiado con éxito")
           })
           .catch(error => alert(error))
       },

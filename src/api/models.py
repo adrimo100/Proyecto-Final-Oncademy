@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 import random
 from werkzeug.security import check_password_hash
+from flask import url_for
 
 
 db = SQLAlchemy()
@@ -34,7 +35,7 @@ class User(db.Model):
             "id": self.id,
             "full_name": self.full_name,
             "email": self.email,
-            "avatar": self.avatar,
+            "avatar": url_for('download_file', avatar = self.avatar),
             "role": self.role.name,
             "subjects": subjects_ser
             # do not serialize the password, its a security breach
