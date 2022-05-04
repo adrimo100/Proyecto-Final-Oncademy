@@ -3,7 +3,7 @@ import { Form, Formik } from "formik";
 import { TextField } from "./textField";
 import { SelectCourseField } from "./selectCourseField";
 
-export const FilterSubjectsForm = ({ handleSubmit, error }) => {
+export const FilterSubjectsForm = ({ handleSubmit, error, onCreateSubject }) => {
   return (
     <Formik initialValues={{ name: "", course_id: "" }} onSubmit={handleSubmit}>
       <Form className="inline-form mb-2">
@@ -17,9 +17,7 @@ export const FilterSubjectsForm = ({ handleSubmit, error }) => {
 
         <button
           className="btn btn-success"
-          type="submit"
-          data-bs-target="#create-subject"
-          data-bs-toggle="modal"
+          onClick={onCreateSubject}
         >
           Nueva
         </button>

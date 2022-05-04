@@ -34,8 +34,6 @@ export const SubjectsSection = () => {
     handleChangedSubjects();
   }
 
-  const [editedSubjectId, setEditedSubjectId] = useState(null);
-
   const [watchedSubject, setWatchedSubject] = useState(null);
   function handleOpenModal(flagSetter, subject) {
     setWatchedSubject(subject);
@@ -46,11 +44,16 @@ export const SubjectsSection = () => {
     setWatchedSubject(null);
   }
 
-  const [showUsers, setShowUsers] = useState(false);
+  const [showSubjectUsers, setShowSubjectUsers] = useState(false);
+  const [showEditionModal, setShowEditionModal] = useState(false);
 
   return (
     <article>
-      <FilterSubjectsForm handleSubmit={handleSubmit} error={error} />
+      <FilterSubjectsForm
+        handleSubmit={handleSubmit}
+        error={error}
+        onCreateSubject={() => handleOpenModal(setShowEditionModal, null)}
+      />
 
       {!subjects.length && !error && <p>No se han encontrado asignaturas.</p>}
 
@@ -82,7 +85,9 @@ export const SubjectsSection = () => {
                     <button
                       className="btn btn-sm"
                       aria-label="ver usuarios de asignatura"
-                      onClick={() => handleOpenModal(setShowUsers, subject)}
+                      onClick={() =>
+                        handleOpenModal(setShowSubjectUsers, subject)
+                      }
                     >
                       <i className="bi bi-people text-primary" />
                     </button>
@@ -90,12 +95,13 @@ export const SubjectsSection = () => {
                     <button
                       className="btn btn-sm"
                       aria-label="editar asignatura"
-                      data-bs-toggle="modal"
-                      data-bs-target="#update-subject"
-                      onClick={() => setEditedSubjectId(subject.id)}
+                      onClick={() =>
+                        handleOpenModal(setShowEditionModal, subject)
+                      }
                     >
                       <i className="bi bi-pencil text-primary" />
                     </button>
+
                     <button
                       className="btn btn-sm"
                       aria-label="eliminar asignatura"
@@ -120,21 +126,18 @@ export const SubjectsSection = () => {
       )}
 
       <SubjectModal
-        subjectId={editedSubjectId}
-        variant="update"
+        show={showEditionModal}
+        handleClose={() => handleCloseModal(setShowEditionModal)}
+        subject={watchedSubject}
+        setSubject={setWatchedSubject}
         onChangedSubjects={handleChangedSubjects}
       />
-      <SubjectModal
-        variant="create"
-        onChangedSubjects={handleChangedSubjects}
+
+      <SubjectUsersModal
+        subject={watchedSubject}
+        show={showSubjectUsers}
+        handleClose={() => handleCloseModal(setShowSubjectUsers)}
       />
-      {
-        <SubjectUsersModal
-          subject={watchedSubject}
-          show={showUsers}
-          handleClose={() => handleCloseModal(setShowUsers)}
-        />
-      }
     </article>
   );
 };
