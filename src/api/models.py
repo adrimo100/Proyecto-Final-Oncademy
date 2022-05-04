@@ -19,6 +19,7 @@ class User(db.Model):
     password = db.Column(db.String(255), unique=False, nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey("role.id"), nullable = False)
     role = db.relationship("Role", backref="user", lazy = True)
+    avatar = db.Column(db.String(), unique = False, nullable = True)
     stripe_id = db.Column(db.String(), unique = False, nullable = True)
     subjects = db.relationship("Subject", secondary = userSubjects, lazy = "subquery", backref = db.backref("users", lazy = True))
     
@@ -33,6 +34,7 @@ class User(db.Model):
             "id": self.id,
             "full_name": self.full_name,
             "email": self.email,
+            "avatar": self.avatar,
             "role": self.role.name,
             "subjects": subjects_ser
             # do not serialize the password, its a security breach
