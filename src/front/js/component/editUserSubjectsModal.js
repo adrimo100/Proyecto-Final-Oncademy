@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { appFetch, usePagination } from "../utils";
 
 export const EditUserSubjectsModal = ({ user, onUpdatedUser }) => {
@@ -24,7 +25,7 @@ export const EditUserSubjectsModal = ({ user, onUpdatedUser }) => {
       name: `${subject.name} (${subject.course_name})`,
     }));
 
-    setSubjects([ ...subjects, ...newSubjects ]);
+    setSubjects([...subjects, ...newSubjects]);
   }, [items]);
 
   const [assignableSubjects, setAssignableSubjects] = useState([]);
@@ -51,6 +52,10 @@ export const EditUserSubjectsModal = ({ user, onUpdatedUser }) => {
     if (res.ok) {
       const body = await res.json();
       onUpdatedUser(body.user);
+    } else {
+      toast("Error asignando la asignatura.", {
+        type: "error",
+      });
     }
   }
 
@@ -64,6 +69,10 @@ export const EditUserSubjectsModal = ({ user, onUpdatedUser }) => {
     if (res.ok) {
       const body = await res.json();
       onUpdatedUser(body.user);
+    } else {
+      toast("Error al eliminar la asignatura.", {
+        type: "error",
+      });
     }
   }
 
@@ -131,7 +140,10 @@ export const EditUserSubjectsModal = ({ user, onUpdatedUser }) => {
                   ))}
                 </ul>
                 {page < pages && (
-                  <button className="btn btn-link mt-1" onClick={() => setPage(page + 1)}>
+                  <button
+                    className="btn btn-link mt-1"
+                    onClick={() => setPage(page + 1)}
+                  >
                     Mostrar más
                   </button>
                 )}
