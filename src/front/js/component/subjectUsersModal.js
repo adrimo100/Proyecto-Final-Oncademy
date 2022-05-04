@@ -1,45 +1,34 @@
 import React from "react";
+import { Modal } from "react-bootstrap";
 
-export const SubjectUsersModal = ({ subject }) => {
-  const teachers = subject?.users.filter((user) => user.role === "Teacher");
-  const students = subject?.users.filter((user) => user.role === "Student");
+export const SubjectUsersModal = ({ subject, show, handleClose }) => {
+  const teachers = subject?.users.filter((user) => user.role === "Teacher") || [];
+  const students = subject?.users.filter((user) => user.role === "Student") || [];
 
   return (
-    <div id="subject-users" className="modal fade" tabIndex="-1">
-      <div className="modal-dialog">
-        {subject && (
-          <div className="modal-content">
-            <div className="modal-header">
-              <h2 className="modal-title fs-3">
-                Usuarios de {subject.name}{" "}
-                <span className="text-secondary">({subject.course_name})</span>
-              </h2>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              />
-            </div>
+    <Modal show={show} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          Usuarios de {subject?.name}{" "}
+          <span className="text-secondary">({subject?.course_name})</span>
+        </Modal.Title>
+      </Modal.Header>
 
-            <div className="modal-body">
-              <h3 className="fs-5">Profesores</h3>
-              {teachers.length ? (
-                <UserList users={teachers} />
-              ) : (
-                <p>No hay profesores.</p>
-              )}
-              <h3 className="fs-5">Alumnos</h3>
-              {students.length ? (
-                <UserList users={students} />
-              ) : (
-                <p>No hay alumnos.</p>
-              )}
-            </div>
-          </div>
+      <Modal.Body>
+        <h3 className="fs-5">Profesores</h3>
+        {teachers.length ? (
+          <UserList users={teachers} />
+        ) : (
+          <p>No hay profesores.</p>
         )}
-      </div>
-    </div>
+        <h3 className="fs-5">Alumnos</h3>
+        {students.length ? (
+          <UserList users={students} />
+        ) : (
+          <p>No hay alumnos.</p>
+        )}
+      </Modal.Body>
+    </Modal>
   );
 };
 

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { appFetch, usePagination } from "../utils";
 import { FilterSubjectsForm } from "./filterSubjectsForm";
 import { AppTd } from "./AppTd";
-import { Pagination } from "./pagination"
+import { Pagination } from "./pagination";
 import { SubjectModal } from "./subjectModal";
 import { SubjectUsersModal } from "./subjectUsersModal";
 
@@ -15,28 +15,39 @@ export const SubjectsSection = () => {
     error,
     pages,
     total,
-    refetch
-  } = usePagination({ path: "/api/subjects", parameters: { ...filters, page } });
+    refetch,
+  } = usePagination({
+    path: "/api/subjects",
+    parameters: { ...filters, page },
+  });
 
-  
   function handleSubmit(filters) {
     setFilters(filters);
   }
 
   function handleChangedSubjects() {
-    refetch()
+    refetch();
   }
 
   async function deleteSubject(id) {
-    await appFetch(`/api/subjects/${id}`, { method: "DELETE" }, true)
-    handleChangedSubjects()
+    await appFetch(`/api/subjects/${id}`, { method: "DELETE" }, true);
+    handleChangedSubjects();
   }
-  
+
   const [editedSubjectId, setEditedSubjectId] = useState(null);
 
-  // Subject to show in the subject users modal
-  const [watchedSubject, setWatchedSubject] = useState(null)
-  
+  const [watchedSubject, setWatchedSubject] = useState(null);
+  function handleOpenModal(flagSetter, subject) {
+    setWatchedSubject(subject);
+    flagSetter(true);
+  }
+  function handleCloseModal(flagSetter) {
+    flagSetter(false);
+    setWatchedSubject(null);
+  }
+
+  const [showUsers, setShowUsers] = useState(false);
+
   return (
     <article>
       <FilterSubjectsForm handleSubmit={handleSubmit} error={error} />
@@ -71,9 +82,7 @@ export const SubjectsSection = () => {
                     <button
                       className="btn btn-sm"
                       aria-label="ver usuarios de asignatura"
-                      data-bs-toggle="modal"
-                      data-bs-target="#subject-users"
-                      onClick={() => setWatchedSubject(subject)}
+                      onClick={() => handleOpenModal(setShowUsers, subject)}
                     >
                       <i className="bi bi-people text-primary" />
                     </button>
@@ -119,7 +128,13 @@ export const SubjectsSection = () => {
         variant="create"
         onChangedSubjects={handleChangedSubjects}
       />
-      <SubjectUsersModal subject={watchedSubject} />
+      {
+        <SubjectUsersModal
+          subject={watchedSubject}
+          show={showUsers}
+          handleClose={() => handleCloseModal(setShowUsers)}
+        />
+      }
     </article>
   );
 };
