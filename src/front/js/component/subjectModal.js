@@ -7,6 +7,7 @@ import { RichTextField } from "./richTextField";
 import { SelectCourseField } from "./selectCourseField";
 import { TextField } from "./textField";
 import "../../styles/subjectModal.css";
+import { toast } from "react-toastify";
 
 export const SubjectModal = ({
   subject,
@@ -52,9 +53,14 @@ export const SubjectModal = ({
           });
         }
       } else {
+        toast(
+          `Asignatura ${updating ? "actualizada" : "creada"} correctamente.`,
+          { type: "success" }
+        );
         setSuccess(true);
         updating && setSubject(body.subject);
         onChangedSubjects();
+        handleClose();
       }
     } catch (err) {
       console.error(err);
@@ -109,16 +115,7 @@ export const SubjectModal = ({
                   {updating ? "Editar" : "Crear"}
                 </button>
 
-                <p className="w-100 py-2">
-                  {success && (
-                    <span className="text-success">
-                      Asignatura {updating ? "actualizada" : "creada"}{" "}
-                      correctamente.
-                    </span>
-                  )}
-
-                  {error && <span className="text-danger">{error}</span>}
-                </p>
+                {error && <p className="w-100 py-2 text-danger">{error}</p>}
               </Modal.Footer>
             </Form>
           );

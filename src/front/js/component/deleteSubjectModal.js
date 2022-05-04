@@ -1,15 +1,32 @@
 import { Modal } from "react-bootstrap";
 import React from "react";
 import { appFetch } from "../utils";
+import { toast } from "react-toastify";
 
-export const DeleteSubjectModal = ({ show, subject, handleClose, handleChangedSubjects }) => {
-
+export const DeleteSubjectModal = ({
+  show,
+  subject,
+  handleClose,
+  handleChangedSubjects,
+}) => {
   async function deleteSubject() {
-    await appFetch(`/api/subjects/${subject.id}`, { method: "DELETE" }, true);
-    handleChangedSubjects();
-    handleClose();
+    try {
+      const res = await appFetch(`/api/subjects/${subject.id}`, { method: "DELETE" }, true);
+      
+      if (res.ok) {
+        toast("Asignatura eliminada con éxito.", {
+          type: "success",
+        });
+        handleChangedSubjects();
+        handleClose();
+      } else {
+        throw new Error("Error al eliminar la asignatura.");
+      }
+    } catch (err) {
+      toast("Error al eliminar la asignatura.", { type: "error" });
+    }
   }
-  
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -35,4 +52,4 @@ export const DeleteSubjectModal = ({ show, subject, handleClose, handleChangedSu
       </Modal.Footer>
     </Modal>
   );
-}
+};

@@ -8,6 +8,9 @@ import "../styles/index.css";
 // import bootstrap css
 import "bootstrap/dist/css/bootstrap.min.css";
 
+// import toastify css
+import "react-toastify/dist/ReactToastify.css";
+
 //import your own components
 import Layout from "./layout";
 
