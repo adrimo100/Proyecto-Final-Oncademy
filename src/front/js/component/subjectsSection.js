@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { appFetch, usePagination } from "../utils";
+import { usePagination } from "../utils";
 import { FilterSubjectsForm } from "./filterSubjectsForm";
 import { AppTd } from "./AppTd";
 import { Pagination } from "./pagination";
 import { SubjectModal } from "./subjectModal";
 import { SubjectUsersModal } from "./subjectUsersModal";
+import { DeleteSubjectModal } from "./deleteSubjectModal";
 
 export const SubjectsSection = () => {
   const [filters, setFilters] = useState({});
@@ -29,11 +30,6 @@ export const SubjectsSection = () => {
     refetch();
   }
 
-  async function deleteSubject(id) {
-    await appFetch(`/api/subjects/${id}`, { method: "DELETE" }, true);
-    handleChangedSubjects();
-  }
-
   const [watchedSubject, setWatchedSubject] = useState(null);
   function handleOpenModal(flagSetter, subject) {
     setWatchedSubject(subject);
@@ -46,6 +42,7 @@ export const SubjectsSection = () => {
 
   const [showSubjectUsers, setShowSubjectUsers] = useState(false);
   const [showEditionModal, setShowEditionModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   return (
     <article>
@@ -105,7 +102,7 @@ export const SubjectsSection = () => {
                     <button
                       className="btn btn-sm"
                       aria-label="eliminar asignatura"
-                      onClick={() => deleteSubject(subject.id)}
+                      onClick={() => handleOpenModal(setShowDeleteModal, subject)}
                     >
                       <i className="bi bi-trash-fill text-danger" />
                     </button>
@@ -137,6 +134,13 @@ export const SubjectsSection = () => {
         subject={watchedSubject}
         show={showSubjectUsers}
         handleClose={() => handleCloseModal(setShowSubjectUsers)}
+      />
+
+      <DeleteSubjectModal
+        subject={watchedSubject}
+        show={showDeleteModal}
+        handleClose={() => handleCloseModal(setShowDeleteModal)}
+        handleChangedSubjects={handleChangedSubjects}
       />
     </article>
   );
