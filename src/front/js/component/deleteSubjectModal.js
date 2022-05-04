@@ -27,7 +27,7 @@ export const DeleteSubjectModal = ({
     }
   }
 
-  return (
+  return subject && (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>Confirmación de eliminación</Modal.Title>
@@ -35,8 +35,8 @@ export const DeleteSubjectModal = ({
 
       <Modal.Body>
         <p>
-          ¿Estás seguro de eliminar la asignatura "{subject?.name}" del curso "
-          {subject?.course_name}"?
+          ¿Estás seguro de eliminar la asignatura "{subject.name}" del curso "
+          {subject.course_name}"?
         </p>
         <span>Esta acción es irreversible.</span>
       </Modal.Body>

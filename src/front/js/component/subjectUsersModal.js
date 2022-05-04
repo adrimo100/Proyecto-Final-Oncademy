@@ -5,7 +5,7 @@ export const SubjectUsersModal = ({ subject, show, handleClose }) => {
   const teachers = subject?.users.filter((user) => user.role === "Teacher") || [];
   const students = subject?.users.filter((user) => user.role === "Student") || [];
 
-  return (
+  return subject && (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>
