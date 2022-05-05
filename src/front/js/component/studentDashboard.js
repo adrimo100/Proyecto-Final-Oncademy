@@ -5,7 +5,7 @@ import { EditUser } from "./editUser";
 import { SubjectCard } from "./subjectCard";
 
 export const StudentDashboard = () => {
-  const { store, actions } = useContext(Context);
+  const { store } = useContext(Context);
 
   const displaySubjects = () => {
     console.log(store.user?.subjects.length);
@@ -38,7 +38,7 @@ export const StudentDashboard = () => {
   };
 
   return (
-    <main className="app-container container-fluid py-4">
+    <main className="app-container py-4">
       <EditUser></EditUser>
 
       <div>
