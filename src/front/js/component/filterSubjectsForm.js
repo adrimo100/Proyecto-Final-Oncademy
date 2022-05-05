@@ -16,6 +16,7 @@ export const FilterSubjectsForm = ({ handleSubmit, error, onCreateSubject }) => 
         </button>
 
         <button
+          type="button"
           className="btn btn-success"
           onClick={onCreateSubject}
         >
