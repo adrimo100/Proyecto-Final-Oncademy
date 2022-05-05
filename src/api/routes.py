@@ -609,7 +609,7 @@ def get_courses():
 
     # Add name filter
     if name:
-        stmt = stmt.filter_by(name=name)
+        stmt = stmt.filter(Course.name.ilike(f"%{name}%"))
 
     # Get results paginated and ordered by date
     result = stmt.order_by(Course.name).paginate(page, 10)
