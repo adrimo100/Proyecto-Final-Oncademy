@@ -99,6 +99,7 @@ class Course(db.Model):
         return {
             "id": self.id,
             "name": self.name,
+            "subjects": [subject.serialize() for subject in self.subjects]
         }
 
 
