@@ -3,6 +3,7 @@ import { usePagination } from "../utils";
 import { Pagination } from "./pagination";
 import { AppTd } from "./AppTd";
 import { FilterCousesForm } from "./filterCoursesForm";
+import { CourseModal } from "./courseModal";
 
 export const CoursesSection = () => {
   const [name, setName] = useState(null);
@@ -13,6 +14,7 @@ export const CoursesSection = () => {
     total,
     pages,
     error,
+    refetch,
   } = usePagination({ path: "/api/courses", parameters: { name, page } });
 
   function handleSubmit({ name }) {
@@ -20,9 +22,30 @@ export const CoursesSection = () => {
     setPage(1);
   }
 
+  function handleChangedCourses() {
+    refetch();
+  }
+
+  const [watchedCourse, setWatchedCourse] = useState(null);
+  function handleOpenModal(flagSetter, course) {
+    setWatchedCourse(course);
+    flagSetter(true);
+  }
+  function handleCloseModal(flagSetter) {
+    flagSetter(false);
+    setWatchedCourse(null);
+  }
+
+  const [showEditionModal, setShowEditionModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   return (
     <article>
-      <FilterCousesForm handleSubmit={handleSubmit} error={error} />
+      <FilterCousesForm
+        handleSubmit={handleSubmit}
+        error={error}
+        onCreateCourse={() => handleOpenModal(setShowEditionModal, null)}
+      />
 
       {!courses.length && !error && <p>No se han encontrado cursos.</p>}
       {courses.length > 0 && (
@@ -35,9 +58,7 @@ export const CoursesSection = () => {
               <tr>
                 <th scope="col">Curso</th>
                 <th scope="col">Asignaturas</th>
-                <th scope="col">
-                  Acciones
-                </th>
+                <th scope="col">Acciones</th>
               </tr>
             </thead>
 
@@ -49,12 +70,32 @@ export const CoursesSection = () => {
                     <div className="space-children">
                       {course.subjects.map((subject) => (
                         <span className="d-block" key={subject.id}>
-                          {subject.name} ({subject.course_name})
+                          {subject.name}
                         </span>
                       ))}
                     </div>
                   </AppTd>
-                  <AppTd>...</AppTd>
+                  <AppTd>
+                    <button
+                      className="btn btn-sm"
+                      aria-label="editar curso"
+                      onClick={() =>
+                        handleOpenModal(setShowEditionModal, course)
+                      }
+                    >
+                      <i className="bi bi-pencil text-primary" />
+                    </button>
+
+                    <button
+                      className="btn btn-sm"
+                      aria-label="eliminar curso"
+                      onClick={() =>
+                        handleOpenModal(setShowDeleteModal, course)
+                      }
+                    >
+                      <i className="bi bi-trash-fill text-danger" />
+                    </button>
+                  </AppTd>
                 </tr>
               ))}
             </tbody>
@@ -69,6 +110,14 @@ export const CoursesSection = () => {
           </table>
         </div>
       )}
+
+      <CourseModal
+        show={showEditionModal}
+        handleClose={() => handleCloseModal(setShowEditionModal)}
+        course={watchedCourse}
+        setCourse={setWatchedCourse}
+        onChangedCourses={handleChangedCourses}
+      />
     </article>
   );
 };

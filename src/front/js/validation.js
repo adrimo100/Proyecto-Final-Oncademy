@@ -61,3 +61,7 @@ export const subjectValidationSchema = yup.object({
   course_id: yup.number(),
   stripe_id: yup.string().required(requiredErrorText),
 });
+
+export const courseValidationSchema = yup.object({
+  name: yup.string().required(requiredErrorText).max(50, maxErrorGenerator),
+})
