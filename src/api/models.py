@@ -35,7 +35,7 @@ class User(db.Model):
             "id": self.id,
             "full_name": self.full_name,
             "email": self.email,
-            "avatar": url_for('download_file', avatar = self.avatar),
+            "avatar": "../../img/" + self.avatar,
             "role": self.role.name,
             "subjects": subjects_ser
             # do not serialize the password, its a security breach

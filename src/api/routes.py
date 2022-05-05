@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 api = Blueprint('api', __name__)
 
-UPLOAD_FOLDER = './src/avatars'
+UPLOAD_FOLDER = './src/front/img'
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
@@ -497,12 +497,12 @@ def changeAvatar():
         return jsonify("Usuario no encontrado"), 404
 
     if(user.avatar):
-            os.remove("src/avatars/" + user.avatar) 
+            os.remove("src/front/img/" + user.avatar) 
         
 
-    file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename.replace(" ", "_")))
+    file.save(os.path.join(app.config["UPLOAD_FOLDER"], user.email +  "_" + filename.replace(" ", "_")))
 
-    user.avatar = file.filename.replace(" ", "_")
+    user.avatar = user.email + "_" + file.filename.replace(" ", "_")
     db.session.commit()
     
     return jsonify(user.serialize()), 200

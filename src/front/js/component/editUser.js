@@ -248,7 +248,7 @@ export const EditUser = () => {
           <form id="avatar-form" encType="multipart/form-data">
             <div>
               <h2>Foto de Perfil</h2>
-              <div id="dashboard-avatar" style={{background: store.user.avatar ? store.user.avatar : "gray"}}></div>
+              <div id="dashboard-avatar" style={{background: store.user.avatar ? `url(${store.user.avatar})` : "gray"}}></div>
               <div className="mt-3 d-flex align-items-center">
                 <input class="form-control ms-1 w-50" type="file" id="formFile" accept=".png, .jpg" onChange={(e) => {
                   setSelectedAvatar(e.target.files[0]);
