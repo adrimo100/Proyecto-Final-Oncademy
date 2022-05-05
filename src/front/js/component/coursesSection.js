@@ -4,6 +4,7 @@ import { Pagination } from "./pagination";
 import { AppTd } from "./AppTd";
 import { FilterCousesForm } from "./filterCoursesForm";
 import { CourseModal } from "./courseModal";
+import { DeleteCourseModal } from "./deleteCourseModal";
 
 export const CoursesSection = () => {
   const [name, setName] = useState(null);
@@ -117,6 +118,13 @@ export const CoursesSection = () => {
         course={watchedCourse}
         setCourse={setWatchedCourse}
         onChangedCourses={handleChangedCourses}
+      />
+
+      <DeleteCourseModal
+        show={showDeleteModal}
+        handleClose={() => handleCloseModal(setShowDeleteModal)}
+        course={watchedCourse}
+        handleChangedCourses={handleChangedCourses}
       />
     </article>
   );
