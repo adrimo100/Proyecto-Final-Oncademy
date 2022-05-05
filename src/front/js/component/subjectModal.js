@@ -19,7 +19,6 @@ export const SubjectModal = ({
   const updating = !!subject;
 
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
 
   function setFormValues() {
     return {
@@ -37,7 +36,6 @@ export const SubjectModal = ({
   async function handleSubmit(values, { setFieldError }) {
     const path = updating ? `/api/subjects/${subject.id}` : "/api/subjects";
     const method = updating ? "PUT" : "POST";
-    setSuccess(false);
     setError(null);
 
     try {
@@ -57,7 +55,6 @@ export const SubjectModal = ({
           `Asignatura ${updating ? "actualizada" : "creada"} correctamente.`,
           { type: "success" }
         );
-        setSuccess(true);
         updating && setSubject(body.subject);
         onChangedSubjects();
         handleClose();
