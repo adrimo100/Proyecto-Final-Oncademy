@@ -2,39 +2,30 @@ import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { appFetch } from "../utils";
-import { subjectValidationSchema } from "../validation";
-import { RichTextField } from "./richTextField";
-import { SelectCourseField } from "./selectCourseField";
+import { courseValidationSchema } from "../validation";
 import { TextField } from "./textField";
 import "../../styles/subjectModal.css";
 import { toast } from "react-toastify";
 
-export const SubjectModal = ({
-  subject,
-  setSubject,
-  onChangedSubjects,
+export const CourseModal = ({
+  course,
+  setCourse,
+  onChangedCourses,
   show,
   handleClose,
 }) => {
-  const updating = !!subject;
+  const updating = !!course;
 
   const [error, setError] = useState(null);
 
   function setFormValues() {
     return {
-      name: subject?.name || "",
-      description: subject?.description || "",
-      cardDescription: subject?.cardDescription || "",
-      image_url: subject?.image_url || "",
-      start_date: subject?.start_date || "",
-      end_date: subject?.end_date || "",
-      course_id: subject?.course_id || "",
-      stripe_id: subject?.stripe_id || "",
-    };
+      name: course?.name || "",
+      };
   }
 
   async function handleSubmit(values, { setFieldError }) {
-    const path = updating ? `/api/subjects/${subject.id}` : "/api/subjects";
+    const path = updating ? `/api/courses/${course.id}` : "/api/courses";
     const method = updating ? "PUT" : "POST";
     setError(null);
 
@@ -52,11 +43,11 @@ export const SubjectModal = ({
         }
       } else {
         toast(
-          `Asignatura ${updating ? "actualizada" : "creada"} correctamente.`,
+          `Curso ${updating ? "actualizado" : "creado"} correctamente.`,
           { type: "success" }
         );
-        updating && setSubject(body.subject);
-        onChangedSubjects();
+        updating && setCourse(body.course);
+        onChangedCourses();
         handleClose();
       }
     } catch (err) {
@@ -68,39 +59,27 @@ export const SubjectModal = ({
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>{updating ? "Editando" : "Nueva"} Asignatura</Modal.Title>
+        <Modal.Title>{updating ? "Editando" : "Nuevo"} Curso</Modal.Title>
       </Modal.Header>
 
       <Formik
         initialValues={setFormValues()}
-        validationSchema={subjectValidationSchema}
+        validationSchema={courseValidationSchema}
         onSubmit={handleSubmit}
       >
         {({ isSubmitting, setValues }) => {
           useEffect(() => {
             updating && setValues(setFormValues());
-          }, [subject]);
+          }, [course]);
 
           return (
             <Form>
               <Modal.Body>
                 <TextField name="name" label="Nombre" />
-                <RichTextField
-                  name="description"
-                  label="Descripción en detalles"
-                />
-                <TextField
-                  name="cardDescription"
-                  label="Descripción en carta"
-                />
-                <TextField name="image_url" label="URL de imágen" />
-                <TextField
-                  name="start_date"
-                  label="Fecha de inicio (dd/mm/aa)"
-                />
-                <TextField name="end_date" label="Fecha de fin (dd/mm/aa)" />
-                <SelectCourseField className="mb-3" label="Curso" />
-                <TextField name="stripe_id" label="Id de stripe" />
+
+                <p>
+                  Atención: Las asignaturas deben modificarse desde el panel de asignaturas.
+                </p>
               </Modal.Body>
 
               <Modal.Footer className="subjects-modal-footer">
