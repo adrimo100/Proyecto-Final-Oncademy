@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import { act } from "react-test-renderer";
 import { Context } from "../store/appContext";
 
 export const EditUser = () => {
@@ -9,6 +10,8 @@ export const EditUser = () => {
 
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
+
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -227,16 +230,53 @@ export const EditUser = () => {
 
   return (
     <div>
-      <div>
-        <h2>Tus Datos</h2>
-      </div>
-      <div className="d-flex  align-items-center">
-        <strong>Nombre:</strong>
-        {nameSection()}
-      </div>
-      <div className="d-flex  align-items-center">
-        <strong>Email:</strong>
-        {emailSection()}
+      <div className="row">
+        <div className="col-12 col-lg-6">
+          <div>
+          <h2>Tus Datos</h2>
+          </div>
+          <div className="d-flex  align-items-center">
+            <strong>Nombre:</strong>
+            {nameSection()}
+          </div>
+          <div className="d-flex  align-items-center">
+            <strong>Email:</strong>
+            {emailSection()}
+          </div>
+        </div>
+        <div className="col-12 col-lg-6 mt-2 mt-lg-0">
+          <form id="avatar-form" encType="multipart/form-data">
+            <div>
+              <h2>Foto de Perfil</h2>
+              <div id="dashboard-avatar" style={{background: store.user.avatar ? `url(${store.user.avatar})` : "gray"}}></div>
+              <div className="mt-3 d-flex align-items-center">
+                <input class="form-control ms-1 w-50" type="file" id="formFile" accept=".png, .jpg" onChange={(e) => {
+                  setSelectedAvatar(e.target.files[0]);
+                }}/>
+                <button className="btn btn-primary ms-2" onClick={(e) =>{
+                  e.preventDefault()
+
+                  if(!selectedAvatar){
+                    alert("Selecciona un archivo válido primero")
+                    return;
+                  }
+
+                  if(selectedAvatar.name.split('.').pop() != "png" && selectedAvatar.name.split('.').pop() != "jpg"){
+                    alert("Formato de archivo no válido")
+                    document.querySelector("#avatar-form").reset();
+                    return;
+                  }
+
+                  actions.changeAvatar(selectedAvatar);
+
+                  return;
+                    
+                }}>Cambiar Foto</button>
+              </div>
+              
+            </div>
+          </form>
+        </div>
       </div>
 
       <hr />
@@ -298,8 +338,8 @@ export const EditUser = () => {
               </div>
               <div className="ms-xl-4 mt-2 mt-xl-0">
                 <button
-                  className="btn btn-success m-0 d-flex justify-content-center align-items-center
-                  "
+                  className="btn btn-success m-0 d-flex justify-content-center align-items-center"
+                  style={{whiteSpace: "nowrap"}}
                   onClick={(e) => {
                     e.preventDefault();
                     editUserPassword();
