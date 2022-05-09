@@ -10,6 +10,7 @@ import os, glob
 import stripe
 import datetime
 from werkzeug.utils import secure_filename 
+from cloudinary import uploader
 
 
 app = Flask(__name__)
@@ -484,28 +485,22 @@ def editUser():
 @api.route("/changeAvatar", methods = ["PUT"])
 @jwt_required()
 def changeAvatar():
-
     file = request.files['file']
 
-    filename = secure_filename(file.filename)
-
-    user_id = get_jwt_identity()
-
-    user = User.query.filter_by(id = user_id).first()
-
-    if(not user):
-        return jsonify("Usuario no encontrado"), 404
-
-    if(user.avatar):
-            os.remove("src/front/img/" + user.avatar) 
-        
-
-    file.save(os.path.join(app.config["UPLOAD_FOLDER"], user.email +  "_" + filename.replace(" ", "_")))
-
-    user.avatar = user.email + "_" + file.filename.replace(" ", "_")
+    if file:
+        upload_result = uploader.upload(file, **{
+            "public_id": current_user.id,
+            "overwrite": True,
+            "transformation": [
+                {'gravity': "face"},
+                {'width': 160, 'crop': "scale"}
+            ]
+        })
+    
+    current_user.avatar = upload_result['secure_url']
     db.session.commit()
     
-    return jsonify(user.serialize()), 200
+    return jsonify(current_user.serialize()), 200
 
 @api.route("/checkPassword", methods = ["PUT"])
 @jwt_required()
