@@ -1,17 +1,26 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-from flask import request, jsonify, Blueprint
+from flask import Flask, request, jsonify, Blueprint
 from api.models import db, User, Course, Subject, Role, Payment, InvitationCode
-from api.utils import admin_required, APIException, SignupForm, SubjectForm
-from flask_jwt_extended import create_access_token, current_user, jwt_required
+from api.utils import CourseForm, admin_required, APIException, SignupForm, SubjectForm
+from flask_jwt_extended import create_access_token, current_user, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash
-import os
+import os, glob
 import stripe
 import datetime
+from werkzeug.utils import secure_filename 
+from cloudinary import uploader
+
+
+app = Flask(__name__)
+
 
 api = Blueprint('api', __name__)
 
+UPLOAD_FOLDER = './src/front/img'
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 # Set your secret key. Remember to switch to your live secret key in production.
 # See your keys here: https://dashboard.stripe.com/apikeys
@@ -473,6 +482,26 @@ def editUser():
 
     return jsonify(user.serialize()), 200
 
+@api.route("/changeAvatar", methods = ["PUT"])
+@jwt_required()
+def changeAvatar():
+    file = request.files['file']
+
+    if file:
+        upload_result = uploader.upload(file, **{
+            "public_id": current_user.id,
+            "overwrite": True,
+            "transformation": [
+                {'gravity': "face"},
+                {'width': 160, 'crop': "scale"}
+            ]
+        })
+    
+    current_user.avatar = upload_result['secure_url']
+    db.session.commit()
+    
+    return jsonify(current_user.serialize()), 200
+
 @api.route("/checkPassword", methods = ["PUT"])
 @jwt_required()
 def checkPassword():
@@ -599,7 +628,87 @@ def createCheckoutSession():
 
     return jsonify({"session_url": stripe_session.get("url")}), 200
 
+@api.route("/courses")
+def get_courses():
+    """Returns courses in pages, filtered by name if required"""
+    name = request.args.get("name")
+    page = int(request.args.get("page")) or 1
+
+    stmt = Course.query
+
+    # Add name filter
+    if name:
+        stmt = stmt.filter(Course.name.ilike(f"%{name}%"))
+
+    # Get results paginated and ordered by date
+    result = stmt.order_by(Course.name).paginate(page, 10)
+
+    return jsonify(
+        {
+            "items": [course.serialize() for course in result.items],
+            "total": result.total,
+            "pages": result.pages,
+        }
+    )
+
+@api.route("/courses", methods = ["POST"])
+@jwt_required()
+@admin_required
+def create_course():
+    # Get course data
+    name = request.json.get("name")
+    
+    # Validate data
+    form = CourseForm(data={"name": name})
+    if form.validate() == False:
+        raise APIException(
+            "Alguno de los campos no es correcto, revísalos.",
+            400,
+            {"validationErrors": form.errors}
+        )
+
+    # Create course
+    course = Course(**form.data)
+    db.session.add(course)
+    db.session.commit()
+
+    return jsonify(course=course.serialize()), 201
 
 
+@api.route("/courses/<int:id>", methods=["PUT"])
+@jwt_required()
+@admin_required
+def update_course(id):
+    course = Course.query.get(id)
+
+    if not course:
+        raise APIException("No se ha encontrado el curso solicitado.", status_code=404)
+
+    name = request.json.get("name")
+    if name:
+        course.name = name
+
+    db.session.commit()
+
+    return jsonify(course=course.serialize()), 200
 
 
+@api.route("/courses/<int:id>", methods=["DELETE"])
+@jwt_required()
+@admin_required
+def delete_course(id):
+    course = Course.query.get(id)
+
+    if not course:
+        raise APIException("No se ha encontrado el curso solicitado.", status_code=404)
+
+    if len(course.subjects) > 0:
+        raise APIException(
+            "No se puede eliminar un curso que tenga asignaturas asociadas.",
+            status_code=400,
+        )
+
+    db.session.delete(course)
+    db.session.commit()
+
+    return jsonify(course=course.serialize()), 200

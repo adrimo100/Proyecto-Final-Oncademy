@@ -122,6 +122,12 @@ class SubjectForm(Form):
     course_id = IntegerField("Course ID")
     stripe_id = StringField("Stripe ID", [required_validator])
 
+class CourseForm(Form):
+    name = StringField(
+        "Name",
+        [required_validator, validators.Length(max=50, message=max_error)]
+    )
+
 
 def admin_required(f):
     @wraps(f)

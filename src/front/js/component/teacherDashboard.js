@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import { Context } from "../store/appContext";
 
 import { SubjectCard } from "../component/subjectCard";
-import { validateYupSchema } from "formik";
 import { EditUser } from "./editUser";
 
 export const TeacherDashboard = () => {
@@ -33,7 +32,7 @@ export const TeacherDashboard = () => {
   };
 
   return (
-    <main className="app-container container-fluid py-4">
+    <main className="app-container py-4">
       <EditUser></EditUser>
 
       <div>

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { appFetch, usePagination } from "../utils";
+import { usePagination } from "../utils";
 import { FilterSubjectsForm } from "./filterSubjectsForm";
 import { AppTd } from "./AppTd";
-import { Pagination } from "./pagination"
+import { Pagination } from "./pagination";
 import { SubjectModal } from "./subjectModal";
 import { SubjectUsersModal } from "./subjectUsersModal";
+import { DeleteSubjectModal } from "./deleteSubjectModal";
 
 export const SubjectsSection = () => {
   const [filters, setFilters] = useState({});
@@ -15,31 +16,41 @@ export const SubjectsSection = () => {
     error,
     pages,
     total,
-    refetch
-  } = usePagination({ path: "/api/subjects", parameters: { ...filters, page } });
+    refetch,
+  } = usePagination({
+    path: "/api/subjects",
+    parameters: { ...filters, page },
+  });
 
-  
   function handleSubmit(filters) {
     setFilters(filters);
   }
 
   function handleChangedSubjects() {
-    refetch()
+    refetch();
   }
 
-  async function deleteSubject(id) {
-    await appFetch(`/api/subjects/${id}`, { method: "DELETE" }, true)
-    handleChangedSubjects()
+  const [watchedSubject, setWatchedSubject] = useState(null);
+  function handleOpenModal(flagSetter, subject) {
+    setWatchedSubject(subject);
+    flagSetter(true);
   }
-  
-  const [editedSubjectId, setEditedSubjectId] = useState(null);
+  function handleCloseModal(flagSetter) {
+    flagSetter(false);
+    setWatchedSubject(null);
+  }
 
-  // Subject to show in the subject users modal
-  const [watchedSubject, setWatchedSubject] = useState(null)
-  
+  const [showSubjectUsers, setShowSubjectUsers] = useState(false);
+  const [showEditionModal, setShowEditionModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   return (
     <article>
-      <FilterSubjectsForm handleSubmit={handleSubmit} error={error} />
+      <FilterSubjectsForm
+        handleSubmit={handleSubmit}
+        error={error}
+        onCreateSubject={() => handleOpenModal(setShowEditionModal, null)}
+      />
 
       {!subjects.length && !error && <p>No se han encontrado asignaturas.</p>}
 
@@ -71,9 +82,9 @@ export const SubjectsSection = () => {
                     <button
                       className="btn btn-sm"
                       aria-label="ver usuarios de asignatura"
-                      data-bs-toggle="modal"
-                      data-bs-target="#subject-users"
-                      onClick={() => setWatchedSubject(subject)}
+                      onClick={() =>
+                        handleOpenModal(setShowSubjectUsers, subject)
+                      }
                     >
                       <i className="bi bi-people text-primary" />
                     </button>
@@ -81,16 +92,17 @@ export const SubjectsSection = () => {
                     <button
                       className="btn btn-sm"
                       aria-label="editar asignatura"
-                      data-bs-toggle="modal"
-                      data-bs-target="#update-subject"
-                      onClick={() => setEditedSubjectId(subject.id)}
+                      onClick={() =>
+                        handleOpenModal(setShowEditionModal, subject)
+                      }
                     >
                       <i className="bi bi-pencil text-primary" />
                     </button>
+
                     <button
                       className="btn btn-sm"
                       aria-label="eliminar asignatura"
-                      onClick={() => deleteSubject(subject.id)}
+                      onClick={() => handleOpenModal(setShowDeleteModal, subject)}
                     >
                       <i className="bi bi-trash-fill text-danger" />
                     </button>
@@ -111,15 +123,25 @@ export const SubjectsSection = () => {
       )}
 
       <SubjectModal
-        subjectId={editedSubjectId}
-        variant="update"
+        show={showEditionModal}
+        handleClose={() => handleCloseModal(setShowEditionModal)}
+        subject={watchedSubject}
+        setSubject={setWatchedSubject}
         onChangedSubjects={handleChangedSubjects}
       />
-      <SubjectModal
-        variant="create"
-        onChangedSubjects={handleChangedSubjects}
+
+      <SubjectUsersModal
+        subject={watchedSubject}
+        show={showSubjectUsers}
+        handleClose={() => handleCloseModal(setShowSubjectUsers)}
       />
-      <SubjectUsersModal subject={watchedSubject} />
+
+      <DeleteSubjectModal
+        subject={watchedSubject}
+        show={showDeleteModal}
+        handleClose={() => handleCloseModal(setShowDeleteModal)}
+        handleChangedSubjects={handleChangedSubjects}
+      />
     </article>
   );
 };
