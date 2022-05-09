@@ -1,5 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
-import { act } from "react-test-renderer";
+import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
 
 export const EditUser = () => {
