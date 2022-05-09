@@ -1,17 +1,26 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-from flask import request, jsonify, Blueprint
+from flask import Flask, request, jsonify, Blueprint
 from api.models import db, User, Course, Subject, Role, Payment, InvitationCode
 from api.utils import CourseForm, admin_required, APIException, SignupForm, SubjectForm
-from flask_jwt_extended import create_access_token, current_user, jwt_required
+from flask_jwt_extended import create_access_token, current_user, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash
-import os
+import os, glob
 import stripe
 import datetime
+from werkzeug.utils import secure_filename 
+from cloudinary import uploader
+
+
+app = Flask(__name__)
+
 
 api = Blueprint('api', __name__)
 
+UPLOAD_FOLDER = './src/front/img'
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 # Set your secret key. Remember to switch to your live secret key in production.
 # See your keys here: https://dashboard.stripe.com/apikeys
@@ -472,6 +481,26 @@ def editUser():
 
 
     return jsonify(user.serialize()), 200
+
+@api.route("/changeAvatar", methods = ["PUT"])
+@jwt_required()
+def changeAvatar():
+    file = request.files['file']
+
+    if file:
+        upload_result = uploader.upload(file, **{
+            "public_id": current_user.id,
+            "overwrite": True,
+            "transformation": [
+                {'gravity': "face"},
+                {'width': 160, 'crop': "scale"}
+            ]
+        })
+    
+    current_user.avatar = upload_result['secure_url']
+    db.session.commit()
+    
+    return jsonify(current_user.serialize()), 200
 
 @api.route("/checkPassword", methods = ["PUT"])
 @jwt_required()
