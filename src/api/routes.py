@@ -522,8 +522,6 @@ def editPassword():
     oldPassword = request.json.get("oldPassword")
     newPassword = request.json.get("newPassword")
 
-    print(newPassword)
-
     user = User.query.filter_by(email=email).first()
     if user is None or not user.password_is_valid(oldPassword):
         return jsonify({"error": "Correo electrónico o contraseña incorrectos"}), 401
