@@ -84,7 +84,7 @@ export const Home = () => {
             <div className="col-2 d-none d-md-block"></div>
           </div>
         </div>
-        <div className="row home-texture" id="second-header">
+        <div className="row home-texture pt-3" id="second-header">
           <div className="col-md-2 d-none d-md-block"></div>
           <div className="col-12 col-md-8 text-center">
             <div className="row d-flex align-items-center h-100">
@@ -103,10 +103,10 @@ export const Home = () => {
                   </svg>
                 </div>
                 <div className="my-4">
-                  <h4>Aula Invertida</h4>
+                  <h4 className="nowrap">Aula Invertida</h4>
                 </div>
                 <div>
-                  <p>
+                  <p className="feature-description">
                     Creemos en la eficacia de esta metodología, que en los últimos años ha demostrado
                     dar mejores resultados que la educación tradicional.
                   </p>
@@ -126,10 +126,10 @@ export const Home = () => {
                   </svg>
                 </div>
                 <div className="my-4">
-                  <h4>Apuntes Propios</h4>
+                  <h4 className="nowrap">Apuntes Propios</h4>
                 </div>
                 <div>
-                  <p>
+                  <p className="feature-description">
                     Contarás siempre con el apoyo de nuestros propios apuntes, para asegurarnos que tienes 
                     siempre un contenido base para estudiar.
                   </p>
@@ -149,10 +149,10 @@ export const Home = () => {
                   </svg>
                 </div>
                 <div className="my-4">
-                  <h4>Ejercicios y Feedback</h4>
+                  <h4 className="nowrap">Ejercicios y Feedback</h4>
                 </div>
                 <div>
-                  <p>
+                  <p className="feature-description">
                     Contarás con nuestras colecciones de ejercicios, los cuales podrás entregar a los profesores
                     para que los corrijan y te devuelvan comentarios para mejorar.
                   </p>

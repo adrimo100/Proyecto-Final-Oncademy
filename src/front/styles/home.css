@@ -144,6 +144,22 @@ input[type=file]::-webkit-file-upload-button {
   bottom: 5%;
 }
 
+.nowrap{
+  white-space: nowrap;
+}
+
+@media screen and (min-width: 991px){
+  .feature-description{
+    position: relative;
+    height: 15rem;
+  }
+
+  .details-column{
+    position: relative;
+    top: 12%
+  }
+}
+
 @media screen and (max-width: 767px) {
   #title-text {
     font-size: 10vw;
