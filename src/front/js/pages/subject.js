@@ -16,7 +16,6 @@ export const Subject = () => {
   const [subject, setSubject] = useState(null);
   const [teachers, setTeachers] = useState([]);
 
-
   useEffect(() => {
     fetch(process.env.BACKEND_URL + `/api/Subjects/${params.subject_id}`)
       .then((response) => {
@@ -41,7 +40,14 @@ export const Subject = () => {
   }, []);
 
   const displayTeachers = (teacher, index) => {
-    return <li key={index}>{teacher}</li>;
+    console.log(teachers)
+    return (
+    <div className="bg-dark d-flex p-2 align-items-center mt-4" id="teacher-element" key={index}>
+      <img id="teacher-avatar" src={teacher.avatar ? teacher.avatar : null}></img>
+      <div className="ms-3 text-white w-75 text-center">{teacher.full_name}</div>
+    </div>
+    
+    );
   };
 
   return (
@@ -81,43 +87,51 @@ export const Subject = () => {
       <div className="row mt-4" id="subject-details">
         <div className="col-2 d-none d-md-block"></div>
         <div className="col-12 col-md-8">
-          <div>
-            <strong>DETALLES</strong>
-            <div className="ps-2">
-                <div dangerouslySetInnerHTML={{ __html: subject?.description}}/>
-            </div>
-          </div>
-          <div className="mt-4">
-            <strong>FECHA DE INICIO</strong>
-            <div className="ps-2">
-              <li>
-                {subject ? (subject.start_date ? subject.start_date : "") : ""}
-              </li>
-            </div>
-          </div>
-          <div className="mt-4">
-            <strong>FECHA DE FINALIZACIÓN</strong>
-            <div className="ps-2">
-              <li>
-                {subject ? (subject.end_date ? subject.end_date : "") : ""}
-              </li>
-            </div>
-          </div>
-          <div className="mt-4">
-            <strong>PROFESORES</strong>
-            <div className="ps-2">
-              {teachers.map((teacher, index) =>
-                displayTeachers(teacher, index)
-              )}
-            </div>
+          <div className="card p-3 d-flex justify-content-center" >
+              <div className="row">
+                  <div className="col-12 col-lg-6">
+                    <div>
+                      <strong>DETALLES</strong>
+                      <div className="ps-2">
+                          <div dangerouslySetInnerHTML={{ __html: subject?.description}}/>
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <strong>FECHA DE INICIO</strong>
+                      <div className="ps-2">
+                        <li>
+                          {subject ? (subject.start_date ? subject.start_date : "") : ""}
+                        </li>
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <strong>FECHA DE FINALIZACIÓN</strong>
+                      <div className="ps-2">
+                        <li>
+                          {subject ? (subject.end_date ? subject.end_date : "") : ""}
+                        </li>
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      
+                    </div>
+                  </div>
+                  <div className="col-12 col-lg-6 mt-4 mt-lg-0 text-center">
+                      <strong>PROFESORES</strong>
+                      <div className="ps-2 mt-4">
+                        {teachers.map((teacher, index) =>
+                          displayTeachers(teacher, index)
+                        )}
+                      </div>
+                  </div>
+              </div>
           </div>
         </div>
         <div className="col-2 d-none d-md-block"></div>
       </div>
       <div className="row" id="payment-section">
         <div className="col-2 d-none d-md-block"></div>
-        <div className="col-12 col-md-8">
-          {store.user ? store.user.role == "Teacher" ? "" : <hr /> : <hr />}
+        <div className="col-12 col-md-8 mb-4">
           {subject ? (
             <PaymentSection
               subject_obj={subject ? subject : ""}
