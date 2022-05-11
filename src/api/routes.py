@@ -83,7 +83,7 @@ def getTeachers(subject_id):
 
     teachers_obj = User.query.filter_by(role = teacher_rol).filter(User.subjects.any(id = subject_id)).all()
 
-    teachers = [teacher.full_name for teacher in teachers_obj]
+    teachers = [teacher.serialize() for teacher in teachers_obj]
 
     return jsonify(teachers), 200
 

@@ -16,7 +16,6 @@ export const Subject = () => {
   const [subject, setSubject] = useState(null);
   const [teachers, setTeachers] = useState([]);
 
-
   useEffect(() => {
     fetch(process.env.BACKEND_URL + `/api/Subjects/${params.subject_id}`)
       .then((response) => {
@@ -41,7 +40,14 @@ export const Subject = () => {
   }, []);
 
   const displayTeachers = (teacher, index) => {
-    return <li key={index}>{teacher}</li>;
+    console.log(teachers)
+    return (
+    <div className="bg-dark d-flex p-2 align-items-center mt-4" id="teacher-element" key={index}>
+      <img id="teacher-avatar" src={teacher.avatar ? teacher.avatar : null}></img>
+      <div className="ms-3 text-white w-75 text-center">{teacher.full_name}</div>
+    </div>
+    
+    );
   };
 
   return (
@@ -107,16 +113,16 @@ export const Subject = () => {
                       </div>
                     </div>
                     <div className="mt-4">
+                      
+                    </div>
+                  </div>
+                  <div className="col-12 col-lg-6 mt-4 mt-lg-0 text-center">
                       <strong>PROFESORES</strong>
-                      <div className="ps-2">
+                      <div className="ps-2 mt-4">
                         {teachers.map((teacher, index) =>
                           displayTeachers(teacher, index)
                         )}
                       </div>
-                    </div>
-                  </div>
-                  <div className="col-12 col-lg-6 mt-4 mt-lg-0 d-flex justify-content-center align-items-center">
-                      TEST
                   </div>
               </div>
           </div>
