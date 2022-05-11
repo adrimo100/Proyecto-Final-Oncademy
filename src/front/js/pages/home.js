@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
+import "../../styles/home-texture.css"
 import { SubjectCard } from "../component/subjectCard";
 import { useLocation } from "react-router-dom";
 
@@ -83,7 +84,7 @@ export const Home = () => {
             <div className="col-2 d-none d-md-block"></div>
           </div>
         </div>
-        <div className="row" id="second-header">
+        <div className="row home-texture" id="second-header">
           <div className="col-md-2 d-none d-md-block"></div>
           <div className="col-12 col-md-8 text-center">
             <div className="row d-flex align-items-center h-100">
