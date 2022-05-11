@@ -43,7 +43,11 @@ export const Subject = () => {
     console.log(teachers)
     return (
     <div className="bg-dark d-flex p-2 align-items-center mt-4" id="teacher-element" key={index}>
-      <img id="teacher-avatar" src={teacher.avatar ? teacher.avatar : null}></img>
+      <div className="rounded-circle" style={{background: "gray"}}>
+        {
+          teacher.avatar ? <img id="teacher-avatar" src={teacher.avatar}></img> : <div id="teacher-avatar"></div>
+        }
+      </div>
       <div className="ms-3 text-white w-75 text-center">{teacher.full_name}</div>
     </div>
     
