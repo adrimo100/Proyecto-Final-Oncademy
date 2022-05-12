@@ -5,8 +5,6 @@ import { Context } from "../store/appContext";
 
 import { Button, Modal } from "react-bootstrap";
 
-import { toast } from "react-toastify";
-
 export const SubjectCard = (props) => {
   const { store, actions } = useContext(Context);
 
@@ -68,7 +66,6 @@ export const SubjectCard = (props) => {
             onClick={(e) => {
               handleClose();
               actions.cancelSubscription(props.subject.id);
-              toast("Subscripción cancelada", {type: "success",});
             }}
           >
             Cancelar Subscripción

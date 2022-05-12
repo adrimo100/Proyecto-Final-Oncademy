@@ -1,5 +1,7 @@
 import { appFetch, getToken, removeToken, setToken } from "../utils";
 
+import { toast } from "react-toastify";
+
 const getState = ({ getStore, getActions, setStore }) => {
   return {
     store: {
@@ -192,9 +194,9 @@ const getState = ({ getStore, getActions, setStore }) => {
           .then(data => {
             setStore({user: data})
 
-            alert("Avatar cambiado con éxito")
+            toast("Avatar cambiado con éxito", {type: "success",});
           })
-          .catch(error => alert(error))
+          .catch(error => toast(error, {type: "error",}))
       },
 
       changePassword: async (email, oldPassword, newPassword) => {
@@ -216,9 +218,9 @@ const getState = ({ getStore, getActions, setStore }) => {
           .then((respond) => {
             if (!respond.ok) throw new Error("Contraseña o Email incorrecto");
 
-            alert("Contraseña cambiada con éxito");
+            toast("Contraseña cambiada con éxito", {type: "success",});
           })
-          .catch((error) => alert(error));
+          .catch((error) => toast(error, {type: "error",}));
       },
 
       cancelSubscription: async (subject_id) => {
@@ -245,9 +247,10 @@ const getState = ({ getStore, getActions, setStore }) => {
           .then((data) => {
             setStore({ user: data });
 
-            alert("Cancelación exitosa");
+            //alert("Cancelación exitosa");
+            toast("Subscripción cancelada", {type: "success",});
           })
-          .catch((error) => alert(error));
+          .catch((error) => toast(error, {type: "error",}))
       },
     },
   };
