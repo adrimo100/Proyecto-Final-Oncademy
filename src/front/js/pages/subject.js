@@ -91,7 +91,7 @@ export const Subject = () => {
       <div className="row mt-4" id="subject-details">
         <div className="col-2 d-none d-md-block"></div>
         <div className="col-12 col-md-8">
-          <div className="card p-3 d-flex justify-content-center" >
+          <div className="card p-3 d-flex justify-content-center h-100" >
               <div className="row">
                   <div className="col-12 col-lg-6">
                     <div>
@@ -120,9 +120,9 @@ export const Subject = () => {
                       
                     </div>
                   </div>
-                  <div className="col-12 col-lg-6 mt-4 mt-lg-0 text-center">
-                      <strong>PROFESORES</strong>
-                      <div className="ps-2 mt-4">
+                  <div className="col-12 col-lg-6 mt-4 mt-lg-0 text-lg-center">
+                      <strong className="w-100">PROFESORES</strong>
+                      <div className="mt-4 mb-4">
                         {teachers.map((teacher, index) =>
                           displayTeachers(teacher, index)
                         )}

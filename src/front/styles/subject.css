@@ -23,8 +23,7 @@
   border-radius: 5px;
   background-color:rgba(0, 0, 0, 0.6) ;
   width: 60%;
-  left: 25%;
-  position: relative;
+  
   box-shadow: 0.5rem 0.5rem 0.5rem rgba(0, 0, 0, 0.6);
 }
 
@@ -36,3 +35,9 @@
   object-fit: fill;
 }
 
+@media screen and (min-width: 992px){
+  #teacher-element{
+    left: 20%;
+    position: relative;
+  }
+}
