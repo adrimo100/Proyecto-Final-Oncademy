@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { usePagination } from "../utils";
 import { AppTd } from "./AppTd";
-import { EditUserSubjectsModal } from "./editUserSubjectsModal";
+import { EditUserModal } from "./editUserModal";
 import { FilterUsersForm } from "./filterUsersForm";
 import { Pagination } from "./pagination";
 
@@ -109,7 +109,7 @@ export const UsersSection = () => {
         </div>
       )}
 
-      <EditUserSubjectsModal
+      <EditUserModal
         show={showUpdateModal}
         handleClose={closeUpdateModal}
         user={updatedUser}

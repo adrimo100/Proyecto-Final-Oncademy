@@ -128,6 +128,21 @@ class CourseForm(Form):
         [required_validator, validators.Length(max=50, message=max_error)]
     )
 
+class UpdateUserForm(Form):
+    full_name = StringField(
+        "Name",
+        [required_validator, validators.Length(max=70, message=max_error)],
+    )
+    email = StringField(
+        "Email",
+        [
+            required_validator,
+            validators.Email("La dirección de correo electrónico no es válida"),
+            validators.Length(max=255, message=max_error),
+        ],
+    )
+
+
 
 def admin_required(f):
     @wraps(f)

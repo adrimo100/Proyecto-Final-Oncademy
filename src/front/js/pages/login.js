@@ -13,7 +13,7 @@ export const Login = () => {
 
   const [formError, setFormError] = useState("");
 
-  async function hanldeSubmit(values) {
+  async function handleSubmit(values) {
     setFormError("");
 
     const { error } = await actions.login(values);
@@ -31,7 +31,7 @@ export const Login = () => {
           password: "",
         }}
         validationSchema={loginValidationSchema}
-        onSubmit={hanldeSubmit}
+        onSubmit={handleSubmit}
       >
         <Form className="app-container py-4">
           <TextField label="Correo electrónico" name="email" type="email" />
