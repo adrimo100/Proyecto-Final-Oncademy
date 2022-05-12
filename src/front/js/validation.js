@@ -65,3 +65,8 @@ export const subjectValidationSchema = yup.object({
 export const courseValidationSchema = yup.object({
   name: yup.string().required(requiredErrorText).max(50, maxErrorGenerator),
 })
+
+export const updateUserPersonalDataValidationSchema = yup.object({
+  full_name: fullName,
+  email,
+});

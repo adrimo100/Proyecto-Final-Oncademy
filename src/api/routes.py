@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, Blueprint
 from api.models import db, User, Course, Subject, Role, Payment, InvitationCode
-from api.utils import CourseForm, admin_required, APIException, SignupForm, SubjectForm
+from api.utils import CourseForm, UpdateUserForm, admin_required, APIException, SignupForm, SubjectForm
 from flask_jwt_extended import create_access_token, current_user, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash
 import os, glob
@@ -481,6 +481,40 @@ def editUser():
 
 
     return jsonify(user.serialize()), 200
+
+@api.route("users/<int:user_id>", methods=["PUT"])
+@jwt_required()
+@admin_required
+def update_user(user_id):
+    # Validate user data
+    form = UpdateUserForm(data=request.json)
+
+    if form.validate() == False:
+        raise APIException(
+            "Alguno de los campos no es correcto, revísalos.",
+            400,
+            {"validationErrors": form.errors}
+        )
+
+    # Check if user exists
+    user = User.query.get(user_id)
+    if user is None:
+        raise APIException("El usuario no existe", 404)
+
+    # Update user data if it's different
+    for key, value in form.data.items():
+        if getattr(user, key) != value:
+            setattr(user, key, value)
+            # Update email in stripe
+            if key == "email" and user.stripe_id:
+                stripe.Customer.modify(
+                    user.stripe_id,
+                    email = value,
+                )
+
+    db.session.commit()
+
+    return jsonify({"user": user.serialize()})
 
 @api.route("/changeAvatar", methods = ["PUT"])
 @jwt_required()
