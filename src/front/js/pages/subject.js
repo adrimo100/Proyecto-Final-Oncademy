@@ -45,7 +45,7 @@ export const Subject = () => {
     <div className="bg-dark d-flex p-2 align-items-center mt-4" id="teacher-element" key={index}>
       <div className="rounded-circle" style={{background: "gray"}}>
         {
-          teacher.avatar ? <img id="teacher-avatar" src={teacher.avatar}></img> : <div id="teacher-avatar"></div>
+          teacher.avatar ? <img id="teacher-avatar" src={teacher.avatar}></img> : <div id="teacher-avatar" style={{background: "gray"}}></div>
         }
       </div>
       <div className="ms-3 text-white w-75 text-center">{teacher.full_name}</div>
