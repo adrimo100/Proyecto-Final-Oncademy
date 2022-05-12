@@ -32,7 +32,7 @@
   height: 3rem;
   background-color: white;
   border-radius: 50%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 @media screen and (min-width: 992px){
