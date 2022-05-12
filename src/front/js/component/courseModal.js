@@ -78,7 +78,7 @@ export const CourseModal = ({
                 <TextField name="name" label="Nombre" />
 
                 <p>
-                  Atención: Las asignaturas deben modificarse desde el panel de asignaturas.
+                  Atención: Las asignaturas del curso deben modificarse desde el panel de asignaturas.
                 </p>
               </Modal.Body>
 
