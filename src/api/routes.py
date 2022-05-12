@@ -493,7 +493,6 @@ def changeAvatar():
             "overwrite": True,
             "transformation": [
                 {'gravity': "face"},
-                {'width': 160, 'crop': "scale"}
             ]
         })
     
