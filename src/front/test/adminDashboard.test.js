@@ -5,7 +5,7 @@ import { faker } from "@faker-js/faker";
 import { UsersSection } from "../js/component/usersSection";
 import { waitFor } from "@testing-library/react";
 
-jest.mock("../js/component/editUserSubjectsModal");
+jest.mock("../js/component/editUserModal");
 
 faker.setLocale("es");
 
